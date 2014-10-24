@@ -1,0 +1,10 @@
+# use glob syntax.
+syntax: glob
+
+*.pyc
+
+# Temporary files used by the vim editor.
+.*.swp
+
+# mercurial tmp files
+*.orig
