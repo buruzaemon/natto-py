@@ -1,7 +1,10 @@
 # use glob syntax.
 syntax: glob
 
+# Compiled Python files
 *.pyc
+
+.py*env/
 
 # Temporary files used by the vim editor.
 .*.swp
