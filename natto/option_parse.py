@@ -25,6 +25,9 @@ _SUPPORTED_OPTS = {'-d' : 'dicdir',
                    '-C' : 'allocate_sentence',
                    '-t' : 'theta',
                    '-c' : 'cost_factor'}
+
+_BOOLEAN_OPTIONS = ["all-morphs", "partial", "marginal", "allocate-sentence"]
+
 _NBEST_MAX = 512
 
 _WARN_LATTICE_LEVEL = "lattice-level is DEPRECATED, " + \
@@ -106,7 +109,8 @@ def _parse_mecab_options(options=None):
                        action="store", dest='input_buffer_size', type=int)
         p.add_argument('-C', '--allocate-sentence',
                        help="allocate new memory for input sentence",
-                       action="store_true", default=False)
+                       action="store_true", dest="allocate_sentence", 
+                       default=False)
         p.add_argument('-t', '--theta',
                        help="set temperature parameter theta (default 0.75)",
                        action="store", dest='theta', type=float)
@@ -156,7 +160,7 @@ def _build_options_str(options):
     for n in nomme:
         if options.has_key(n):
             key = n.replace("_", "-")
-            if key == "all-morphs" or key == "allocate-sentence":
+            if key in _BOOLEAN_OPTIONS:
                 if options[n]:
                     opt.append("--%s" % key)
             else:

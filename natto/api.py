@@ -59,6 +59,7 @@ class MeCab(object):
                      used.
 
         Raises:
+            SystemExit: An unrecognized option was passed in.
             MeCabError: An error occurred in locating the MeCab library;
                         or the FFI handle to MeCab could not be created.
         """
@@ -70,13 +71,13 @@ class MeCab(object):
 
         # Instantiate ffi handle
         self.ffi = _ffi_libmecab()
-        try:
-            self.options = _parse_mecab_options(options)
-        except ValueError as verr:
-            raise MeCabError(verr.message)
+        self.options = _parse_mecab_options(options)
 
         # Set up mecab pointer
-        self.mecab = self.ffi.dlopen(lib_path)
+        try:
+            self.mecab = self.ffi.dlopen(lib_path)
+        except OSError as oserr:
+            raise MeCabError(oserr.message)
 
         # Set up tagger pointer
         self.tagger = self.mecab.mecab_new2(_build_options_str(self.options))
