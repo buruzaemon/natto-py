@@ -5,6 +5,7 @@ syntax: glob
 *.pyc
 
 .py*env/
+natto_py.egg-info/
 
 # Temporary files used by the vim editor.
 .*.swp
