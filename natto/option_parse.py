@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 """MeCab option parser for natto-py."""
 from __future__ import print_function
-from multimethods import multimethod
 import argparse
 import sys
 
-overload = multimethod
 
 # Mapping of mecab short-style configuration options to the `mecab`
 # tagger. See the `mecab` help for more details.
@@ -32,92 +30,6 @@ _SUPPORTED_OPTS = {'-d' : 'dicdir',
 _WARN_LATTICE_LEVEL = "lattice-level is DEPRECATED, " + \
                       "please use marginal or nbest"
 
-@overload(str)
-def _parse_args(options=""):
-    """foobar, string"""
-    dopts = {}
-    p = argparse.ArgumentParser()
-    p.add_argument('-d', '--dicdir',
-                   help="set DIR as a system dicdir",
-                   action="store", dest="dicdir")
-    p.add_argument('-u', '--userdic',
-                   help="use FILE as a user dictionary",
-                   action="store", dest="userdic")
-    p.add_argument('-l', '--lattice-level',
-                   help="lattice information level (DEPRECATED)",
-                   action="store", dest='lattice_level', type=int)
-    p.add_argument('-O', '--output-format-type',
-                   help="set output format type (wakati, none,...)",
-                   action="store", dest="output_format_type")
-    p.add_argument('-a', '--all-morphs',
-                   help="output all morphs (default false)",
-                   action="store_true", default=False)
-    p.add_argument('-N', '--nbest',
-                   help="output N best results (default 1)",
-                   action="store", dest='nbest', type=int)
-    p.add_argument('-p', '--partial',
-                   help="partial parsing mode (default false)",
-                   action="store_true", default=False)
-    p.add_argument('-m', '--marginal',
-                   help="output marginal probability (default false)",
-                   action="store_true", default=False)
-    p.add_argument('-M', '--max-grouping-size',
-                   help="maximum grouping size for unknown words" + \
-                        "(default 24)",
-                   action="store", dest='max_grouping_size', type=int)
-    p.add_argument('-F', '--node-format',
-                   help="use STR as the user-defined node format",
-                   action="store", dest="node_format")
-    p.add_argument('-U', '--unk-format',
-                   help="use STR as the user-defined unknown node format",
-                   action="store", dest="unk_format")
-    p.add_argument('-B', '--bos-format',
-                   help="use STR as the user-defined " + \
-                   "beginning-of-sentence format",
-                   action="store", dest="bos_format")
-    p.add_argument('-E', '--eos-format',
-                   help="use STR as the user-defined end-of-sentence " + \
-                        "format",
-                   action="store", dest="eos_format")
-    p.add_argument('-S', '--eon-format',
-                   help="use STR as the user-defined end-of-NBest format",
-                   action="store", dest="eon_format")
-    p.add_argument('-x', '--unk-feature',
-                   help="use STR as the feature for unknown word",
-                   action="store", dest="unk_feature")
-    p.add_argument('-b', '--input-buffer-size',
-                   help="set input buffer size (default 8192)",
-                   action="store", dest='input_buffer_size', type=int)
-    p.add_argument('-C', '--allocate-sentence',
-                   help="allocate new memory for input sentence",
-                   action="store_true", default=False)
-    p.add_argument('-t', '--theta',
-                   help="set temperature parameter theta (default 0.75)",
-                   action="store", dest='theta', type=float)
-    p.add_argument('-c', '--cost-factor',
-                   help="set cost factor (default 700)",
-                   action="store", dest='cost_factor', type=int)
-
-    opts = p.parse_args(options.split())
-    nomme = _SUPPORTED_OPTS.itervalues()
-    for n in nomme:
-        if hasattr(opts, n):
-            v = getattr(opts, n)
-            if v:
-                dopts[n] = v
-    return dopts
-
-@overload(dict)
-def _parse_args(options={}):
-    """foobar, string"""
-    dopts = {}
-    nomme = _SUPPORTED_OPTS.itervalues()
-    for n in nomme:
-        if options.has_key(n):
-            if options[n]:
-                dopts[n] = options[n]
-    return dopts
-
 def _parse_mecab_options(options={}):
     """Parses the MeCab options, returning them in a dictionary.
 
@@ -136,7 +48,84 @@ def _parse_mecab_options(options={}):
     Raises:
         MeCabError: An invalid value for N-best was passed in.
     """
-    dopts = _parse_args(options)
+    dopts = {}
+    
+    if type(options) is str:
+        p = argparse.ArgumentParser()
+        p.add_argument('-d', '--dicdir',
+                       help="set DIR as a system dicdir",
+                       action="store", dest="dicdir")
+        p.add_argument('-u', '--userdic',
+                       help="use FILE as a user dictionary",
+                       action="store", dest="userdic")
+        p.add_argument('-l', '--lattice-level',
+                       help="lattice information level (DEPRECATED)",
+                       action="store", dest='lattice_level', type=int)
+        p.add_argument('-O', '--output-format-type',
+                       help="set output format type (wakati, none,...)",
+                       action="store", dest="output_format_type")
+        p.add_argument('-a', '--all-morphs',
+                       help="output all morphs (default false)",
+                       action="store_true", default=False)
+        p.add_argument('-N', '--nbest',
+                       help="output N best results (default 1)",
+                       action="store", dest='nbest', type=int)
+        p.add_argument('-p', '--partial',
+                       help="partial parsing mode (default false)",
+                       action="store_true", default=False)
+        p.add_argument('-m', '--marginal',
+                       help="output marginal probability (default false)",
+                       action="store_true", default=False)
+        p.add_argument('-M', '--max-grouping-size',
+                       help="maximum grouping size for unknown words" + \
+                            "(default 24)",
+                       action="store", dest='max_grouping_size', type=int)
+        p.add_argument('-F', '--node-format',
+                       help="use STR as the user-defined node format",
+                       action="store", dest="node_format")
+        p.add_argument('-U', '--unk-format',
+                       help="use STR as the user-defined unknown node format",
+                       action="store", dest="unk_format")
+        p.add_argument('-B', '--bos-format',
+                       help="use STR as the user-defined " + \
+                       "beginning-of-sentence format",
+                       action="store", dest="bos_format")
+        p.add_argument('-E', '--eos-format',
+                       help="use STR as the user-defined end-of-sentence " + \
+                            "format",
+                       action="store", dest="eos_format")
+        p.add_argument('-S', '--eon-format',
+                       help="use STR as the user-defined end-of-NBest format",
+                       action="store", dest="eon_format")
+        p.add_argument('-x', '--unk-feature',
+                       help="use STR as the feature for unknown word",
+                       action="store", dest="unk_feature")
+        p.add_argument('-b', '--input-buffer-size',
+                       help="set input buffer size (default 8192)",
+                       action="store", dest='input_buffer_size', type=int)
+        p.add_argument('-C', '--allocate-sentence',
+                       help="allocate new memory for input sentence",
+                       action="store_true", default=False)
+        p.add_argument('-t', '--theta',
+                       help="set temperature parameter theta (default 0.75)",
+                       action="store", dest='theta', type=float)
+        p.add_argument('-c', '--cost-factor',
+                       help="set cost factor (default 700)",
+                       action="store", dest='cost_factor', type=int)
+        
+        opts = p.parse_args(options.split())
+        nomme = _SUPPORTED_OPTS.itervalues()
+        for n in nomme:
+            if hasattr(opts, n):
+                v = getattr(opts, n)
+                if v:
+                    dopts[n] = v
+    elif type(options) is dict:                    
+        nomme = _SUPPORTED_OPTS.itervalues()
+        for n in nomme:
+            if options.has_key(n):
+                if options[n]:
+                    dopts[n] = options[n]
 
     # final checks
     if dopts.has_key('nbest') and (dopts['nbest'] < 1 or dopts['nbest'] > 512):

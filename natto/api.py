@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The mail API for using MeCab in Python via CFFI."""
+"""The main API for using MeCab via Python."""
 import os
 
 from .binding import _ffi_libmecab
@@ -44,8 +44,7 @@ LONG_DESC
     _ERROR_INIT = "Could not initialize MeCab with options: %s"
     _ERROR_EMPTY_STR = "String to parse cannot be None"
 
-    _REPR_FMT = '<natto.MeCab tagger="%s", ' + \
-                'options="%s", dicts=%s, version="%s">'
+    _REPR_FMT = '<%s.%s tagger="%s", options="%s", dicts=%s, version="%s">'
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
     _FN_NBEST_TONODE = 'mecab_nbest_init'
@@ -180,7 +179,7 @@ LONG_DESC
 
             nodes = []
             if nptr != self.ffi.NULL:
-                for c in range(count):
+                for _ in range(count):
                     while nptr != self.ffi.NULL:
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
@@ -200,7 +199,9 @@ LONG_DESC
 
     def __repr__(self):
         """Returns a string representation of this MeCab instance."""
-        return self._REPR_FMT % (self.tagger,
+        return self._REPR_FMT % (type(self).__module__,
+                                 type(self).__name__,
+                                 self.tagger,
                                  self.options,
                                  self.dicts,
                                  self.version)
@@ -257,8 +258,7 @@ class DictionaryInfo(object):
         print sysdic.is_sysdic()
     """
 
-    _REPR_FMT = '<natto.DictionaryInfo pointer=%s, ' + \
-                'type="%d", filename="%s". charset="%s">'
+    _REPR_FMT = '<%s.%s pointer=%s, type="%d", filename="%s". charset="%s">'
 
     # System dictionary
     SYS_DIC = 0
@@ -293,7 +293,9 @@ class DictionaryInfo(object):
 
     def __repr__(self):
         """Returns a string representation of this MeCab dictionary."""
-        return self._REPR_FMT % (self.dptr,
+        return self._REPR_FMT % (type(self).__module__,
+                                 type(self).__name__,
+                                 self.dptr,
                                  self.type,
                                  self.filename,
                                  self.charset)
@@ -343,8 +345,7 @@ class MeCabNode(object):
                 print "%s\t%s" % (n.surface, n.cost)
     """
 
-    _REPR_FMT = '<natto.MeCabNode pointer=%s, ' + \
-                'stat=%s, surface="%s", feature="%s">'
+    _REPR_FMT = '<%s.%s pointer=%s, stat=%s, surface="%s", feature="%s">'
 
     # Normal MeCab node defined in the dictionary.
     NOR_NODE = 0
@@ -405,7 +406,9 @@ class MeCabNode(object):
 
     def __repr__(self):
         """Returns a string representation of this MeCab node."""
-        return self._REPR_FMT % (self.nptr,
+        return self._REPR_FMT % (type(self).__module__,
+                                 type(self).__name__,
+                                 self.nptr,
                                  self.stat,
                                  self.surface,
                                  self.feature)
