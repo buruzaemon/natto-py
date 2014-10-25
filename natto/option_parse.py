@@ -4,7 +4,6 @@ from __future__ import print_function
 import argparse
 import sys
 
-
 # Mapping of mecab short-style configuration options to the `mecab`
 # tagger. See the `mecab` help for more details.
 _SUPPORTED_OPTS = {'-d' : 'dicdir',
@@ -26,11 +25,12 @@ _SUPPORTED_OPTS = {'-d' : 'dicdir',
                    '-C' : 'allocate_sentence',
                    '-t' : 'theta',
                    '-c' : 'cost_factor'}
+_NBEST_MAX = 512
 
 _WARN_LATTICE_LEVEL = "lattice-level is DEPRECATED, " + \
                       "please use marginal or nbest"
 
-def _parse_mecab_options(options={}):
+def _parse_mecab_options(options=None):
     """Parses the MeCab options, returning them in a dictionary.
 
     Lattice-level option has been deprecated; please use marginal or nbest
@@ -48,8 +48,9 @@ def _parse_mecab_options(options={}):
     Raises:
         MeCabError: An invalid value for N-best was passed in.
     """
+    options = options or {}
     dopts = {}
-    
+
     if type(options) is str:
         p = argparse.ArgumentParser()
         p.add_argument('-d', '--dicdir',
@@ -112,7 +113,7 @@ def _parse_mecab_options(options={}):
         p.add_argument('-c', '--cost-factor',
                        help="set cost factor (default 700)",
                        action="store", dest='cost_factor', type=int)
-        
+
         opts = p.parse_args(options.split())
         nomme = _SUPPORTED_OPTS.itervalues()
         for n in nomme:
@@ -120,7 +121,7 @@ def _parse_mecab_options(options={}):
                 v = getattr(opts, n)
                 if v:
                     dopts[n] = v
-    elif type(options) is dict:                    
+    elif type(options) is dict:
         nomme = _SUPPORTED_OPTS.itervalues()
         for n in nomme:
             if options.has_key(n):
@@ -128,7 +129,8 @@ def _parse_mecab_options(options={}):
                     dopts[n] = options[n]
 
     # final checks
-    if dopts.has_key('nbest') and (dopts['nbest'] < 1 or dopts['nbest'] > 512):
+    if dopts.has_key('nbest') and \
+       (dopts['nbest'] < 1 or dopts['nbest'] > _NBEST_MAX):
         raise ValueError("Invalid N value")
 
     # warning for lattice-level deprecation
@@ -162,7 +164,7 @@ def _build_options_str(options):
     return " ".join(opt)
 
 def _warning(*objs):
-    """Prints a warning message to STDERR
+    """Prints a warning message to STDERR.
 
     Args:
         objs: objects for printing to STDERR

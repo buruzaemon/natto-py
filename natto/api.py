@@ -14,7 +14,7 @@ class MeCab(object):
     detailed information about the morphemes encompassed.
 
     Example usage:
-LONG_DESC
+
         import natto
 
         nm = natto.MeCab()
@@ -233,7 +233,7 @@ class DictionaryInfo(object):
     MeCab. Each dictionary information includes the attributes listed below.
 
     Attributes:
-        dptr: This dictionary's pointer.
+        ptr: This dictionary's pointer.
         filename: Full path to the dictionary file.
         charset: Dictionary character set, e.g., "SHIFT-JIS", "UTF-8".
         size: Number of words registered in this dictionary.
@@ -269,7 +269,7 @@ class DictionaryInfo(object):
 
     def __init__(self, dptr, filename, charset):
         """Initializes the MeCab dictionary information."""
-        self.dptr = dptr
+        self.ptr = dptr
         self.filename = filename
         self.charset = charset
         self.size = dptr.size
@@ -295,7 +295,7 @@ class DictionaryInfo(object):
         """Returns a string representation of this MeCab dictionary."""
         return self._REPR_FMT % (type(self).__module__,
                                  type(self).__name__,
-                                 self.dptr,
+                                 self.ptr,
                                  self.type,
                                  self.filename,
                                  self.charset)
@@ -309,7 +309,7 @@ class MeCabNode(object):
     morpheme encompassed.
 
     Attributes:
-        nptr: This node's pointer.
+        ptr: This node's pointer.
         prev: Pointer to previous node.
         next: Pointer to next node.
         enext: Pointer to the node which ends at the same position.
@@ -333,7 +333,7 @@ class MeCabNode(object):
         wcost: Word cost.
         cost: Best accumulative cost from bos node to this node.
 
-    Example usage:nodeid
+    Example usage:
 
         import natto
 
@@ -360,7 +360,7 @@ class MeCabNode(object):
 
     def __init__(self, nptr, surface, feature):
         """Initializes the MeCab node and its attributes."""
-        self.nptr = nptr
+        self.ptr = nptr
         self.prev = nptr.prev
         self.next = nptr.next
         self.enext = nptr.enext
@@ -408,14 +408,14 @@ class MeCabNode(object):
         """Returns a string representation of this MeCab node."""
         return self._REPR_FMT % (type(self).__module__,
                                  type(self).__name__,
-                                 self.nptr,
+                                 self.ptr,
                                  self.stat,
                                  self.surface,
                                  self.feature)
 
 
 class MeCabError(Exception):
-    """MeCabError is a general error class for the Natto module."""
+    """MeCabError is a general error class for the natto-py package."""
 
 
 """
