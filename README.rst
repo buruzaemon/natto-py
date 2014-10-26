@@ -5,7 +5,8 @@ A Tasty Python Binding with MeCab
 
 What is natto-py?
 -----------------
-natto combines the Python_ programming language with MeCab_, the part-of-speech and morphological analyzer for the Japanese language.
+natto combines the Python_ programming language with MeCab_, the part-of-speech
+and morphological analyzer for the Japanese language.
 
 You can learn more about `natto-py at Bitbucket`_.
 
@@ -17,13 +18,22 @@ natto-py requires the following:
 - `cffi 0.8.6`_
 - `Python 2.7.8`_
 
+Installation
+------------
+Install natto-py with the following command::
+
+    pip install natto-py
+
+This will automatically install the `cffi` package, which natto-py uses to bind to the `mecab` library.
+
 Changelog
 ---------
-Please see the CHANGELOG_ for the release history.
+Please see the CHANGELOG for the release history.
 
 Copyright
 ---------
-Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the LICENSE_ file for further details. 
+Copyright |copy| 2014, Brooke M. Fujita. All rights reserved. Please see the
+LICENSE file for further details. 
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
@@ -31,5 +41,4 @@ Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the LIC
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
-.. _CHANGELOG: ./CHANGELOG
-.. _LICENSE: ./LICENSE
+.. |copy| unicode:: 0xA9 .. copyright sign
