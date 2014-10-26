@@ -29,7 +29,7 @@ bind to the ```mecab``` library.
 
 Configuration
 -------------
--  Set the `MECAB_PATH` environment variable to the exact name/path to your
+Set the `MECAB_PATH` environment variable to the exact name/path to your
 ```mecab``` library.
 
 e.g., for Mac OS X::
