@@ -259,7 +259,7 @@ class DictionaryInfo(object):
         print sysdic.is_sysdic()
     """
 
-    _REPR_FMT = '<%s.%s pointer=%s, type="%d", filename="%s". charset="%s">'
+    _REPR_FMT = '<%s.%s pointer=%s, type="%d", filename="%s", charset="%s">'
 
     # System dictionary
     SYS_DIC = 0
