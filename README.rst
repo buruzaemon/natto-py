@@ -59,8 +59,8 @@ Instantiate a reference to the ``mecab`` library, and display some details::
     >>> import natto
 
     >>> nm = natto.MeCab()
-
     >>> print nm
+
     <natto.api.MeCab 
      tagger="<cdata 'mecab_t *' 0x000000000037AB40>", 
      options="{}", 
@@ -75,31 +75,35 @@ Display details about the ``mecab`` system dictionary used::
 
     >>> sysdic = nm.dicts[0]
 
-    >>> print sysdic
+    >>> print sysdic  
+ 
     <natto.api.DictionaryInfo 
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
      type="0", 
      filename="/usr/local/lib/mecab/dic/ipadic/sys.dic", 
      charset="utf8">
 
+    >>> print sysdic.is_sysdic()
+    True
+
 Parse Japanese text using MeCab node parsing::
 
     >>> nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
 
     >>> for n in nodes:
-    ...   print "%s\t%s" % (n.surface, n.feature)
+    ...     print "%s\t%s" % (n.surface, n.feature)
     ... 
     ピンチ	名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
-    の	助詞,連体化,*,*,*,*,の,ノ,ノ
+    の		助詞,連体化,*,*,*,*,の,ノ,ノ
     時	名詞,非自立,副詞可能,*,*,*,時,トキ,トキ
-    に	助詞,格助詞,一般,*,*,*,に,ニ,ニ
-    は	助詞,係助詞,*,*,*,*,は,ハ,ワ
+    に		助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    は		助詞,係助詞,*,*,*,*,は,ハ,ワ
     必ず	副詞,助詞類接続,*,*,*,*,必ず,カナラズ,カナラズ
     ヒーロー	名詞,一般,*,*,*,*,ヒーロー,ヒーロー,ヒーロー
-    が	助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    が		助詞,格助詞,一般,*,*,*,が,ガ,ガ
     現れる	動詞,自立,*,*,一段,基本形,現れる,アラワレル,アラワレル
-    。	記号,句点,*,*,*,*,。,。,。
-    	BOS/EOS,*,*,*,*,*,*,*,*
+    。		記号,句点,*,*,*,*,。,。,。
+    		BOS/EOS,*,*,*,*,*,*,*,*
 
 
 Changelog
