@@ -43,7 +43,7 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
 
-    keywords='mecab japanese morphological analyzer nlp 形態素解析',
+    keywords='mecab japanese morphological analyzer nlp 形態素解析 自然言語処理',
 
     packages=['natto'],
 
