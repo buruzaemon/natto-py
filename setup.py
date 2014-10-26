@@ -3,7 +3,7 @@ from setuptools import setup
 import codecs
 from os import path
 
-with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.md'),
+with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
                  encoding='utf-8') as f:
     LONG_DESC = f.read()
 
