@@ -135,7 +135,7 @@ Contributing to natto-py
 - Commit and push until you are happy with your contribution.
 - Make sure to add tests for it. This is important so I don't break it in a 
   future version unintentionally. I use unittest_ as it is very natural
- and easy-to-use.
+  and easy-to-use.
 - Please try not to mess with the ``setup.py``, ``CHANGELOG``, or version 
   files. If you must have your own version, that is fine, but please isolate 
   to its own commit so I can cherry-pick around it.
