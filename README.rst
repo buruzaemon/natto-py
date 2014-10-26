@@ -1,8 +1,6 @@
 natto-py
 ========
 
-A Tasty Python Binding with MeCab
-
 What is natto-py?
 -----------------
 natto combines the Python_ programming language with MeCab_, the part-of-speech
