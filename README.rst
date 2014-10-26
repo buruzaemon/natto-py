@@ -24,13 +24,13 @@ Install natto-py with the following command::
 
     pip install natto-py
 
-This will automatically install the ```cffi``` package, which natto-py uses to
-bind to the ```mecab``` library.
+This will automatically install the ``cffi`` package, which natto-py uses to
+bind to the ``mecab`` library.
 
 Configuration
 -------------
-Set the `MECAB_PATH` environment variable to the exact name/path to your
-```mecab``` library.
+Set the ``MECAB_PATH`` environment variable to the exact name/path to your
+``mecab`` library.
 
 e.g., for Mac OS X::
 
