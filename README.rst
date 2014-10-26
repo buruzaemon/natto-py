@@ -31,5 +31,5 @@ Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the LIC
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
-.._CHANGELOG: ./CHANGELOG
-.._LICENSE: ./LICENSE
+.. _CHANGELOG: ./CHANGELOG
+.. _LICENSE: ./LICENSE
