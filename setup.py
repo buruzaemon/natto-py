@@ -10,7 +10,7 @@ with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
 setup(
     name='natto-py',
 
-    version='0.0.1',
+    version='0.0.2',
 
     description='A Tasty Python Binding with MeCab',
     long_description=LONG_DESC,
