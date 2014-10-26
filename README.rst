@@ -99,7 +99,7 @@ Parse Japanese text as a string, outputting to ``stdout``::
     。      記号,句点,*,*,*,*,。,。,。
     EOS
 
-Parse Japanese text using MeCab node parsing, using the more detailed
+Parse Japanese text with MeCab node parsing, using the more detailed
 information related to each morphem::
 
     >>> nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
@@ -109,7 +109,7 @@ information related to each morphem::
     ...         print "%s\t%s" % (n.surface, n.posid)
     ... 
     ピンチ    38
-    の	      24
+    の      24
     時      66
     に      13
     は      16
