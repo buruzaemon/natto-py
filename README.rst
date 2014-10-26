@@ -19,11 +19,11 @@ natto-py requires the following:
 
 Changelog
 ---------
-Please see the {file:CHANGELOG} for the release history.
+Please see the CHANGELOG_ for the release history.
 
 Copyright
 ---------
-Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the {file:LICENSE} file for further details. 
+Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the LICENSE_ file for further details. 
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
@@ -31,3 +31,5 @@ Copyright &copy; 2014, Brooke M. Fujita. All rights reserved. Please see the {fi
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
+.._CHANGELOG: ./CHANGELOG
+.._LICENSE: ./LICENSE
