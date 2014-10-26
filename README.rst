@@ -99,8 +99,8 @@ Parse Japanese text as a string, outputting to ``stdout``::
     。      記号,句点,*,*,*,*,。,。,。
     EOS
 
-Parse Japanese text with MeCab node parsing, using the more detailed
-information related to each morphem::
+Next, try parsing the text with MeCab node parsing, using the more detailed
+information related to each morpheme::
 
     >>> nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
 
@@ -120,9 +120,29 @@ information related to each morphem::
     。       7
 
 
+Learn More
+----------
+You can read more about natto-py on the `project Wiki`_.
+
+Contributing to natto-py
+------------------------
+- Use mercurial_ and `check out the latest code at Bitbucket`_ to make sure the 
+  feature hasn't been implemented or the bug hasn't been fixed yet.
+- `Browse the issue tracker`_ to make sure someone already hasn't requested it 
+  and/or contributed it.
+- Fork the project.
+- Start a feature/bugfix branch.
+- Commit and push until you are happy with your contribution.
+- Make sure to add tests for it. This is important so I don't break it in a 
+  future version unintentionally. I use unittest_ as it is very natural
+ and easy-to-use.
+- Please try not to mess with the ``setup.py``, ``CHANGELOG``, or version 
+  files. If you must have your own version, that is fine, but please isolate 
+  to its own commit so I can cherry-pick around it.
+
 Changelog
 ---------
-Please see the CHANGELOG for the release history.
+Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
@@ -135,4 +155,9 @@ LICENSE file for further details.
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
+.. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
+.. _mercurial: http://mercurial.selenic.com/
+.. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
+.. _Browse the issue tracker: https://bitbucket.org/buruzaemon/natto-py/issues?status=new&status=open
+.. _unittest: http://pythontesting.net/framework/unittest/unittest-introduction/
 .. |copy| unicode:: 0xA9 .. copyright sign
