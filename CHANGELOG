@@ -1,5 +1,13 @@
-## CHANGELOG
+CHANGELOG
+---------
 
-- __2014/10/24__: Project inception, initial archiving on Bitbucket.
+- 2014/10/31: 0.0.3 release.
+    - adding documentation
+    - cosmetic changes?
+
+- 2014/10/26: 0.0.2 release.
+    - work in progress
+
+- 2014/10/24: Project inception, initial archiving on Bitbucket.
     - Initial archiving 
     - natto-py is to provide an easy-to-use Python binding with MeCab
