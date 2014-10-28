@@ -350,7 +350,7 @@ class MeCabNode(object):
 
     # Normal MeCab node defined in the dictionary.
     NOR_NODE = 0
-     # Unknown MeCab node not defined in the dictionary.
+    # Unknown MeCab node not defined in the dictionary.
     UNK_NODE = 1
     # Virtual node representing the beginning of the sentence.
     BOS_NODE = 2
