@@ -9,13 +9,16 @@ import natto.api as api
 
 class TestApi(unittest.TestCase):
 
+    def setUp(self):
+        self.nm = api.MeCab()
+
     def test_init_unknownoption(self):
         # SystemExit and message on stderr if unrecognized option passed in
         orig_err = sys.stderr
         try:
             tmp_err = StringIO()
             sys.stderr = tmp_err
-            
+
             with self.assertRaises(SystemExit) as cm:
                     api.MeCab('--unknown')
 
@@ -24,7 +27,7 @@ class TestApi(unittest.TestCase):
                                            tmp_err.getvalue().strip()))
         finally:
             sys.stderr = orig_err
-            
+
     def test_init_libunset(self):
         # load error when MeCab lib is not found
         try:
@@ -38,3 +41,25 @@ class TestApi(unittest.TestCase):
                                            str(cm.exception)))
         finally:
             os.environ[api.MeCab.MECAB_PATH] = orig_env
+
+    def test_version(self):
+        self.assertEquals(self.nm.version, '0.996')
+
+    def test_sysdic(self):
+        sysdic = self.nm.dicts[0]
+
+        self.assertIn(sysdic.charset.lower(), ['utf-16',
+                                               'utf-8',
+                                               'shift-jis',
+                                               'euc-jp'])
+        self.assertRegexpMatches(sysdic.filename, 'sys.dic$')
+        self.assertEquals(sysdic.type, 0)
+        self.assertEquals(sysdic.version, 102)
+
+    def test_parse(self):
+        sysdic = self.nm.dicts[0]
+        enc = sysdic.charset
+        utxt = '日本語だよ、これが。'.decode('utf-8')
+        jtxt = utxt.encode(enc)
+
+        self.nm.parse(jtxt)
