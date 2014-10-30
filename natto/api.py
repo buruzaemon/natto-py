@@ -42,7 +42,8 @@ class MeCab(object):
 
     _ERROR_PATH_UNSET = "Please set %s to the full path to MeCab library"
     _ERROR_INIT = "Could not initialize MeCab with options: %s"
-    _ERROR_EMPTY_STR = "String to parse cannot be None"
+    _ERROR_EMPTY_STR = "Text to parse cannot be None"
+    _ERROR_NOTUNICODE = "Text should be Unicode string"
 
     _REPR_FMT = '<%s.%s tagger="%s", options="%s", dicts=%s, version="%s">'
 
@@ -126,11 +127,25 @@ class MeCab(object):
                                              self.ffi.string(dptr.charset)))
             dptr = dptr.next
 
+        # What is MeCab's internal character encoding?
+        self.__enc = self.dicts[0].charset
+
         # Set MeCab version string
         self.version = self.ffi.string(self.mecab.mecab_version())
 
+    def __decode(self, bstr):
+        """Returns Unicode representation of byte string returned by MeCab.
+
+        Args:
+            bstr: byte string of result returned by MeCab.
+
+        Returns:
+            Unicode representation of the MeCab result string.
+        """
+        return self.ffi.string(bstr).decode(self.__enc)
+
     def __build_parse_tostr(self, fn_name):
-        """Builds and returns the MeCab function for parsing as strings.
+        """Builds and returns the MeCab function for parsing Unicode text.
 
         Args:
             fn_name: MeCab function name that determines the function
@@ -138,11 +153,12 @@ class MeCab(object):
                 'mecab_nbest_sparse_tostr'.
 
         Returns:
-            A function definition, tailored to parsing as a string, using
-            either the default or N-best behavior.
+            A function definition, tailored to parsing Unicode text and
+            returning the result as a string suitable for display on stdout,
+            using either the default or N-best behavior.
         """
         def _fn(text):
-            """Parse text and return MeCab result as a string."""
+            """Parse Unicode text and return MeCab result as string."""
             args = [self.tagger]
             if fn_name == self._FN_NBEST_TOSTR:
                 args.append(self.options['nbest'])
@@ -150,7 +166,7 @@ class MeCab(object):
 
             res = getattr(self.mecab, fn_name)(*args)
             if res != self.ffi.NULL:
-                return self.ffi.string(res)
+                return self.__decode(res)
             else:
                 raise MeCabError(self.mecab.mecab_strerror((self.tagger)))
         return _fn
@@ -167,7 +183,7 @@ class MeCab(object):
             the default or N-best behavior.
         """
         def _fn(text):
-            """Parse text and return MeCab result as a node."""
+            """Parse Unicode text and return MeCab result as a node."""
             if fn_name == self._FN_NBEST_TONODE:
                 # N-best node parsing
                 getattr(self.mecab, fn_name)(self.tagger, text)
@@ -184,10 +200,9 @@ class MeCab(object):
                     while nptr != self.ffi.NULL:
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
-                            surf = nptr.surface[0:nptr.length]
-                            mnode = MeCabNode(nptr,
-                                              self.ffi.string(surf),
-                                              self.ffi.string(nptr.feature))
+                            surf = self.__decode(nptr.surface[0:nptr.length])
+                            feat = self.__decode(nptr.feature)
+                            mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
                         nptr = nptr.next
 
@@ -208,23 +223,29 @@ class MeCab(object):
                                  self.version)
 
     def parse(self, text, as_nodes=False):
-        """Parses the given text.
+        """Parses the given Unicode text.
 
         Args:
-            text: the text to parse.
+            text: the Unicode text to parse.
             as_nodes: flag indicating whether to parse as nodes or strings;
                 defaults to False (string parsing).
 
         Raises:
             MeCabError: a null argument was passed in;
+                        if text passed in is not Unicode;
                         or an unforseen error occurred during the operation.
         """
         if str is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
-        if as_nodes:
-            return self.__parse_tonodes(text)
+        elif isinstance(text, bytes):
+            raise MeCabError(self._ERROR_NOTUNICODE)
         else:
-            return self.__parse_tostr(text)
+            bstr = text.encode(self.__enc)
+
+        if as_nodes:
+            return self.__parse_tonodes(bstr)
+        else:
+            return self.__parse_tostr(bstr)
 
 
 class DictionaryInfo(object):
@@ -317,11 +338,11 @@ class MeCabNode(object):
         bnext: Pointer to the node which starts at the same position.
         rpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
         lpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
-        surface: Surface string; length may be obtained with length/rlength.
-        feature: Feature string.
+        surface: Surface string, Unicode.
+        feature: Feature string, Unicode.
         nodeid: Unique node id.
         length: Length of surface form.
-        rlength: Length of the surface form including preceding white space.
+        rlength: Length of the surface form including leading white space.
         rcattr: Right attribute id.
         lcattr: Left attribute id.
         posid: Part-of-speech id.
