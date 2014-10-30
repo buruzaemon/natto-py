@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 """MeCab option parser for natto-py."""
-from __future__ import print_function
 import argparse
 import sys
 
@@ -109,7 +108,7 @@ def _parse_mecab_options(options=None):
                        action="store", dest='input_buffer_size', type=int)
         p.add_argument('-C', '--allocate-sentence',
                        help="allocate new memory for input sentence",
-                       action="store_true", dest="allocate_sentence", 
+                       action="store_true", dest="allocate_sentence",
                        default=False)
         p.add_argument('-t', '--theta',
                        help="set temperature parameter theta (default 0.75)",
@@ -119,27 +118,25 @@ def _parse_mecab_options(options=None):
                        action="store", dest='cost_factor', type=int)
 
         opts = p.parse_args(options.split())
-        nomme = _SUPPORTED_OPTS.itervalues()
-        for n in nomme:
-            if hasattr(opts, n):
-                v = getattr(opts, n)
+        for name in iter(list(_SUPPORTED_OPTS.values())):
+            if hasattr(opts, name):
+                v = getattr(opts, name)
                 if v:
-                    dopts[n] = v
+                    dopts[name] = v
     elif type(options) is dict:
-        nomme = _SUPPORTED_OPTS.itervalues()
-        for n in nomme:
-            if options.has_key(n):
-                if options[n]:
-                    dopts[n] = options[n]
+        for name in iter(list(_SUPPORTED_OPTS.values())):
+            if name in options:
+                if options[name]:
+                    dopts[name] = options[name]
 
     # final checks
-    if dopts.has_key('nbest') and \
-       (dopts['nbest'] < 1 or dopts['nbest'] > _NBEST_MAX):
+    if 'nbest' in dopts \
+        and (dopts['nbest'] < 1 or dopts['nbest'] > _NBEST_MAX):
         raise ValueError("Invalid N value")
 
     # warning for lattice-level deprecation
-    if dopts.has_key('lattice_level'):
-        _warning(_WARN_LATTICE_LEVEL)
+    if 'lattice_level' in dopts:
+        sys.stderr.write("WARNING: %s\n" % _WARN_LATTICE_LEVEL)
 
     return dopts
 
@@ -154,26 +151,16 @@ def _build_options_str(options):
         A string concatenation of the options used when instantiating the
         MeCab instance, in long-form.
     """
-
     opt = []
-    nomme = _SUPPORTED_OPTS.itervalues()
-    for n in nomme:
-        if options.has_key(n):
-            key = n.replace("_", "-")
+    for name in iter(list(_SUPPORTED_OPTS.values())):
+        if name in options:
+            key = name.replace("_", "-")
             if key in _BOOLEAN_OPTIONS:
-                if options[n]:
+                if options[name]:
                     opt.append("--%s" % key)
             else:
-                opt.append("--%s=%s" % (key, options[n]))
+                opt.append("--%s=%s" % (key, options[name]))
     return " ".join(opt)
-
-def _warning(*objs):
-    """Prints a warning message to STDERR.
-
-    Args:
-        objs: objects for printing to STDERR
-    """
-    print("WARNING: ", *objs, file=sys.stderr)
 
 
 """
