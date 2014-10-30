@@ -2,7 +2,7 @@
 import os
 import re
 import sys
-from StringIO import StringIO
+from io import StringIO
 import unittest
 
 import natto.api as api

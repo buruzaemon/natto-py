@@ -78,10 +78,10 @@ class MeCab(object):
         try:
             self.mecab = self.ffi.dlopen(lib_path)
         except OSError as oserr:
-            raise MeCabError(oserr.message)
+            raise MeCabError(oserr)
 
         # Set up tagger pointer
-        self.tagger = self.mecab.mecab_new2(_build_options_str(self.options))
+        self.tagger = self.mecab.mecab_new2(_build_options_str(self.options).encode('SHIFT-JIS'))
         if self.tagger == self.ffi.NULL:
             raise MeCabError(self._ERROR_INIT % self.options)
 
