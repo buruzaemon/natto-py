@@ -86,23 +86,23 @@ class MeCab(object):
             raise MeCabError(self._ERROR_INIT % self.options)
 
         # Set add'l MeCab options on the tagger as needed
-        if self.options.has_key('partial'):
+        if 'partial' in self.options:
             self.mecab.mecab_set_partial(self.tagger,
                                          self.options['partial'])
-        if self.options.has_key('theta'):
+        if 'theta' in self.options:
             self.mecab.mecab_set_theta(self.tagger, self.options['theta'])
-        if self.options.has_key('lattice_level'):
+        if 'lattice_level' in self.options:
             self.mecab.mecab_set_lattice_level(self.tagger,
                                                self.options['lattice_level'])
-        if self.options.has_key('all_morphs'):
+        if 'all_morphs' in self.options:
             self.mecab.mecab_set_all_morphs(self.tagger,
                                             self.options['all_morphs'])
 
         # Set parsing routines for both parsing as strings and nodes
         # for both N-best and non-N-best
-        if self.options.has_key('nbest') and self.options['nbest'] > 1:
+        if 'nbest' in self.options and self.options['nbest'] > 1:
             # N-best parsing requires lattice-level to be set
-            if self.options.has_key('lattice_level'):
+            if 'lattice_level' in self.options:
                 lat = self.options['lattice_level']
             else:
                 lat = 1
@@ -125,7 +125,7 @@ class MeCab(object):
             self.dicts.append(DictionaryInfo(dptr,
                                              self.ffi.string(dptr.filename),
                                              self.ffi.string(dptr.charset)))
-            dptr = dptr.next
+            dptr = getattr(dptr, 'next')
 
         # What is MeCab's internal character encoding?
         self.__enc = self.dicts[0].charset
@@ -166,7 +166,7 @@ class MeCab(object):
 
             res = getattr(self.mecab, fn_name)(*args)
             if res != self.ffi.NULL:
-                return self.__decode(res)
+                return self.__decode(res).strip()
             else:
                 raise MeCabError(self.mecab.mecab_strerror((self.tagger)))
         return _fn
@@ -204,7 +204,7 @@ class MeCab(object):
                             feat = self.__decode(nptr.feature)
                             mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
-                        nptr = nptr.next
+                        nptr = getattr(nptr, 'next')
 
                     if fn_name == self._FN_NBEST_TONODE:
                         nptr = self.mecab.mecab_nbest_next_tonode(self.tagger)
@@ -299,7 +299,7 @@ class DictionaryInfo(object):
         self.lsize = dptr.lsize
         self.rsize = dptr.rsize
         self.version = dptr.version
-        self.next = dptr.next
+        self.next = getattr(dptr, 'next')
 
     def is_sysdic(self):
         """Returns True if this is a system dictionary."""
@@ -384,7 +384,7 @@ class MeCabNode(object):
         """Initializes the MeCab node and its attributes."""
         self.ptr = nptr
         self.prev = nptr.prev
-        self.next = nptr.next
+        self.next = getattr(nptr, 'next')
         self.enext = nptr.enext
         self.bnext = nptr.bnext
         self.rpath = nptr.rpath

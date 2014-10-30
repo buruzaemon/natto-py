@@ -20,7 +20,7 @@ class TestApi(unittest.TestCase):
             sys.stderr = tmp_err
 
             with self.assertRaises(SystemExit) as cm:
-                    api.MeCab('--unknown')
+                api.MeCab('--unknown')
 
             self.assertEqual(cm.exception.code, 2)
             self.assertIsNotNone(re.search('unrecognized arguments: --unknown',
@@ -57,9 +57,10 @@ class TestApi(unittest.TestCase):
         self.assertEquals(sysdic.version, 102)
 
     def test_parse(self):
-        sysdic = self.nm.dicts[0]
-        enc = sysdic.charset
-        utxt = '日本語だよ、これが。'.decode('utf-8')
-        jtxt = utxt.encode(enc)
-
-        self.nm.parse(jtxt)
+        morphs = ['日本語', 'だ', 'よ', '、', 'これ', 'が', '。', 'EOS']
+        utxt = "".join(morphs).decode('utf-8')
+        res = self.nm.parse(utxt)
+        lines = res.split("\n")
+        for i, l in enumerate(lines[0:-1]):
+            self.assertRegexpMatches(l, morphs[i].decode('utf-8'))
+        self.assertRegexpMatches(lines[-1], morphs[-1].decode('utf-8'))
