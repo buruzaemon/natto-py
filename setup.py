@@ -10,9 +10,10 @@ with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
 setup(
     name='natto-py',
 
-    version='0.0.2',
+    version='0.0.3',
 
-    description='A Tasty Python Binding with MeCab',
+    description=' '.join(['A Tasty Python Binding with MeCab',
+                          '(FFI-based, no SWIG or compilers necessary)']),
     long_description=LONG_DESC,
 
     url='https://bitbucket.org/buruzaemon/natto-py',
@@ -43,13 +44,18 @@ setup(
         'Programming Language :: Python :: 2.7',
     ],
 
-    keywords='mecab japanese morphological analyzer nlp 形態素解析 自然言語処理',
+    keywords=' '.join(['mecab',
+                       '和布蕪',
+                       'japanese morphological analyzer',
+                       'nlp',
+                       '形態素解析',
+                       '自然言語処理']),
 
     packages=['natto'],
 
     install_requires=['cffi'],
 
     zip_safe=False,
-    
+
     test_suite="tests"
 )
