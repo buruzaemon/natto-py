@@ -2,6 +2,11 @@
 from setuptools import setup
 import codecs
 from os import path
+import sys
+
+extra = {}
+if sys.version_info >= (3,):
+    extra['use_2to3'] = True
 
 with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
                  encoding='utf-8') as f:
@@ -57,5 +62,8 @@ setup(
 
     zip_safe=False,
 
-    test_suite="tests"
+    test_suite="tests.test_suite",
+    
+    use_2to3=True
+    
 )
