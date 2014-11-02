@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
-from .api import MeCabError
 from subprocess import Popen, PIPE
 
 class MeCabEnv(object):
@@ -73,11 +72,11 @@ class MeCabEnv(object):
                             ldir = t[0].split('etc')[0][10:].strip()
                             libp = os.path.join(ldir, 'bin', lib)
                         else:
-                            raise MeCabError("mecab -D could not be used to locate %s" % lib)
+                            raise StandardError("mecab -D could not be used to locate %s" % lib)
                     else:
-                        raise MeCabError("Error invoking mecab")
+                        raise StandardError("Error invoking mecab")
                 except:
-                    raise MeCabError(self._ERROR_NOLIB % lib)
+                    raise StandardError(self._ERROR_NOLIB % lib)
             else:
                 # UNIX-y OS?
                 if plat == 'darwin':
@@ -92,11 +91,12 @@ class MeCabEnv(object):
                         linfo = res[0].strip()
                         libp = os.path.join(linfo, lib)
                     else:
-                        raise MeCabError("mecab-config could not locate %s" % lib)
+                        raise StandardError("mecab-config could not locate %s" % lib)
                 except:
-                    raise MeCabError(self._ERROR_NOLIB % lib)
+                    raise StandardError(self._ERROR_NOLIB % lib)
 
             if libp and os.path.exists(libp):
                 os.environ[self.MECAB_PATH] = libp
+                return libp
             else:
-                raise MeCabError(self._ERROR_NOLIB % libp)
+                raise StandardError(self._ERROR_NOLIB % libp)
