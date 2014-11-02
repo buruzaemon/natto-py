@@ -7,6 +7,21 @@ import unittest
 
 import natto.api as api
 
+import codecs
+#import sys
+
+if sys.version < '3':
+    def _u(s):
+        return codecs.unicode_escape_decode(s)[0]
+    def _b(x, enc):
+        return x.encode(enc)
+else:
+    def _u(x):
+        return x
+    def _b(x, enc):
+        return codecs.encode(x, enc)
+
+
 class TestApi(unittest.TestCase):
 
     def setUp(self):
@@ -19,12 +34,11 @@ class TestApi(unittest.TestCase):
             tmp_err = StringIO()
             sys.stderr = tmp_err
 
-            with self.assertRaises(SystemExit) as cm:
+            with self.assertRaises(api.MeCabError):
                 api.MeCab('--unknown')
 
-            self.assertEqual(cm.exception.code, 2)
-            self.assertIsNotNone(re.search('unrecognized arguments: --unknown',
-                                           tmp_err.getvalue().strip()))
+            self.assertIsNotNone(re.search('--unknown',
+                                 tmp_err.getvalue().strip()))
         finally:
             sys.stderr = orig_err
 
@@ -43,7 +57,7 @@ class TestApi(unittest.TestCase):
             os.environ[api.MeCab.MECAB_PATH] = orig_env
 
     def test_version(self):
-        self.assertEquals(self.nm.version, '0.996')
+        self.assertEqual(self.nm.version, '0.996')
 
     def test_sysdic(self):
         sysdic = self.nm.dicts[0]
@@ -53,14 +67,18 @@ class TestApi(unittest.TestCase):
                                                'shift-jis',
                                                'euc-jp'])
         self.assertRegexpMatches(sysdic.filename, 'sys.dic$')
-        self.assertEquals(sysdic.type, 0)
-        self.assertEquals(sysdic.version, 102)
+        self.assertEqual(sysdic.type, 0)
+        self.assertEqual(sysdic.version, 102)
 
     def test_parse(self):
         morphs = ['日本語', 'だ', 'よ', '、', 'これ', 'が', '。', 'EOS']
-        utxt = "".join(morphs).decode('utf-8')
+        utxt = "".join(morphs[0:-1]).decode('utf-8')
         res = self.nm.parse(utxt)
+        
         lines = res.split("\n")
-        for i, l in enumerate(lines[0:-1]):
-            self.assertRegexpMatches(l, morphs[i].decode('utf-8'))
-        self.assertRegexpMatches(lines[-1], morphs[-1].decode('utf-8'))
+        for i, l in enumerate(lines):
+            print(l)
+            print(morphs[i].decode('utf-8'))
+            print
+            self.assertIsNotNone(re.search(morphs[i].decode('utf-8'), l))
+            

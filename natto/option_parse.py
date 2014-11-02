@@ -2,6 +2,7 @@
 """MeCab option parser for natto-py."""
 import argparse
 import sys
+from .py3support import _b, _u
 
 # Mapping of mecab short-style configuration options to the `mecab`
 # tagger. See the `mecab` help for more details.
@@ -32,6 +33,18 @@ _NBEST_MAX = 512
 _WARN_LATTICE_LEVEL = "lattice-level is DEPRECATED, " + \
                       "please use marginal or nbest"
 
+class MeCabArgumentParser(argparse.ArgumentParser):
+    def error(self, message):
+        """error(message: string)
+    
+        Prints a usage message incorporating the message to stderr and
+        raises ValueError.
+        """
+        #sys.stderr.write("USAGE: %s\n" % _str2unicode(message))        
+        sys.stderr.write("USAGE: %s\n" % _u(message, 'SHIFT-JIS'))        
+        raise ValueError(message)
+        
+
 def _parse_mecab_options(options=None):
     """Parses the MeCab options, returning them in a dictionary.
 
@@ -53,8 +66,15 @@ def _parse_mecab_options(options=None):
     options = options or {}
     dopts = {}
 
+    print '... 0'
+    print options
+    print(type(options))
+    print
+
     if type(options) is str:
-        p = argparse.ArgumentParser()
+        options = options.encode('shift-jis')
+        #p = argparse.ArgumentParser()
+        p = MeCabArgumentParser()
         p.add_argument('-d', '--dicdir',
                        help="set DIR as a system dicdir",
                        action="store", dest="dicdir")
@@ -118,6 +138,9 @@ def _parse_mecab_options(options=None):
                        action="store", dest='cost_factor', type=int)
 
         opts = p.parse_args(options.split())
+        print '... ?'
+        print opts
+        print
         for name in iter(list(_SUPPORTED_OPTS.values())):
             if hasattr(opts, name):
                 v = getattr(opts, name)
@@ -138,6 +161,8 @@ def _parse_mecab_options(options=None):
     if 'lattice_level' in dopts:
         sys.stderr.write("WARNING: %s\n" % _WARN_LATTICE_LEVEL)
 
+    print '   dopts?'
+    print dopts
     return dopts
 
 def _build_options_str(options):
@@ -151,17 +176,21 @@ def _build_options_str(options):
         A string concatenation of the options used when instantiating the
         MeCab instance, in long-form.
     """
-    opt = []
+    opts = []
     for name in iter(list(_SUPPORTED_OPTS.values())):
         if name in options:
             key = name.replace("_", "-")
             if key in _BOOLEAN_OPTIONS:
                 if options[name]:
-                    opt.append("--%s" % key)
+                    opts.append("--%s" % key)
             else:
-                opt.append("--%s=%s" % (key, options[name]))
-    return " ".join(opt)
-
+                opts.append("--%s=%s" % (key, options[name]))
+    t = " ".join(opts)
+    print '... 2'
+    print t
+    print type(t)
+    print            
+    return " ".join(opts)
 
 """
 Copyright (c) 2014, Brooke M. Fujita.
