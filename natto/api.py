@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 """The main API for using MeCab via Python."""
 import os
-
 from .binding import _ffi_libmecab
+from .environment import MeCabEnv
 from .option_parse import _parse_mecab_options, _build_options_str
+from .py3support import _b, _u
 
 class MeCab(object):
     """The main interface to the MeCab library, wrapping the MeCab Tagger.
@@ -39,9 +40,11 @@ class MeCab(object):
     """
 
     MECAB_PATH = 'MECAB_PATH'
+    MECAB_CHARSET = 'MECAB_CHARSET'
 
     _ERROR_PATH_UNSET = "Please set %s to the full path to MeCab library"
-    _ERROR_INIT = "Could not initialize MeCab with options: %s"
+    _ERROR_INIT = "Could not initialize MeCab: %s"
+    _ERROR_NULLPTR = "Could not initialize MeCab"
     _ERROR_EMPTY_STR = "Text to parse cannot be None"
     _ERROR_NOTUNICODE = "Text should be Unicode string"
 
@@ -64,26 +67,25 @@ class MeCab(object):
             MeCabError: An error occurred in locating the MeCab library;
                         or the FFI handle to MeCab could not be created.
         """
-
-        # Check to see if MECAB_PATH has been set
-        lib_path = os.getenv(self.MECAB_PATH)
-        if lib_path is None:
-            raise MeCabError(self._ERROR_PATH_UNSET % self.MECAB_PATH)
-
-        # Instantiate ffi handle
-        self.ffi = _ffi_libmecab()
-        self.options = _parse_mecab_options(options)
-
-        # Set up mecab pointer
         try:
-            self.mecab = self.ffi.dlopen(lib_path)
+            env = MeCabEnv()         
+           
+            # Instantiate ffi handle
+            self.ffi = _ffi_libmecab()
+            self.options = _parse_mecab_options(_b(options, enc))
+            # Set up mecab pointer
+            self.mecab = self.ffi.dlopen(lib_path)            
+            # Set up tagger pointer
+            ostr = _build_options_str(self.options)
+            self.tagger = self.mecab.mecab_new2(_b(ostr, enc))
+
+            if self.tagger == self.ffi.NULL:
+                raise MeCabError(self._ERROR_NULLPTR)
         except OSError as oserr:
             raise MeCabError(oserr)
-
-        # Set up tagger pointer
-        self.tagger = self.mecab.mecab_new2(_build_options_str(self.options).encode('SHIFT-JIS'))
-        if self.tagger == self.ffi.NULL:
-            raise MeCabError(self._ERROR_INIT % self.options)
+        except ValueError as verr:
+            print(type(verr))
+            raise MeCabError(self._ERROR_INIT % verr.message) 
 
         # Set add'l MeCab options on the tagger as needed
         if 'partial' in self.options:
@@ -131,7 +133,9 @@ class MeCab(object):
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.ffi.string(self.mecab.mecab_version())
+        self.version = self.__decode(self.mecab.mecab_version())
+
+    
 
     def __decode(self, bstr):
         """Returns Unicode representation of byte string returned by MeCab.
@@ -142,7 +146,7 @@ class MeCab(object):
         Returns:
             Unicode representation of the MeCab result string.
         """
-        return self.ffi.string(bstr).decode(self.__enc)
+        return _u(self.ffi.string(bstr), self.__enc)
 
     def __build_parse_tostr(self, fn_name):
         """Builds and returns the MeCab function for parsing Unicode text.

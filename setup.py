@@ -18,7 +18,7 @@ setup(
     version='0.0.3',
 
     description=' '.join(['A Tasty Python Binding with MeCab',
-                          '(FFI-based, no SWIG or compilers necessary)']),
+                          '(FFI-based, no SWIG or compiler necessary)']),
     long_description=LONG_DESC,
 
     url='https://bitbucket.org/buruzaemon/natto-py',
@@ -44,9 +44,10 @@ setup(
 
         'License :: OSI Approved :: BSD License',
 
-        # Specify the Python versions you support here. In particular, ensure
-        # that you indicate whether you support Python 2, Python 3 or both.
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
     ],
 
     keywords=' '.join(['mecab',
@@ -56,7 +57,7 @@ setup(
                        '形態素解析',
                        '自然言語処理']),
 
-    packages=['natto'],
+    packages=['natto', 'tests' ],
 
     install_requires=['cffi'],
 
