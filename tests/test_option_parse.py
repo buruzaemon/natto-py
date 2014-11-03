@@ -2,54 +2,64 @@
 """Test for natto.option_parse."""
 import re
 import sys
-from StringIO import StringIO
 import unittest
-
+from StringIO import StringIO
+from natto.environment import MeCabEnv
+from natto.py3support import _u, _b
 import natto.option_parse as op
-from natto.py3support import _b, _u
 
 class TestOptionParse(unittest.TestCase):
     """Tests the  functions in the natto.option_parse module."""
+    
+    def setUp(self):
+        import os
+        os.environ['MECAB_PATH']='F:/MeCab/mecab-0.996-x64/bin/libmecab.dll'
+        os.environ['MECAB_CHARSET']='shift-jis'
+        self.env = MeCabEnv()
 
     def test_parse_mecab_options_none(self):
-        dopts = op._parse_mecab_options(None)
+        dopts = op._parse_mecab_options(None, self.env.charset, _b)
         self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_emptystr(self):
-        dopts = op._parse_mecab_options("")
-        self.assertEqual(len(dopts), 0)
-
-        dopts = op._parse_mecab_options(" ")
+        dopts = op._parse_mecab_options("", self.env.charset, _b)
         self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_emptydict(self):
-        dopts = op._parse_mecab_options({})
+        dopts = op._parse_mecab_options({}, self.env.charset, _b)
         self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_dicdir(self):
-        dopts = op._parse_mecab_options("-d/foo/bar")
+        dopts = op._parse_mecab_options("-d/foo/bar", self.env.charset, _b)
         self.assertDictEqual(dopts, {'dicdir':'/foo/bar'})
 
-        dopts = op._parse_mecab_options("-d /foo/bar")
+        dopts = op._parse_mecab_options("-d /foo/bar", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'dicdir':'/foo/bar'})
 
-        dopts = op._parse_mecab_options("--dicdir=/foo/bar")
+        dopts = op._parse_mecab_options("--dicdir=/foo/bar", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'dicdir':'/foo/bar'})
 
-        dopts = op._parse_mecab_options({'dicdir':'/foo/bar'})
+        dopts = op._parse_mecab_options({'dicdir':'/foo/bar'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'dicdir':'/foo/bar'})
 
     def test_parse_mecab_options_userdic(self):
-        dopts = op._parse_mecab_options("-u/baz/qux.dic")
+        dopts = op._parse_mecab_options("-u/baz/qux.dic", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'userdic':'/baz/qux.dic'})
 
-        dopts = op._parse_mecab_options("-u /baz/qux.dic")
+        dopts = op._parse_mecab_options("-u /baz/qux.dic", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'userdic':'/baz/qux.dic'})
 
-        dopts = op._parse_mecab_options("--userdic=/baz/qux.dic")
+        dopts = op._parse_mecab_options("--userdic=/baz/qux.dic", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'userdic':'/baz/qux.dic'})
 
-        dopts = op._parse_mecab_options({'userdic':'/baz/qux.dic'})
+        dopts = op._parse_mecab_options({'userdic':'/baz/qux.dic'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'userdic':'/baz/qux.dic'})
 
     def test_parse_mecab_options_latticelevel(self):
@@ -59,7 +69,8 @@ class TestOptionParse(unittest.TestCase):
             tmp_err = StringIO()
             sys.stderr = tmp_err
 
-            dopts = op._parse_mecab_options("-l 777")
+            dopts = op._parse_mecab_options("-l 777", 
+                                            self.env.charset, _b)
             self.assertDictEqual(dopts, {'lattice_level':777})
 
             res = re.search(op._WARN_LATTICE_LEVEL,
@@ -69,293 +80,319 @@ class TestOptionParse(unittest.TestCase):
             sys.stderr = orig_err
 
     def test_parse_mecab_options_outputformattype(self):
-        dopts = op._parse_mecab_options("-Owakati")
+        dopts = op._parse_mecab_options("-Owakati", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'output_format_type':'wakati'})
 
-        dopts = op._parse_mecab_options("-O wakati")
+        dopts = op._parse_mecab_options("-O wakati", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'output_format_type':'wakati'})
 
-        dopts = op._parse_mecab_options("--output-format-type=wakati")
+        dopts = op._parse_mecab_options("--output-format-type=wakati", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'output_format_type':'wakati'})
 
-        dopts = op._parse_mecab_options({'output_format_type':'wakati'})
+        dopts = op._parse_mecab_options({'output_format_type':'wakati'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'output_format_type':'wakati'})
 
     def test_parse_mecab_options_allmorphs(self):
-        dopts = op._parse_mecab_options("-a")
+        dopts = op._parse_mecab_options("-a", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'all_morphs':True})
 
-        dopts = op._parse_mecab_options("--all-morphs")
+        dopts = op._parse_mecab_options("--all-morphs", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'all_morphs':True})
 
-        dopts = op._parse_mecab_options({'all_morphs':True})
+        dopts = op._parse_mecab_options({'all_morphs':True}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'all_morphs':True})
 
     def test_parse_mecab_options_nbest(self):
-        dopts = op._parse_mecab_options("-N2")
+        dopts = op._parse_mecab_options("-N2", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'nbest':2})
 
-        dopts = op._parse_mecab_options("-N 2")
+        dopts = op._parse_mecab_options("-N 2", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'nbest':2})
 
-        dopts = op._parse_mecab_options("--nbest=2")
+        dopts = op._parse_mecab_options("--nbest=2", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'nbest':2})
 
-        dopts = op._parse_mecab_options({'nbest':2})
+        dopts = op._parse_mecab_options({'nbest':2}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'nbest':2})
 
-        # ValueError and message on stderr if nbest is not an int
-        orig_err = sys.stderr
-        try:
-            tmp_err = StringIO()
-            sys.stderr = tmp_err
+        # ValueError with message if nbest is not an int
+        with self.assertRaises(ValueError) as ctx:
+            op._parse_mecab_options("-N0.99", 
+                                        self.env.charset, _b)
+        self.assertIsNotNone(re.search('--nbest', str(ctx.exception)))
 
-            with self.assertRaises(ValueError):
-                op._parse_mecab_options("-N0.99")
-                
-            self.assertIsNotNone(re.search('--nbest',
-                             tmp_err.getvalue().strip()))
-        finally:
-            sys.stderr = orig_err
 
     def test_parse_mecab_options_partial(self):
-        dopts = op._parse_mecab_options("-p")
+        dopts = op._parse_mecab_options("-p", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'partial':True})
 
-        dopts = op._parse_mecab_options("--partial")
+        dopts = op._parse_mecab_options("--partial", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'partial':True})
 
-        dopts = op._parse_mecab_options({'partial':True})
+        dopts = op._parse_mecab_options({'partial':True}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'partial':True})
 
     def test_parse_mecab_options_marginal(self):
-        dopts = op._parse_mecab_options("-m")
+        dopts = op._parse_mecab_options("-m", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'marginal':True})
 
-        dopts = op._parse_mecab_options("--marginal")
+        dopts = op._parse_mecab_options("--marginal", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'marginal':True})
 
-        dopts = op._parse_mecab_options({'marginal':True})
+        dopts = op._parse_mecab_options({'marginal':True}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'marginal':True})
 
     def test_parse_mecab_options_maxgroupingsize(self):
-        dopts = op._parse_mecab_options("-M99")
+        dopts = op._parse_mecab_options("-M99", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'max_grouping_size':99})
 
-        dopts = op._parse_mecab_options("-M 99")
+        dopts = op._parse_mecab_options("-M 99", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'max_grouping_size':99})
 
-        dopts = op._parse_mecab_options("--max-grouping-size=99")
+        dopts = op._parse_mecab_options("--max-grouping-size=99", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'max_grouping_size':99})
 
-        dopts = op._parse_mecab_options({'max_grouping_size':99})
+        dopts = op._parse_mecab_options({'max_grouping_size':99}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'max_grouping_size':99})
 
-        # ValueError and message on stderr if max_grouping_size is not an int
-        orig_err = sys.stderr
-        try:
-            tmp_err = StringIO()
-            sys.stderr = tmp_err
+        # ValueError with message if max_grouping_size is not an int
+        with self.assertRaises(ValueError) as ctx:
+            op._parse_mecab_options("-M0.99", 
+                                        self.env.charset, _b)
+        self.assertIsNotNone(re.search('--max-grouping-size', 
+                                       str(ctx.exception)))
 
-            with self.assertRaises(ValueError):
-                op._parse_mecab_options("-M0.99")
-            
-            self.assertIsNotNone(re.search('--max-grouping-size',
-                                 tmp_err.getvalue().strip()))
-        finally:
-            sys.stderr = orig_err
 
     def test_parse_mecab_options_nodeformat(self):
-        dopts = op._parse_mecab_options("-F%m\\n")
+        dopts = op._parse_mecab_options("-F%m\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'node_format':'%m\\n'})
 
-        dopts = op._parse_mecab_options("-F %m\\n")
+        dopts = op._parse_mecab_options("-F %m\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'node_format':'%m\\n'})
 
-        dopts = op._parse_mecab_options("--node-format=%m\\n")
+        dopts = op._parse_mecab_options("--node-format=%m\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'node_format':'%m\\n'})
 
-        dopts = op._parse_mecab_options({'node_format':'%m\\n'})
+        dopts = op._parse_mecab_options({'node_format':'%m\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'node_format':'%m\\n'})
 
     def test_parse_mecab_options_unkformat(self):
-        dopts = op._parse_mecab_options("-U???\\n")
+        dopts = op._parse_mecab_options("-U???\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_format':'???\\n'})
 
-        dopts = op._parse_mecab_options("-U ???\\n")
+        dopts = op._parse_mecab_options("-U ???\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_format':'???\\n'})
 
-        dopts = op._parse_mecab_options("--unk-format=???\\n")
+        dopts = op._parse_mecab_options("--unk-format=???\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_format':'???\\n'})
 
-        dopts = op._parse_mecab_options({'unk_format':'???\\n'})
+        dopts = op._parse_mecab_options({'unk_format':'???\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_format':'???\\n'})
 
     def test_parse_mecab_options_bosformat(self):
-        dopts = op._parse_mecab_options("-B>>>\\n")
+        dopts = op._parse_mecab_options("-B>>>\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
 
-        dopts = op._parse_mecab_options("-B >>>\\n")
+        dopts = op._parse_mecab_options("-B >>>\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
 
-        dopts = op._parse_mecab_options("--bos-format=>>>\\n")
+        dopts = op._parse_mecab_options("--bos-format=>>>\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
 
-        dopts = op._parse_mecab_options({'bos_format':'>>>\\n'})
+        dopts = op._parse_mecab_options({'bos_format':'>>>\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
 
     def test_parse_mecab_options_eosformat(self):
-        dopts = op._parse_mecab_options("-E<<<\\n")
+        dopts = op._parse_mecab_options("-E<<<\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
 
-        dopts = op._parse_mecab_options("-E <<<\\n")
+        dopts = op._parse_mecab_options("-E <<<\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
 
-        dopts = op._parse_mecab_options("--eos-format=<<<\\n")
+        dopts = op._parse_mecab_options("--eos-format=<<<\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
 
-        dopts = op._parse_mecab_options({'eos_format':'<<<\\n'})
+        dopts = op._parse_mecab_options({'eos_format':'<<<\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
 
     def test_parse_mecab_options_eonformat(self):
-        dopts = op._parse_mecab_options("-S___\\n")
+        dopts = op._parse_mecab_options("-S___\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eon_format':'___\\n'})
 
-        dopts = op._parse_mecab_options("-S ___\\n")
+        dopts = op._parse_mecab_options("-S ___\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eon_format':'___\\n'})
 
-        dopts = op._parse_mecab_options("--eon-format=___\\n")
+        dopts = op._parse_mecab_options("--eon-format=___\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eon_format':'___\\n'})
 
-        dopts = op._parse_mecab_options({'eon_format':'___\\n'})
+        dopts = op._parse_mecab_options({'eon_format':'___\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'eon_format':'___\\n'})
 
     def test_parse_mecab_options_unkfeature(self):
-        dopts = op._parse_mecab_options("-x!!!\\n")
+        dopts = op._parse_mecab_options("-x!!!\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
 
-        dopts = op._parse_mecab_options("-x !!!\\n")
+        dopts = op._parse_mecab_options("-x !!!\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
 
-        dopts = op._parse_mecab_options("--unk-feature=!!!\\n")
+        dopts = op._parse_mecab_options("--unk-feature=!!!\\n", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
 
-        dopts = op._parse_mecab_options({'unk_feature':'!!!\\n'})
+        dopts = op._parse_mecab_options({'unk_feature':'!!!\\n'}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
 
     def test_parse_mecab_options_inputbuffersize(self):
-        dopts = op._parse_mecab_options("-b8888")
+        dopts = op._parse_mecab_options("-b8888", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'input_buffer_size':8888})
 
-        dopts = op._parse_mecab_options("-b 8888")
+        dopts = op._parse_mecab_options("-b 8888", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'input_buffer_size':8888})
 
-        dopts = op._parse_mecab_options("--input-buffer-size=8888")
+        dopts = op._parse_mecab_options("--input-buffer-size=8888", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'input_buffer_size':8888})
 
-        dopts = op._parse_mecab_options({'input_buffer_size':8888})
+        dopts = op._parse_mecab_options({'input_buffer_size':8888}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'input_buffer_size':8888})
 
-        # ValueError and message on stderr if input_buffer_size is not an int
-        orig_err = sys.stderr
-        try:
-            tmp_err = StringIO()
-            sys.stderr = tmp_err
-
-            with self.assertRaises(ValueError):
-                op._parse_mecab_options("-b0.99")
-            
-            self.assertIsNotNone(re.search('--input-buffer-size',
-                                 tmp_err.getvalue().strip()))
-        finally:
-            sys.stderr = orig_err
+        # ValueError with message if input_buffer_size is not an int            
+        with self.assertRaises(ValueError) as ctx:
+            op._parse_mecab_options("-b0.99", 
+                                        self.env.charset, _b)
+        self.assertIsNotNone(re.search('--input-buffer-size', 
+                                       str(ctx.exception)))    
 
     def test_parse_mecab_options_allocatesentence(self):
-        dopts = op._parse_mecab_options("-C")
+        dopts = op._parse_mecab_options("-C", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'allocate_sentence':True})
 
-        dopts = op._parse_mecab_options("--allocate-sentence")
+        dopts = op._parse_mecab_options("--allocate-sentence", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'allocate_sentence':True})
 
-        dopts = op._parse_mecab_options({'allocate_sentence':True})
+        dopts = op._parse_mecab_options({'allocate_sentence':True}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'allocate_sentence':True})
 
     def test_parse_mecab_options_theta(self):
-        dopts = op._parse_mecab_options("-t0.777")
+        dopts = op._parse_mecab_options("-t0.777", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'theta':0.777})
 
-        dopts = op._parse_mecab_options("-t 0.777")
+        dopts = op._parse_mecab_options("-t 0.777", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'theta':0.777})
 
-        dopts = op._parse_mecab_options("--theta=0.777")
+        dopts = op._parse_mecab_options("--theta=0.777", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'theta':0.777})
 
-        dopts = op._parse_mecab_options({'theta':0.777})
+        dopts = op._parse_mecab_options({'theta':0.777}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'theta':0.777})
 
         # ValueError and message on stderr if theta is not a float
-        orig_err = sys.stderr
-        try:
-            tmp_err = StringIO()
-            sys.stderr = tmp_err
-
-            with self.assertRaises(ValueError):
-                op._parse_mecab_options("--theta=XXX")
-            
-            self.assertIsNotNone(re.search('--theta',
-                                 tmp_err.getvalue().strip()))  
-        finally:
-            sys.stderr = orig_err
+        with self.assertRaises(ValueError) as ctx:
+            op._parse_mecab_options("--theta=XXX", 
+                                        self.env.charset, _b)
+        self.assertIsNotNone(re.search('--theta', 
+                                       str(ctx.exception))) 
 
     def test_parse_mecab_options_costfactor(self):
-        dopts = op._parse_mecab_options("-c666")
+        dopts = op._parse_mecab_options("-c666", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'cost_factor':666})
 
-        dopts = op._parse_mecab_options("-c 666")
+        dopts = op._parse_mecab_options("-c 666", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'cost_factor':666})
 
-        dopts = op._parse_mecab_options("--cost-factor=666")
+        dopts = op._parse_mecab_options("--cost-factor=666", 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'cost_factor':666})
 
-        dopts = op._parse_mecab_options({'cost_factor':666})
+        dopts = op._parse_mecab_options({'cost_factor':666}, 
+                                        self.env.charset, _b)
         self.assertDictEqual(dopts, {'cost_factor':666})
 
-        # ValueError and message on stderr if cost_factor is not an int
-        orig_err = sys.stderr
-        try:
-            tmp_err = StringIO()
-            sys.stderr = tmp_err
+        # ValueError with message if cost_factor is not an int               
+        with self.assertRaises(ValueError) as ctx:
+            op._parse_mecab_options("-c0.99", 
+                                        self.env.charset, _b)
+        self.assertIsNotNone(re.search('--cost-factor', 
+                                       str(ctx.exception))) 
 
-            with self.assertRaises(ValueError):
-                op._parse_mecab_options("-c0.99")
-                
-            self.assertIsNotNone(re.search('--cost-factor',
-                                 tmp_err.getvalue().strip()))                
-        finally:
-            sys.stderr = orig_err
-
-    def test_build_options_str(self):
-        opts = op._build_options_str({'dicdir':'/foo',
-                                      'userdic':'/bar',
-                                      'lattice_level': 444,
-                                      'output_format_type':'yomi',
-                                      'all_morphs': True,
-                                      'nbest': 555,
-                                      'partial': True,
-                                      'marginal': True,
-                                      'max_grouping_size': 666,
-                                      'node_format': 'node\\n',
-                                      'unk_format': 'unk\\n',
-                                      'bos_format': 'bos\\n',
-                                      'eos_format': 'eos\\n',
-                                      'eon_format': 'eon\\n',
-                                      'unk_feature': 'unkf\\n',
-                                      'input_buffer_size': 777,
-                                      'allocate_sentence': True,
-                                      'theta': 0.999,
-                                      'cost_factor': 888,
-                                      'unknown':1000}, 'shift-jis')
-        self.assertIsNotNone(re.search(_b('--dicdir=/foo', 'shift-jis'), opts))
+#    def test_build_options_str(self):
+#        opts = op._build_options_str({'dicdir':'/foo',
+#                                      'userdic':'/bar',
+#                                      'lattice_level': 444,
+#                                      'output_format_type':'yomi',
+#                                      'all_morphs': True,
+#                                      'nbest': 555,
+#                                      'partial': True,
+#                                      'marginal': True,
+#                                      'max_grouping_size': 666,
+#                                      'node_format': 'node\\n',
+#                                      'unk_format': 'unk\\n',
+#                                      'bos_format': 'bos\\n',
+#                                      'eos_format': 'eos\\n',
+#                                      'eon_format': 'eon\\n',
+#                                      'unk_feature': 'unkf\\n',
+#                                      'input_buffer_size': 777,
+#                                      'allocate_sentence': True,
+#                                      'theta': 0.999,
+#                                      'cost_factor': 888,
+#                                      'unknown':1000}, 'shift-jis')
+#        self.assertIsNotNone(re.search(_b('--dicdir=/foo', 'shift-jis'), opts))
 #        self.assertIsNotNone(re.search('--userdic=/bar', opts))
 #        self.assertIsNotNone(re.search('--lattice-level=444', opts))
 #        self.assertIsNotNone(re.search('--output-format-type=yomi', opts))

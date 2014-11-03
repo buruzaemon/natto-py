@@ -69,22 +69,23 @@ class MeCab(object):
         """
         try:
             env = MeCabEnv()         
-           
+            
             # Instantiate ffi handle
             self.ffi = _ffi_libmecab()
-            self.options = _parse_mecab_options(_b(options, enc))
+            self.options = _parse_mecab_options(options, env.charset, _b)
             # Set up mecab pointer
-            self.mecab = self.ffi.dlopen(lib_path)            
+            self.mecab = self.ffi.dlopen(env.libpath)            
             # Set up tagger pointer
-            ostr = _build_options_str(self.options)
-            self.tagger = self.mecab.mecab_new2(_b(ostr, enc))
+            ostr = _build_options_str(self.options, env.charset, _b)
+            self.tagger = self.mecab.mecab_new2(ostr)
 
             if self.tagger == self.ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR)
+        except EnvironmentError as eerr:
+            raise MeCabError(eerr)
         except OSError as oserr:
             raise MeCabError(oserr)
         except ValueError as verr:
-            print(type(verr))
             raise MeCabError(self._ERROR_INIT % verr.message) 
 
         # Set add'l MeCab options on the tagger as needed
@@ -133,11 +134,10 @@ class MeCab(object):
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.__decode(self.mecab.mecab_version())
+        self.version = self.__b2r(self.mecab.mecab_version())
 
     
-
-    def __decode(self, bstr):
+    def __b2r(self, bstr):
         """Returns Unicode representation of byte string returned by MeCab.
 
         Args:
@@ -170,7 +170,7 @@ class MeCab(object):
 
             res = getattr(self.mecab, fn_name)(*args)
             if res != self.ffi.NULL:
-                return self.__decode(res).strip()
+                return self.__b2r(res).strip()
             else:
                 raise MeCabError(self.mecab.mecab_strerror((self.tagger)))
         return _fn
@@ -204,8 +204,8 @@ class MeCab(object):
                     while nptr != self.ffi.NULL:
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
-                            surf = self.__decode(nptr.surface[0:nptr.length])
-                            feat = self.__decode(nptr.feature)
+                            surf = self.__b2r(nptr.surface[0:nptr.length])
+                            feat = self.__b2r(nptr.feature)
                             mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
                         nptr = getattr(nptr, 'next')
@@ -239,12 +239,12 @@ class MeCab(object):
                         if text passed in is not Unicode;
                         or an unforseen error occurred during the operation.
         """
-        if str is None:
+        if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
         elif isinstance(text, bytes):
             raise MeCabError(self._ERROR_NOTUNICODE)
         else:
-            bstr = text.encode(self.__enc)
+            bstr = _u(text, self.__enc)
 
         if as_nodes:
             return self.__parse_tonodes(bstr)

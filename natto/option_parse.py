@@ -2,7 +2,6 @@
 """MeCab option parser for natto-py."""
 import argparse
 import sys
-from .py3support import _b, _u
 
 # Mapping of mecab short-style configuration options to the `mecab`
 # tagger. See the `mecab` help for more details.
@@ -37,15 +36,12 @@ class MeCabArgumentParser(argparse.ArgumentParser):
     def error(self, message):
         """error(message: string)
     
-        Prints a usage message incorporating the message to stderr and
-        raises ValueError.
-        """
-        #sys.stderr.write("USAGE: %s\n" % _str2unicode(message))        
-        sys.stderr.write("USAGE: %s\n" % _u(message, 'SHIFT-JIS'))        
+        Raises ValueError.
+        """    
         raise ValueError(message)
         
 
-def _parse_mecab_options(options=None):
+def _parse_mecab_options(options, enc, bconv):
     """Parses the MeCab options, returning them in a dictionary.
 
     Lattice-level option has been deprecated; please use marginal or nbest
@@ -66,14 +62,16 @@ def _parse_mecab_options(options=None):
     options = options or {}
     dopts = {}
 
-    print '... 0'
-    print options
-    print(type(options))
-    print
-
-    if type(options) is str:
-        options = options.encode('shift-jis')
-        #p = argparse.ArgumentParser()
+    if type(options) is dict:
+        for name in iter(list(_SUPPORTED_OPTS.values())):
+            if name in options:
+                if options[name]:
+                    val = options[name]
+                    if isinstance(val, str):
+                        val = bconv(options[name], enc)                    
+                    dopts[name] = val
+    else:
+        #options = bconv(options, enc)
         p = MeCabArgumentParser()
         p.add_argument('-d', '--dicdir',
                        help="set DIR as a system dicdir",
@@ -136,21 +134,14 @@ def _parse_mecab_options(options=None):
         p.add_argument('-c', '--cost-factor',
                        help="set cost factor (default 700)",
                        action="store", dest='cost_factor', type=int)
-
+        
         opts = p.parse_args(options.split())
-        print '... ?'
-        print opts
-        print
+
         for name in iter(list(_SUPPORTED_OPTS.values())):
             if hasattr(opts, name):
                 v = getattr(opts, name)
                 if v:
-                    dopts[name] = v
-    elif type(options) is dict:
-        for name in iter(list(_SUPPORTED_OPTS.values())):
-            if name in options:
-                if options[name]:
-                    dopts[name] = options[name]
+                    dopts[name] = v    
 
     # final checks
     if 'nbest' in dopts \
@@ -161,11 +152,9 @@ def _parse_mecab_options(options=None):
     if 'lattice_level' in dopts:
         sys.stderr.write("WARNING: %s\n" % _WARN_LATTICE_LEVEL)
 
-    print '   dopts?'
-    print dopts
     return dopts
 
-def _build_options_str(options):
+def _build_options_str(options, enc, bconv):
     """Returns a string concatenation of the MeCab options.
 
     Args:
@@ -185,12 +174,8 @@ def _build_options_str(options):
                     opts.append("--%s" % key)
             else:
                 opts.append("--%s=%s" % (key, options[name]))
-    t = " ".join(opts)
-    print '... 2'
-    print t
-    print type(t)
-    print            
-    return " ".join(opts)
+ 
+    return bconv(" ".join(opts), enc)
 
 """
 Copyright (c) 2014, Brooke M. Fujita.
