@@ -12,11 +12,11 @@ class MeCabEnv(object):
     _MACLIB_EXT = "dylib"
     _UNIXLIB_EXT = "so"
 
-    _INFO_SJIS_DEFAULT = "INFO: defaulting MeCab charset to shift-jis"
-    _INFO_EUCJP_DEFAULT = "INFO: defaulting MeCab charset to euc-jp"
-    _ERROR_NODIC = "ERROR: MeCab dictionary charset not found"
-    _ERROR_NOCMD = "ERROR: mecab -D command not recognized"
-    _ERROR_NOLIB = "ERROR: %s could not be found, please use MECAB_PATH"
+    _INFO_SJIS_DEFAULT = ur"INFO: defaulting MeCab charset to shift-jis"
+    _INFO_EUCJP_DEFAULT = ur"INFO: defaulting MeCab charset to euc-jp"
+    _ERROR_NODIC = ur"ERROR: MeCab dictionary charset not found"
+    _ERROR_NOCMD = ur"ERROR: mecab -D command not recognized"
+    _ERROR_NOLIB = ur"ERROR: %s could not be found, please use MECAB_PATH"
 
     def __init__(self):
         self.charset = self.__get_charset()
@@ -42,10 +42,10 @@ class MeCabEnv(object):
                         return t[0].split()[1].lower()
                     else:
                         sys.stderr.write("%s\n" % self._ERROR_NODIC)
-                        raise StandardError(self._ERROR_NODIC)
+                        raise EnvironmentError(self._ERROR_NODIC)
                 else:
                     sys.stderr.write("%s\n" % self._ERROR_NOCMD)
-                    raise StandardError(self._ERROR_NOCMD)
+                    raise EnvironmentError(self._ERROR_NOCMD)
             except:
                 if sys.platform == 'win32':
                     sys.stderr.write("%s\n" % self._INFO_SJIS_DEFAULT)
@@ -72,11 +72,11 @@ class MeCabEnv(object):
                             ldir = t[0].split('etc')[0][10:].strip()
                             libp = os.path.join(ldir, 'bin', lib)
                         else:
-                            raise StandardError("mecab -D could not be used to locate %s" % lib)
+                            raise EnvironmentError("mecab -D could not be used to locate %s" % lib)
                     else:
-                        raise StandardError("Error invoking mecab")
+                        raise EnvironmentError("Error invoking mecab")
                 except:
-                    raise StandardError(self._ERROR_NOLIB % lib)
+                    raise EnvironmentError(self._ERROR_NOLIB % lib)
             else:
                 # UNIX-y OS?
                 if plat == 'darwin':
@@ -91,12 +91,12 @@ class MeCabEnv(object):
                         linfo = res[0].strip()
                         libp = os.path.join(linfo, lib)
                     else:
-                        raise StandardError("mecab-config could not locate %s" % lib)
+                        raise EnvironmentError("mecab-config could not locate %s" % lib)
                 except:
-                    raise StandardError(self._ERROR_NOLIB % lib)
+                    raise EnvironmentError(self._ERROR_NOLIB % lib)
 
             if libp and os.path.exists(libp):
                 os.environ[self.MECAB_PATH] = libp
                 return libp
             else:
-                raise StandardError(self._ERROR_NOLIB % libp)
+                raise EnvironmentError(self._ERROR_NOLIB % libp)
