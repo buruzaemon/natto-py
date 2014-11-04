@@ -12,11 +12,11 @@ class MeCabEnv(object):
     _MACLIB_EXT = "dylib"
     _UNIXLIB_EXT = "so"
 
-    _INFO_SJIS_DEFAULT = ur"INFO: defaulting MeCab charset to shift-jis"
-    _INFO_EUCJP_DEFAULT = ur"INFO: defaulting MeCab charset to euc-jp"
-    _ERROR_NODIC = ur"ERROR: MeCab dictionary charset not found"
-    _ERROR_NOCMD = ur"ERROR: mecab -D command not recognized"
-    _ERROR_NOLIB = ur"ERROR: %s could not be found, please use MECAB_PATH"
+    _INFO_SJIS_DEFAULT = "INFO: defaulting MeCab charset to shift-jis"
+    _INFO_EUCJP_DEFAULT = "INFO: defaulting MeCab charset to euc-jp"
+    _ERROR_NODIC = "ERROR: MeCab dictionary charset not found"
+    _ERROR_NOCMD = "ERROR: mecab -D command not recognized"
+    _ERROR_NOLIB = "ERROR: %s could not be found, please use MECAB_PATH"
 
     def __init__(self):
         self.charset = self.__get_charset()
