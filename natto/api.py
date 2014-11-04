@@ -1,10 +1,9 @@
 # -*- coding: utf-8 -*-
 """The main API for using MeCab via Python."""
-import os
+import argparse
+import sys
 from .binding import _ffi_libmecab
 from .environment import MeCabEnv
-from .option_parse import _parse_mecab_options, _build_options_str
-from .py3support import _b, _u
 
 class MeCab(object):
     """The main interface to the MeCab library, wrapping the MeCab Tagger.
@@ -55,6 +54,186 @@ class MeCab(object):
     _FN_TOSTR = 'mecab_sparse_tostr'
     _FN_TONODE = 'mecab_sparse_tonode'
 
+    # Mapping of mecab short-style configuration options to the `mecab`
+    # tagger. See the `mecab` help for more details.
+    _SUPPORTED_OPTS = {'-d' : 'dicdir',
+                       '-u' : 'userdic',
+                       '-l' : 'lattice_level',
+                       '-O' : 'output_format_type',
+                       '-a' : 'all_morphs',
+                       '-N' : 'nbest',
+                       '-p' : 'partial',
+                       '-m' : 'marginal',
+                       '-M' : 'max_grouping_size',
+                       '-F' : 'node_format',
+                       '-U' : 'unk_format',
+                       '-B' : 'bos_format',
+                       '-E' : 'eos_format',
+                       '-S' : 'eon_format',
+                       '-x' : 'unk_feature',
+                       '-b' : 'input_buffer_size',
+                       '-C' : 'allocate_sentence',
+                       '-t' : 'theta',
+                       '-c' : 'cost_factor'}
+
+    _BOOLEAN_OPTIONS = ["all-morphs", "partial", "marginal",
+                        "allocate-sentence"]
+
+    _NBEST_MAX = 512
+
+    _WARN_LATTICE_LEVEL = "lattice-level is DEPRECATED, " + \
+                          "please use marginal or nbest"
+
+    def __parse_mecab_options(self, enc, options):
+        """Parses the MeCab options, returning them in a dictionary.
+
+        Lattice-level option has been deprecated; please use marginal or nbest
+        instead.
+
+        Args:
+            options: string or dictionary of options to use when instantiating
+                the MeCab instance. May be in short- or long-form, or in a
+                Python dictionary.
+
+        Returns:
+            A dictionary of the specified MeCab options, where the keys are
+            snake-cased names of the long-form of the option names.
+
+        Raises:
+            MeCabError: An invalid value for N-best was passed in.
+        """
+        class MeCabArgumentParser(argparse.ArgumentParser):
+            """MeCab option parser for natto-py."""
+
+            def error(self, message):
+                """error(message: string)
+
+                Raises ValueError.
+                """
+                raise ValueError(message)
+
+        options = options or {}
+        dopts = {}
+
+        if type(options) is dict:
+            for name in iter(list(MeCab._SUPPORTED_OPTS.values())):
+                if name in options:
+                    if options[name]:
+                        val = options[name]
+                        if isinstance(val, str):
+                            # <<< TODO
+                            val = options[name].encode(enc)
+                        dopts[name] = val
+        else:
+            p = MeCabArgumentParser()
+            p.add_argument('-d', '--dicdir',
+                           help="set DIR as a system dicdir",
+                           action="store", dest="dicdir")
+            p.add_argument('-u', '--userdic',
+                           help="use FILE as a user dictionary",
+                           action="store", dest="userdic")
+            p.add_argument('-l', '--lattice-level',
+                           help="lattice information level (DEPRECATED)",
+                           action="store", dest='lattice_level', type=int)
+            p.add_argument('-O', '--output-format-type',
+                           help="set output format type (wakati, none,...)",
+                           action="store", dest="output_format_type")
+            p.add_argument('-a', '--all-morphs',
+                           help="output all morphs (default false)",
+                           action="store_true", default=False)
+            p.add_argument('-N', '--nbest',
+                           help="output N best results (default 1)",
+                           action="store", dest='nbest', type=int)
+            p.add_argument('-p', '--partial',
+                           help="partial parsing mode (default false)",
+                           action="store_true", default=False)
+            p.add_argument('-m', '--marginal',
+                           help="output marginal probability (default false)",
+                           action="store_true", default=False)
+            p.add_argument('-M', '--max-grouping-size',
+                           help="maximum grouping size for unknown words " + \
+                                "(default 24)",
+                           action="store", dest='max_grouping_size', type=int)
+            p.add_argument('-F', '--node-format',
+                           help="use STR as the user-defined node format",
+                           action="store", dest="node_format")
+            p.add_argument('-U', '--unk-format',
+                           help="use STR as the user-defined unknown " + \
+                           "node format",
+                           action="store", dest="unk_format")
+            p.add_argument('-B', '--bos-format',
+                           help="use STR as the user-defined " + \
+                           "beginning-of-sentence format",
+                           action="store", dest="bos_format")
+            p.add_argument('-E', '--eos-format',
+                           help="use STR as the user-defined " + \
+                                "end-of-sentence format",
+                           action="store", dest="eos_format")
+            p.add_argument('-S', '--eon-format',
+                           help="use STR as the user-defined end-of-NBest " + \
+                           "format",
+                           action="store", dest="eon_format")
+            p.add_argument('-x', '--unk-feature',
+                           help="use STR as the feature for unknown word",
+                           action="store", dest="unk_feature")
+            p.add_argument('-b', '--input-buffer-size',
+                           help="set input buffer size (default 8192)",
+                           action="store", dest='input_buffer_size', type=int)
+            p.add_argument('-C', '--allocate-sentence',
+                           help="allocate new memory for input sentence",
+                           action="store_true", dest="allocate_sentence",
+                           default=False)
+            p.add_argument('-t', '--theta',
+                           help="set temperature parameter theta " + \
+                           "(default 0.75)",
+                           action="store", dest='theta', type=float)
+            p.add_argument('-c', '--cost-factor',
+                           help="set cost factor (default 700)",
+                           action="store", dest='cost_factor', type=int)
+
+            opts = p.parse_args(options.split())
+
+            for name in iter(list(MeCab._SUPPORTED_OPTS.values())):
+                if hasattr(opts, name):
+                    v = getattr(opts, name)
+                    if v:
+                        dopts[name] = v
+
+        # final checks
+        if 'nbest' in dopts \
+            and (dopts['nbest'] < 1 or dopts['nbest'] > MeCab._NBEST_MAX):
+            raise ValueError("Invalid N value")
+
+        # warning for lattice-level deprecation
+        if 'lattice_level' in dopts:
+            sys.stderr.write("WARNING: %s\n" % MeCab._WARN_LATTICE_LEVEL)
+
+        return dopts
+
+    def __build_options_str(self, enc, options):
+        """Returns a string concatenation of the MeCab options.
+
+        Args:
+            options: dictionary of options to use when instantiating the MeCab
+                instance.
+
+        Returns:
+            A string concatenation of the options used when instantiating the
+            MeCab instance, in long-form.
+        """
+        opts = []
+        for name in iter(list(MeCab._SUPPORTED_OPTS.values())):
+            if name in options:
+                key = name.replace("_", "-")
+                if key in self._BOOLEAN_OPTIONS:
+                    if options[name]:
+                        opts.append("--%s" % key)
+                else:
+                    opts.append("--%s=%s" % (key, options[name]))
+
+        return " ".join(opts).encode(enc)
+
+
     def __init__(self, options=None):
         """Initializes the MeCab instance with the given options.
 
@@ -68,25 +247,30 @@ class MeCab(object):
                         or the FFI handle to MeCab could not be created.
         """
         try:
-            env = MeCabEnv()         
-            
+            env = MeCabEnv()
+
             # Instantiate ffi handle
             self.ffi = _ffi_libmecab()
-            self.options = _parse_mecab_options(options, env.charset, _b)
+
             # Set up mecab pointer
-            self.mecab = self.ffi.dlopen(env.libpath)            
+            self.mecab = self.ffi.dlopen(env.libpath)
+
+            # Set up byte/Unicode converters (Python 3 support)
+            self.__u, self.__b = self.__string_support(env.charset)
+
+            # Set up dictionary of MeCab options to use
+            self.options = self.__parse_mecab_options(env.charset, options)
+
             # Set up tagger pointer
-            ostr = _build_options_str(self.options, env.charset, _b)
+            ostr = self.__build_options_str(env.charset, self.options)
             self.tagger = self.mecab.mecab_new2(ostr)
 
             if self.tagger == self.ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR)
-        except EnvironmentError as eerr:
-            raise MeCabError(eerr)
-        except OSError as oserr:
-            raise MeCabError(oserr)
+        except OSError as err:
+            raise MeCabError(err)
         except ValueError as verr:
-            raise MeCabError(self._ERROR_INIT % verr.message) 
+            raise MeCabError(self._ERROR_INIT % str(verr))
 
         # Set add'l MeCab options on the tagger as needed
         if 'partial' in self.options:
@@ -127,26 +311,33 @@ class MeCab(object):
         while dptr != self.ffi.NULL:
             self.dicts.append(DictionaryInfo(dptr,
                                              self.ffi.string(dptr.filename),
-                                             self.ffi.string(dptr.charset)))
+                                             self.__u(self.ffi.string(dptr.charset))))
             dptr = getattr(dptr, 'next')
 
-        # What is MeCab's internal character encoding?
+        # Save value for MeCab's internal character encoding
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.__b2r(self.mecab.mecab_version())
+        self.version = self.ffi.string(self.mecab.mecab_version()).decode()
 
-    
-    def __b2r(self, bstr):
-        """Returns Unicode representation of byte string returned by MeCab.
-
-        Args:
-            bstr: byte string of result returned by MeCab.
-
-        Returns:
-            Unicode representation of the MeCab result string.
+    def __string_support(self, enc):
+        """Returns a tuple of functions for coding/decoding bytes and Unicode.
         """
-        return _u(self.ffi.string(bstr), self.__enc)
+        if sys.version < '3':
+            def _u(b):
+                """Identity function, returns the argument string (bytes)."""
+                return b
+            def _b(u):
+                """Identity function, returns the argument string (bytes)."""
+                return u
+        else:
+            def _u(b):
+                """Transforms byte string into Unicode."""
+                return b.decode(enc)
+            def _b(u):
+                """Transforms Unicode string into encoded bytes."""
+                return u.encode(enc)
+        return(_u, _b)
 
     def __build_parse_tostr(self, fn_name):
         """Builds and returns the MeCab function for parsing Unicode text.
@@ -162,19 +353,23 @@ class MeCab(object):
             using either the default or N-best behavior.
         """
         def _fn(text):
-            """Parse Unicode text and return MeCab result as string."""
+            """Parse text and return MeCab result as string."""
             args = [self.tagger]
             if fn_name == self._FN_NBEST_TOSTR:
                 args.append(self.options['nbest'])
+            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             args.append(text)
 
             res = getattr(self.mecab, fn_name)(*args)
             if res != self.ffi.NULL:
-                return self.__b2r(res).strip()
+                raw = self.ffi.string(res)
+                return self.__u(raw).strip()
             else:
-                raise MeCabError(self.mecab.mecab_strerror((self.tagger)))
+                err = self.mecab.mecab_strerror((self.tagger))
+                raise MeCabError(self.ffi.string(err).decode())
         return _fn
 
+    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     def __build_parse_tonodes(self, fn_name):
         """Builds and returns the MeCab function for parsing to nodes.
 
@@ -187,7 +382,8 @@ class MeCab(object):
             the default or N-best behavior.
         """
         def _fn(text):
-            """Parse Unicode text and return MeCab result as a node."""
+            """Parse text and return MeCab result as a node."""
+
             if fn_name == self._FN_NBEST_TONODE:
                 # N-best node parsing
                 getattr(self.mecab, fn_name)(self.tagger, text)
@@ -204,8 +400,14 @@ class MeCab(object):
                     while nptr != self.ffi.NULL:
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
-                            surf = self.__b2r(nptr.surface[0:nptr.length])
-                            feat = self.__b2r(nptr.feature)
+                            raws = self.ffi.string(nptr.surface[0:nptr.length])
+                            #surf = raws.decode(self.__enc).strip()
+                            surf = self.__u(raws).strip()
+
+                            rawf = self.ffi.string(nptr.feature)
+                            #feat = rawf.decode(self.__enc).strip()
+                            feat = self.__u(rawf).strip()
+
                             mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
                         nptr = getattr(nptr, 'next')
@@ -214,7 +416,8 @@ class MeCab(object):
                         nptr = self.mecab.mecab_nbest_next_tonode(self.tagger)
                 return nodes
             else:
-                raise MeCabError(self.mecab.mecab_strerror((self.tagger)))
+                err = self.mecab.mecab_strerror((self.tagger))
+                raise MeCabError(self.ffi.string(err).decode())
         return _fn
 
     def __repr__(self):
@@ -230,27 +433,22 @@ class MeCab(object):
         """Parses the given Unicode text.
 
         Args:
-            text: the Unicode text to parse.
+            text: the text to parse.
             as_nodes: flag indicating whether to parse as nodes or strings;
                 defaults to False (string parsing).
 
         Raises:
             MeCabError: a null argument was passed in;
-                        if text passed in is not Unicode;
                         or an unforseen error occurred during the operation.
         """
         if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
-        elif isinstance(text, bytes):
-            raise MeCabError(self._ERROR_NOTUNICODE)
-        else:
-            bstr = _u(text, self.__enc)
 
+        btext = self.__b(text)
         if as_nodes:
-            return self.__parse_tonodes(bstr)
+            return self.__parse_tonodes(btext)
         else:
-            return self.__parse_tostr(bstr)
-
+            return self.__parse_tostr(btext)
 
 class DictionaryInfo(object):
     """Representation of a MeCab dictionary, wrapping mecab_dictionary_info_t.
