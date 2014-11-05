@@ -284,6 +284,12 @@ class MeCab(object):
         if 'all_morphs' in self.options:
             self.mecab.mecab_set_all_morphs(self.tagger,
                                             self.options['all_morphs'])
+                                            
+        if 'output_format_type' in self.options or \
+                'node_format' in self.options:
+            self.format_node_feature = True   
+        else:
+            self.format_node_feature = False                                 
 
         # Set parsing routines for both parsing as strings and nodes
         # for both N-best and non-N-best
@@ -357,7 +363,6 @@ class MeCab(object):
             args = [self.tagger]
             if fn_name == self._FN_NBEST_TOSTR:
                 args.append(self.options['nbest'])
-            # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
             args.append(text)
 
             res = getattr(self.mecab, fn_name)(*args)
@@ -369,7 +374,6 @@ class MeCab(object):
                 raise MeCabError(self.__u(self.ffi.string(err)))
         return _fn
 
-    # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     def __build_parse_tonodes(self, fn_name):
         """Builds and returns the MeCab function for parsing to nodes.
 
@@ -402,8 +406,11 @@ class MeCab(object):
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.ffi.string(nptr.surface[0:nptr.length])
                             surf = self.__u(raws).strip()
-
-                            rawf = self.ffi.string(nptr.feature)
+                            
+                            if self.format_node_feature:
+                                rawf = self.ffi.string(self.mecab.mecab_format_node(self.tagger, nptr))
+                            else:
+                                rawf = self.ffi.string(nptr.feature)
                             feat = self.__u(rawf).strip()
 
                             mnode = MeCabNode(nptr, surf, feat)
