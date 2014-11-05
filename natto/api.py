@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The main API for using MeCab via Python."""
+"""The main API for using MeCab via natto-py."""
 import argparse
 import sys
 from .binding import _ffi_libmecab
@@ -267,7 +267,7 @@ class MeCab(object):
 
             if self.tagger == self.ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR)
-        except OSError as err:
+        except EnvironmentError as err:
             raise MeCabError(err)
         except ValueError as verr:
             raise MeCabError(self._ERROR_INIT % str(verr))
@@ -309,16 +309,16 @@ class MeCab(object):
         self.dicts = []
         dptr = self.mecab.mecab_dictionary_info(self.tagger)
         while dptr != self.ffi.NULL:
-            self.dicts.append(DictionaryInfo(dptr,
-                                             self.ffi.string(dptr.filename),
-                                             self.__u(self.ffi.string(dptr.charset))))
+            fname = self.__u(self.ffi.string(dptr.filename))
+            chset = self.__u(self.ffi.string(dptr.charset))
+            self.dicts.append(DictionaryInfo(dptr, fname, chset))
             dptr = getattr(dptr, 'next')
 
         # Save value for MeCab's internal character encoding
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.ffi.string(self.mecab.mecab_version()).decode()
+        self.version = self.__u(self.ffi.string(self.mecab.mecab_version()))
 
     def __string_support(self, enc):
         """Returns a tuple of functions for coding/decoding bytes and Unicode.
@@ -366,7 +366,7 @@ class MeCab(object):
                 return self.__u(raw).strip()
             else:
                 err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.ffi.string(err).decode())
+                raise MeCabError(self.__u(self.ffi.string(err)))
         return _fn
 
     # <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
@@ -401,11 +401,9 @@ class MeCab(object):
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.ffi.string(nptr.surface[0:nptr.length])
-                            #surf = raws.decode(self.__enc).strip()
                             surf = self.__u(raws).strip()
 
                             rawf = self.ffi.string(nptr.feature)
-                            #feat = rawf.decode(self.__enc).strip()
                             feat = self.__u(rawf).strip()
 
                             mnode = MeCabNode(nptr, surf, feat)
@@ -417,7 +415,7 @@ class MeCab(object):
                 return nodes
             else:
                 err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.ffi.string(err).decode())
+                raise MeCabError(self.__u(self.ffi.string(err)))
         return _fn
 
     def __repr__(self):
