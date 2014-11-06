@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from setuptools import setup
 import codecs
-from os import path
 import sys
+from os import path
+from setuptools import setup
 
 extra = {}
 if sys.version_info >= (3,):
@@ -52,21 +52,21 @@ setup(
         'Programming Language :: Python :: 3.4',
     ],
 
-    keywords=' '.join(['mecab',
+    keywords=' '.join(['MeCab',
                        '和布蕪',
-                       'japanese morphological analyzer',
-                       'nlp',
+                       'Japanese morphological analyzer',
+                       'NLP',
                        '形態素解析',
-                       '自然言語処理']),
+                       '自然言語処理',
+                       'FFI']),
 
-    packages=['natto', 'tests' ],
+    packages=['natto', 'tests'],
 
     install_requires=['cffi'],
 
     zip_safe=False,
 
     test_suite="tests.test_suite",
-    
+
     use_2to3=True
-    
 )
