@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 __all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError']
 
-from .api import MeCab, DictionaryInfo, MeCabNode, MeCabError
+from .api import MeCabError
+from .dictionary import DictionaryInfo
+from .mecab import MeCab
+from .node import MeCabNode
 
 __version__ = '0.0.3'
 __version_info__ = (0, 0, 3)
