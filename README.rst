@@ -54,14 +54,14 @@ Here's a very quick guide to using ``natto-py``.
 
 Instantiate a reference to the ``mecab`` library, and display some details::
 
-    >>> import natto
-    >>> nm = natto.MeCab()
+    >>> from natto import MeCab
+    >>> nm = MeCab()
 
     >>> print nm
-    <natto.api.MeCab 
+    <natto.mecab.MeCab 
      tagger="<cdata 'mecab_t *' 0x000000000037AB40>", 
      options="{}", 
-     dicts=[<natto.api.DictionaryInfo 
+     dicts=[<natto.dictionary.DictionaryInfo 
              pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
              type="0", 
              filename="/usr/local/lib/mecab/dic/ipadic/sys.dic",
@@ -73,7 +73,7 @@ Display details about the ``mecab`` system dictionary used::
     >>> sysdic = nm.dicts[0]
 
     >>> print sysdic 
-    <natto.api.DictionaryInfo 
+    <natto.dictionary.DictionaryInfo 
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
      type="0", 
      filename="/usr/local/lib/mecab/dic/ipadic/sys.dic", 
