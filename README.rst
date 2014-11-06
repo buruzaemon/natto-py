@@ -104,18 +104,18 @@ information related to each morpheme::
 
     >>> for n in nodes:
     ...     if not n.is_eos():
-    ...         print("%s\t%s" % (n.surface, n.posid))
+    ...         print('%s\t%s' % (n.surface, n.cost))
     ... 
-    ピンチ    38
-    の      24
-    時      66
-    に      13
-    は      16
-    必ず    35
-    ヒーロー  38
-    が      13
-    現れる   31
-    。       7
+ピンチ	3348
+の	3722
+時	5176
+に	5083
+は	5305
+必ず	7525
+ヒーロー	11363
+が	10508
+現れる	10841
+。	7127
 
 
 Learn More
