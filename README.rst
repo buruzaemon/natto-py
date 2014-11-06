@@ -12,7 +12,7 @@ Requirements
 -------------
 natto-py requires the following:
 
-- `MeCab 0.996`_
+- `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
 - `cffi 0.8.6`_
 - `Python 2.7.8`_
 
@@ -149,6 +149,7 @@ LICENSE file for further details.
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
+.. _mecab-ipadic: http://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
 .. _natto-py at Bitbucket: https://bitbucket.org/buruzaemon/natto-py
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
