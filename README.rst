@@ -3,7 +3,7 @@ natto-py
 
 What is natto-py?
 -----------------
-natto combines the Python_ programming language with MeCab_, the part-of-speech
+natto-py combines the Python_ programming language with MeCab_, the part-of-speech
 and morphological analyzer for the Japanese language.
 
 You can learn more about `natto-py at Bitbucket`_.
@@ -60,14 +60,15 @@ Here's a very quick guide to using ``natto-py``.
 
 Instantiate a reference to the ``mecab`` library, and display some details::
 
-    >>> from natto import MeCab
-    >>> with MeCab() as nm:
+    from natto import MeCab
 
-    >>>     print(nm)
+    with MeCab() as nm:
+        print(nm)
 
+    # output will be as follows
     <natto.mecab.MeCab 
-     tagger="<cdata 'mecab_t *' 0x000000000037AB40>", 
-     options="{}", 
+     tagger=<cdata 'mecab_t *' 0x000000000037AB40>, 
+     options={}, 
      dicts=[<natto.dictionary.DictionaryInfo 
              pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
              type="0", 
@@ -77,17 +78,16 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
 Display details about the ``mecab`` system dictionary used::
 
-    >>>     sysdic = nm.dicts[0]
-
-    >>>     print(sysdic)
+        sysdic = nm.dicts[0]
+        print(sysdic)
 
     <natto.dictionary.DictionaryInfo 
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
-     type="0", 
+     type=0, 
      filename="/usr/local/lib/mecab/dic/ipadic/sys.dic", 
      charset="utf8">
 
-    >>>     print(sysdic.is_sysdic())
+        print(sysdic.is_sysdic())
     True
 
 Parse Japanese text as a string, outputting to ``stdout``::
