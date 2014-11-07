@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""The main interface to MeCab via natto-py."""
+'''The main interface to MeCab via natto-py.'''
 import argparse
 import sys
 from .api import MeCabError
@@ -9,7 +9,7 @@ from .environment import MeCabEnv
 from .node import MeCabNode
 
 class MeCab(object):
-    """The main interface to the MeCab library, wrapping the MeCab Tagger.
+    '''The main interface to the MeCab library, wrapping the MeCab Tagger.
 
     Instantiate this once, per any MeCab options you wish to use.
     This interface allows for parsing Japanese into simple strings of morpheme
@@ -20,27 +20,25 @@ class MeCab(object):
 
         from natto import MeCab
 
-        nm = MeCab()
+        with MeCab() as nm:
+            # output MeCab version
+            print(nm.version)
 
-        # output MeCab version
-        print(nm.version)
+            # output filename and charset for the MeCab system dictionary
+            sysdic = nm.dicts[0]
+            print(sysdic.filename)
+            print(sysdic.charset)
 
-        # output filename and charset for the MeCab system dictionary
-        sysdic = nm.dicts[0]
-        print(sysdic.filename)
-        print(sysdic.charset)
+            # parse a string
+            print(nm.parse('この星の一等賞になりたいの卓球で俺は、そんだけ！'))
 
-        # parse a string
-        print(nm.parse('この星の一等賞になりたいの卓球で俺は、そんだけ！'))
-
-        # parse string into MeCab nodes,
-        # and display much more detailed information about each morpheme
-        nodes = nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True)
-        for n in nodes:
-            if n.is_nor():
-                print("%s\t%d\t%d" % (n.surface, n.posid, n.wcost))
-    """
-
+            # parse string into MeCab nodes,
+            # and display much more detailed information about each morpheme
+            nodes = nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True)
+            for n in nodes:
+                if n.is_nor():
+                    print("%s\t%d\t%d" % (n.surface, n.posid, n.wcost))
+    '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
 
@@ -50,7 +48,7 @@ class MeCab(object):
     _ERROR_EMPTY_STR = 'Text to parse cannot be None'
     _ERROR_NOTUNICODE = 'Text should be Unicode string'
 
-    _REPR_FMT = '<%s.%s tagger="%s", options="%s", dicts=%s, version="%s">'
+    _REPR_FMT = '<%s.%s tagger=%s, options=%s, dicts=%s, version="%s">'
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
     _FN_NBEST_TONODE = 'mecab_nbest_init'
@@ -88,7 +86,7 @@ class MeCab(object):
                           'please use marginal or nbest'
 
     def __parse_mecab_options(self, options):
-        """Parses the MeCab options, returning them in a dictionary.
+        '''Parses the MeCab options, returning them in a dictionary.
 
         Lattice-level option has been deprecated; please use marginal or nbest
         instead.
@@ -104,15 +102,15 @@ class MeCab(object):
 
         Raises:
             MeCabError: An invalid value for N-best was passed in.
-        """
+        '''
         class MeCabArgumentParser(argparse.ArgumentParser):
-            """MeCab option parser for natto-py."""
+            '''MeCab option parser for natto-py.'''
 
             def error(self, message):
-                """error(message: string)
+                '''error(message: string)
 
                 Raises ValueError.
-                """
+                '''
                 raise ValueError(message)
 
         options = options or {}
@@ -213,7 +211,7 @@ class MeCab(object):
         return dopts
 
     def __build_options_str(self, options):
-        """Returns a string concatenation of the MeCab options.
+        '''Returns a string concatenation of the MeCab options.
 
         Args:
             options: dictionary of options to use when instantiating the MeCab
@@ -222,22 +220,21 @@ class MeCab(object):
         Returns:
             A string concatenation of the options used when instantiating the
             MeCab instance, in long-form.
-        """
+        '''
         opts = []
         for name in iter(list(MeCab._SUPPORTED_OPTS.values())):
             if name in options:
-                key = name.replace("_", "-")
+                key = name.replace('_', '-')
                 if key in self._BOOLEAN_OPTIONS:
                     if options[name]:
-                        opts.append("--%s" % key)
+                        opts.append('--%s' % key)
                 else:
-                    opts.append("--%s=%s" % (key, options[name]))
+                    opts.append('--%s=%s' % (key, options[name]))
 
         return self.__b(" ".join(opts))
 
-
     def __init__(self, options=None):
-        """Initializes the MeCab instance with the given options.
+        '''Initializes the MeCab instance with the given options.
 
         Args:
             options: Optional string or dictionary of the MeCab options to be
@@ -247,7 +244,7 @@ class MeCab(object):
             SystemExit: An unrecognized option was passed in.
             MeCabError: An error occurred in locating the MeCab library;
                         or the FFI handle to MeCab could not be created.
-        """
+        '''
         try:
             env = MeCabEnv()
 
@@ -261,7 +258,6 @@ class MeCab(object):
             self.__u, self.__b = self.__string_support(env.charset)
 
             # Set up dictionary of MeCab options to use
-            #self.options = self.__parse_mecab_options(env.charset, options)
             self.options = self.__parse_mecab_options(options)
 
             # Set up tagger pointer
@@ -329,27 +325,37 @@ class MeCab(object):
         # Set MeCab version string
         self.version = self.__u(self.ffi.string(self.mecab.mecab_version()))
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        if self.tagger != self.ffi.NULL and self.mecab != self.ffi.NULL:
+            self.mecab.mecab_destroy(self.tagger)
+        del(self.tagger, self.mecab, self.ffi)
+
     def __string_support(self, enc):
-        """Returns a tuple of functions for coding/decoding bytes and Unicode.
-        """
+        '''Returns a tuple of functions for coding/decoding bytes and Unicode.
+
+        For supporting both Python 2 and 3.
+        '''
         if sys.version < '3':
             def _u(b):
-                """Identity function, returns the argument string (bytes)."""
+                '''Identity function, returns the argument string (bytes).'''
                 return b
             def _b(u):
-                """Identity function, returns the argument string (bytes)."""
+                '''Identity function, returns the argument string (bytes).'''
                 return u
         else:
             def _u(b):
-                """Transforms byte string into Unicode."""
+                '''Transforms byte string into Unicode.'''
                 return b.decode(enc)
             def _b(u):
-                """Transforms Unicode string into encoded bytes."""
+                '''Transforms Unicode string into encoded bytes.'''
                 return u.encode(enc)
         return(_u, _b)
 
     def __build_parse_tostr(self, fn_name):
-        """Builds and returns the MeCab function for parsing Unicode text.
+        '''Builds and returns the MeCab function for parsing Unicode text.
 
         Args:
             fn_name: MeCab function name that determines the function
@@ -360,9 +366,9 @@ class MeCab(object):
             A function definition, tailored to parsing Unicode text and
             returning the result as a string suitable for display on stdout,
             using either the default or N-best behavior.
-        """
+        '''
         def _fn(text):
-            """Parse text and return MeCab result as string."""
+            '''Parse text and return MeCab result as string.'''
             args = [self.tagger]
             if fn_name == self._FN_NBEST_TOSTR:
                 args.append(self.options['nbest'])
@@ -378,7 +384,7 @@ class MeCab(object):
         return _fn
 
     def __build_parse_tonodes(self, fn_name):
-        """Builds and returns the MeCab function for parsing to nodes.
+        '''Builds and returns the MeCab function for parsing to nodes.
 
         Args:
             fn_name: MeCab function name that determines the function
@@ -387,9 +393,9 @@ class MeCab(object):
         Returns:
             A function definition, tailored to parsing as nodes, using either
             the default or N-best behavior.
-        """
+        '''
         def _fn(text):
-            """Parse text and return MeCab result as a node."""
+            '''Parse text and return MeCab result as a node.'''
 
             if fn_name == self._FN_NBEST_TONODE:
                 # N-best node parsing
@@ -431,7 +437,7 @@ class MeCab(object):
         return _fn
 
     def __repr__(self):
-        """Returns a string representation of this MeCab instance."""
+        '''Returns a string representation of this MeCab instance.'''
         return self._REPR_FMT % (type(self).__module__,
                                  type(self).__name__,
                                  self.tagger,
@@ -440,7 +446,7 @@ class MeCab(object):
                                  self.version)
 
     def parse(self, text, as_nodes=False):
-        """Parses the given text.
+        '''Parses the given text.
 
         Args:
             text: the text to parse.
@@ -450,7 +456,7 @@ class MeCab(object):
         Raises:
             MeCabError: a null argument was passed in;
                         or an unforseen error occurred during the operation.
-        """
+        '''
         if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
 
@@ -459,3 +465,32 @@ class MeCab(object):
             return self.__parse_tonodes(btext)
         else:
             return self.__parse_tostr(btext)
+
+
+'''
+Copyright (c) 2014, Brooke M. Fujita.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above
+   copyright notice, this list of conditions and the
+   following disclaimer.
+
+ * Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other
+   materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
