@@ -5,7 +5,16 @@ import unittest
 import natto.mecab as mecab
 
 class TestDictionary(unittest.TestCase):
-    """Tests the behavior of the natto.dictionary.DictionaryInfo class."""
+    """Tests the behavior of the natto.dictionary.DictionaryInfo class.
+
+    Assumes that the mecab-ipadic 2.7.0-20070801 dictionary is installed.
+    
+    MeCab supports the following character encodings:
+    - UTF-8 (sometimes displayed as UTF8)
+    - UTF-16
+    - SHIFT-JIS
+    - EUC-JP
+    """
 
     def setUp(self):
         self.nm = mecab.MeCab()
