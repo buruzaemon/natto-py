@@ -5,6 +5,7 @@ syntax: glob
 *.pyc
 
 .py*env/
+py*env*
 build/
 cffi*/
 dist/
