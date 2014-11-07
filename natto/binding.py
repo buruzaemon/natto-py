@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
-"""Binding via CFFI to the MeCab library."""
+'''Binding via CFFI to the MeCab library.'''
 import cffi
 
 def _ffi_libmecab():
-    """Returns an FFI interface to MeCab library.
+    '''Returns an FFI interface to MeCab library.
 
     Library definition is from mecab.h.
-    """
+    '''
     ffi = cffi.FFI()
-    ffi.cdef("""
+    ffi.cdef('''
         struct mecab_dictionary_info_t {
             const char                        *filename;
             const char                        *charset;
@@ -82,11 +82,11 @@ def _ffi_libmecab():
                                         const mecab_node_t *node);
 
         const mecab_dictionary_info_t* mecab_dictionary_info(mecab_t *mecab);
-    """)
+    ''')
     return ffi
 
 
-"""
+'''
 Copyright (c) 2014, Brooke M. Fujita.
 All rights reserved.
 
@@ -112,4 +112,4 @@ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
 ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-"""
+'''
