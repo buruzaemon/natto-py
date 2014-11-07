@@ -46,6 +46,7 @@ Set the ``MECAB_PATH`` environment variable to the exact name/path to your
 compiled ``mecab`` and the related dictionary to use a non-default character
 encoding.
 
+
 e.g., for Mac OS X::
 
     export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib 
