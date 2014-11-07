@@ -33,26 +33,40 @@ bind to the ``mecab`` library.
 
 Configuration
 -------------
+As long as the ``mecab`` (and ``mecab-config`` for *nix and Mac OS) executables 
+are on your ``PATH``, natto-py should just work without any explicit configuration.
+
+If not, or if you are using a custom-built system dictionary located in a
+non-default directory, or if you are using a non-default character encoding,
+then you will need to explicitly set the ``MECAB_PATH`` and ``MECAB_CHARSET``
+environment variables.
+
 Set the ``MECAB_PATH`` environment variable to the exact name/path to your
-``mecab`` library.
+``mecab`` library. Set the ``MECAB_CHARSET`` environment variable if you
+compiled ``mecab`` and the related dictionary to use a non-default character
+encoding.
 
 e.g., for Mac OS X::
 
     export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib 
+    export MECAB_CHARSET=utf8
 
 e.g., for bash on UNIX/Linux::
 
     export MECAB_PATH=/usr/local/lib/libmecab.so
+    export MECAB_CHARSET=euc-jp
 
 e.g., on Windows::
 
     set MECAB_PATH=C:\Program Files\MeCab\bin\libmecab.dll
+    set MECAB_CHARSET=shift-jis
 
 e.g., from within a Python program::
 
     import os
 
     os.environ['MECAB_PATH']='/usr/local/lib/libmecab.so'
+    os.environ['MECAB_CHARSET]=utf-16
 
 Usage
 -----
@@ -65,7 +79,7 @@ Instantiate a reference to the ``mecab`` library, and display some details::
     with MeCab() as nm:
         print(nm)
 
-    # output will be as follows
+    # displays details about the MeCab instance
     <natto.mecab.MeCab 
      tagger=<cdata 'mecab_t *' 0x000000000037AB40>, 
      options={}, 
@@ -81,18 +95,19 @@ Display details about the ``mecab`` system dictionary used::
         sysdic = nm.dicts[0]
         print(sysdic)
 
+    # displays the MeCab system dictionary info
     <natto.dictionary.DictionaryInfo 
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
      type=0, 
      filename="/usr/local/lib/mecab/dic/ipadic/sys.dic", 
      charset="utf8">
 
-        print(sysdic.is_sysdic())
-    True
 
 Parse Japanese text as a string, outputting to ``stdout``::
 
-    >>>     print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
+        print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
+
+    # MeCab's parsing as a string sent to stdout
     ピンチ    名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
     の      助詞,連体化,*,*,*,*,の,ノ,ノ
     時      名詞,非自立,副詞可能,*,*,*,時,トキ,トキ
@@ -108,11 +123,11 @@ Parse Japanese text as a string, outputting to ``stdout``::
 Next, try parsing the text with MeCab node parsing, using the more detailed
 information related to each morpheme::
 
-    >>>     nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
+        nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
 
-    >>>     for n in nodes:
-    ...         if not n.is_eos():
-    ...             print('%s\t%s' % (n.surface, n.cost))
+        for n in nodes:
+    ...     if not n.is_eos():
+    ...         print('%s\t%s' % (n.surface, n.cost))
     ... 
     ピンチ	3348
     の	3722
