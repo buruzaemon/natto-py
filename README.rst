@@ -68,7 +68,7 @@ e.g., from within a Python program::
     import os
 
     os.environ['MECAB_PATH']='/usr/local/lib/libmecab.so'
-    os.environ['MECAB_CHARSET]=utf-16
+    os.environ['MECAB_CHARSET']=utf-16
 
 Usage
 -----
