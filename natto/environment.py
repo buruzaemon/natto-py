@@ -59,7 +59,7 @@ class MeCabEnv(object):
         Defaults to euc-jp, as per MeCab documentation, when all else fails.
 
         Returns:
-            The full character encoding (charset) used by MeCab.
+            Character encoding (charset) used by MeCab.
         """
         cset = os.getenv(self.MECAB_CHARSET)
         if cset:
