@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
+'''Wrapper for MeCab node.'''
+
 class MeCabNode(object):
-    """Representation of a MeCab node, wrapping the mecab_node_t struct.
+    '''Representation of a MeCab node, wrapping the mecab_node_t struct.
 
     A list of MeCab nodes is returned when parsing a string of Japanese with
     as_nodes=True. Each node will contain detailed information about the
@@ -41,8 +43,7 @@ class MeCabNode(object):
         for n in nodes:
             if n.is_nor():
                 print "%s\t%s" % (n.surface, n.cost)
-    """
-
+    '''
     _REPR_FMT = '<%s.%s pointer=%s, stat=%s, surface="%s", feature="%s">'
 
     # Normal MeCab node defined in the dictionary.
@@ -57,7 +58,7 @@ class MeCabNode(object):
     EON_NODE = 4
 
     def __init__(self, nptr, surface, feature):
-        """Initializes the MeCab node and its attributes."""
+        '''Initializes the MeCab node and its attributes.'''
         self.ptr = nptr
         self.prev = nptr.prev
         self.next = getattr(nptr, 'next')
@@ -83,30 +84,59 @@ class MeCabNode(object):
         self.cost = nptr.cost
 
     def is_nor(self):
-        """Returns True if this is a normal node (defined in dictionary)."""
+        '''Returns True if this is a normal node (defined in dictionary).'''
         return self.stat == self.NOR_NODE
 
     def is_unk(self):
-        """Returns True if this is an unknown node (not in dictionary)."""
+        '''Returns True if this is an unknown node (not in dictionary).'''
         return self.stat == self.UNK_NODE
 
     def is_bos(self):
-        """Returns True if this is a beginning-of-sentence node."""
+        '''Returns True if this is a beginning-of-sentence node.'''
         return self.stat == self.BOS_NODE
 
     def is_eos(self):
-        """Returns True if this is an end-of-sentence node."""
+        '''Returns True if this is an end-of-sentence node.'''
         return self.stat == self.EOS_NODE
 
     def is_eon(self):
-        """Returns True if this is an end of an N-best node list."""
+        '''Returns True if this is an end of an N-best node list.'''
         return self.stat == self.EON_NODE
 
     def __repr__(self):
-        """Returns a string representation of this MeCab node."""
+        '''Returns a string representation of this MeCab node.'''
         return self._REPR_FMT % (type(self).__module__,
                                  type(self).__name__,
                                  self.ptr,
                                  self.stat,
                                  self.surface,
                                  self.feature)
+
+
+'''
+Copyright (c) 2014, Brooke M. Fujita.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are met:
+
+ * Redistributions of source code must retain the above
+   copyright notice, this list of conditions and the
+   following disclaimer.
+
+ * Redistributions in binary form must reproduce the above
+   copyright notice, this list of conditions and the
+   following disclaimer in the documentation and/or other
+   materials provided with the distribution.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+'''
