@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
+"""Tests for natto.dictionary."""
 import re
 import unittest
 import natto.mecab as mecab
 
-
 class TestDictionary(unittest.TestCase):
+    """Tests the behavior of the natto.dictionary.DictionaryInfo class."""
 
     def setUp(self):
         self.nm = mecab.MeCab()
