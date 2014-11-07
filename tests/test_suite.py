@@ -3,6 +3,7 @@
 import unittest
 from .test_binding import TestBinding
 from .test_dictionary import TestDictionary
+from .test_environment import TestMeCabEnv
 from .test_mecab import TestMecab
 
 def test_suite():
@@ -10,5 +11,6 @@ def test_suite():
     suite = unittest.TestSuite()
     suite.addTest(TestBinding)
     suite.addTest(TestDictionary)
+    suite.addTest(TestMeCabEnv)
     suite.addTest(TestMecab)
     return suite
