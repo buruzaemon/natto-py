@@ -14,7 +14,13 @@ natto-py requires the following:
 
 - `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
 - `cffi 0.8.6`_
+
+natto-py is compatible with the following Python versions:
+
 - `Python 2.7.8`_
+- `Python 3.2.5`_
+- `Python 3.3.5`_
+- `Python 3.4.2`_
 
 Installation
 ------------
@@ -156,6 +162,9 @@ LICENSE file for further details.
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
+.. _Python 3.2.5: https://www.python.org/download/releases/3.2.5/
+.. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
+.. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
