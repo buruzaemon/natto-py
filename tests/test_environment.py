@@ -30,8 +30,8 @@ class TestMeCabEnv(unittest.TestCase):
             dicinfo = lines.split(os.linesep)
             t = [t for t in dicinfo if t.startswith('charset')]
             expected = t[0].split('\t')[1].strip()
-            
-            self.assertEqual(noenv.charset, expected)
+
+            self.assertEqual(noenv.charset.lower(), expected.lower())
         finally:
             os.environ[environment.MeCabEnv.MECAB_CHARSET] = orig
 
