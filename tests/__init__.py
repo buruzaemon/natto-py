@@ -10,11 +10,11 @@ if not os.getenv(MeCab.MECAB_PATH):
 if not os.getenv(MeCab.MECAB_CHARSET):
     raise EnvironmentError('Please set MECAB_CHARSET before running the tests')
 
-# and the mecab executable is invoked during the tests...
+# and the mecab 0.996 executable is invoked during the tests...
 try:
-    res = Popen(['mecab', '-h'], stdout=PIPE).communicate()
+    res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
     line = res[0]
-    exp = 'MeCab'
+    exp = 'mecab of 0.996'
     if sys.version >= '3':
         line = line.decode(os.getenv(MeCab.MECAB_CHARSET))
     if not line.startswith(exp):
