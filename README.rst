@@ -55,9 +55,10 @@ Here's a very quick guide to using ``natto-py``.
 Instantiate a reference to the ``mecab`` library, and display some details::
 
     >>> from natto import MeCab
-    >>> nm = MeCab()
+    >>> with MeCab() as nm:
 
-    >>> print nm
+    >>>     print(nm)
+
     <natto.mecab.MeCab 
      tagger="<cdata 'mecab_t *' 0x000000000037AB40>", 
      options="{}", 
@@ -70,21 +71,22 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
 Display details about the ``mecab`` system dictionary used::
 
-    >>> sysdic = nm.dicts[0]
+    >>>     sysdic = nm.dicts[0]
 
-    >>> print(sysdic )
+    >>>     print(sysdic)
+
     <natto.dictionary.DictionaryInfo 
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>, 
      type="0", 
      filename="/usr/local/lib/mecab/dic/ipadic/sys.dic", 
      charset="utf8">
 
-    >>> print(sysdic.is_sysdic())
+    >>>     print(sysdic.is_sysdic())
     True
 
 Parse Japanese text as a string, outputting to ``stdout``::
 
-    >>> print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
+    >>>     print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
     ピンチ    名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
     の      助詞,連体化,*,*,*,*,の,ノ,ノ
     時      名詞,非自立,副詞可能,*,*,*,時,トキ,トキ
@@ -100,11 +102,11 @@ Parse Japanese text as a string, outputting to ``stdout``::
 Next, try parsing the text with MeCab node parsing, using the more detailed
 information related to each morpheme::
 
-    >>> nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
+    >>>     nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
 
-    >>> for n in nodes:
-    ...     if not n.is_eos():
-    ...         print('%s\t%s' % (n.surface, n.cost))
+    >>>     for n in nodes:
+    ...         if not n.is_eos():
+    ...             print('%s\t%s' % (n.surface, n.cost))
     ... 
     ピンチ	3348
     の	3722
