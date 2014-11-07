@@ -36,24 +36,20 @@ class TestMecab(unittest.TestCase):
         return text[0].strip()
 
     def _mecab_parse(self, options, text):
-        cmd = []
+        cmd = ['mecab']
         cwd = os.getcwd()
         if sys.platform == 'win32':
-            cmd.append('type')
-            cmd.append(os.path.join(cwd, 'tests', 'test_sjis'))
-            cmd.append('|')
-            cmd.append('mecab')
+            fname = os.path.join(cwd, 'tests', 'test_sjis')
             if len(options) > 0:
                 cmd.append(options)
+            cmd.append(fname)
             mout = Popen(cmd, stdout=PIPE, shell=True).communicate()
         else:
-            cmd.append('cat')
-            cmd.append(os.path.join(cwd, 'tests', 'test_utf8'))
-            cout = Popen(cmd, stdout=PIPE)
-            mcmd = ['mecab']
+            fname = os.path.join(cwd, 'tests', 'test_utf8')
             if len(options) > 0:
-                mcmd.append(options)
-            mout = Popen(mcmd, stdin=cout.stdout, stdout=PIPE).communicate()
+                cmd.append(options)
+            cmd.append(fname)
+            mout = Popen(cmd, stdout=PIPE).communicate()
 
         res = mout[0].strip()
         return res

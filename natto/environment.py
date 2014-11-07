@@ -83,7 +83,7 @@ class MeCabEnv(object):
                     return 'shift-jis'
                 elif sys.platform == 'darwin':
                     sys.stderr.write('%s\n' % self._INFO_UTF8_DEFAULT)
-                    return 'utf-8'
+                    return 'utf8'
                 else:
                     sys.stderr.write('%s\n' % self._INFO_EUCJP_DEFAULT)
                     return 'euc-jp'

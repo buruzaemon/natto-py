@@ -16,13 +16,6 @@ class TestMeCabEnv(unittest.TestCase):
     def setUp(self):
         self.env = environment.MeCabEnv()
 
-        if sys.platform == 'win32':
-            self.default_charset = 'shift-jis'
-        elif sys.platform == 'darwin':
-            self.default_charset = 'utf8'
-        else:
-            self.default_charset = 'euc-jp'
-
     # ------------------------------------------------------------------------
 
     def test_charset_defaulting(self):
@@ -31,7 +24,14 @@ class TestMeCabEnv(unittest.TestCase):
         try:
             del os.environ[environment.MeCabEnv.MECAB_CHARSET]
             noenv = environment.MeCabEnv()
-            self.assertEqual(noenv.charset, self.default_charset)
+
+            res = Popen(['mecab', '-D'], stdout=PIPE).communicate()
+            lines = res[0].decode()
+            dicinfo = lines.split(os.linesep)
+            t = [t for t in dicinfo if t.startswith('charset')]
+            expected = t[0].split('\t')[1].strip()
+            
+            self.assertEqual(noenv.charset, expected)
         finally:
             os.environ[environment.MeCabEnv.MECAB_CHARSET] = orig
 
