@@ -36,6 +36,15 @@ Configuration
 As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS) executables 
 are on your ``PATH``, ``natto-py`` should just work without any explicit configuration.
 
+If not, or if you are using a custom-built system dictionary located in a
+non-default directory, or if you are using a non-default character encoding,
+then you will need to explicitly set the ``MECAB_PATH`` and ``MECAB_CHARSET``
+environment variables.
+
+Set the ``MECAB_PATH`` environment variable to the exact name/path to your
+``mecab`` library. Set the ``MECAB_CHARSET`` environment variable if you
+compiled ``mecab`` and the related dictionary to use a non-default character
+encoding.
 
 
 Learn More
