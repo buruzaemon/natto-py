@@ -22,9 +22,14 @@ Requirements
 - `Python 3.3.5`_
 - `Python 3.4.2`_
 
+Installation
+------------
+Install ``natto-py`` with the following command::
 
+    pip install natto-py
 
-
+This will automatically install the ``cffi`` package, which natto-py uses to
+bind to the ``mecab`` library.
 
 
 
