@@ -1,6 +1,13 @@
 natto-py
 ========
 
+What is natto-py?
+-----------------
+``natto-py`` combines the Python_ programming language with MeCab_, the part-of-speech
+and morphological analyzer for the Japanese language.
+
+You can learn more about `natto-py at Bitbucket`_.
+
 Learn More
 ----------
 You can read more about ``natto-py`` on the `project Wiki`_.
