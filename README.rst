@@ -10,7 +10,7 @@ You can learn more about `natto-py at Bitbucket`_.
 
 Requirements
 -------------
-natto-py requires the following:
+``natto-py`` requires the following:
 
 - `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
 - `cffi 0.8.6`_
