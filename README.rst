@@ -33,7 +33,7 @@ bind to the ``mecab`` library.
 
 Configuration
 -------------
-As long as the ``mecab`` (and ``mecab-config`` for nix and Mac OS) executables 
+As long as the ``mecab`` (and ``mecab-config`` for ``*``nix and Mac OS) executables 
 are on your ``PATH``, ``natto-py`` should just work without any explicit configuration.
 
 
