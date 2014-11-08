@@ -395,9 +395,9 @@ class TestMecab(unittest.TestCase):
                                           'theta': 0.999,
                                           'cost_factor': 888,
                                           'unknown':1000})
-            actual = self._23support_decode(opts)
+            expected = self._23support_decode(opts)
     
-            expected = ['--dicdir=/foo',
+            actual = ['--dicdir=/foo',
                         '--userdic=/bar',
                         '--lattice-level=444',
                         '--output-format-type=yomi',
@@ -416,9 +416,9 @@ class TestMecab(unittest.TestCase):
                         '--allocate-sentence',
                         '--theta=0.999',
                         '--cost-factor=888']
-            for option in expected:
-                self.assertIsNotNone(re.search(option, actual))
-            self.assertIsNone(re.search('--unknown', actual))
+            for option in actual:
+                self.assertIsNotNone(re.search(option, expected))
+            self.assertIsNone(re.search('--unknown', expected))
 
     # ------------------------------------------------------------------------
     def test_init_unknownoption(self):
@@ -445,8 +445,8 @@ class TestMecab(unittest.TestCase):
     def test_version(self):
         with mecab.MeCab() as nm:   
             res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
-            actual = self._23support_decode(res[0])
-            self.assertIsNotNone(re.search(nm.version, actual))
+            expected = self._23support_decode(res[0])
+            self.assertIsNotNone(re.search(nm.version, expected))
 
     # ------------------------------------------------------------------------
     def test_null_text_error(self):
@@ -456,25 +456,34 @@ class TestMecab(unittest.TestCase):
 
     def test_parse_tostr_default(self):
         with mecab.MeCab() as nm:   
-            actual = nm.parse(self.text).strip()
-            actual = actual.replace('\n', os.linesep)                    # ???
+            expected = nm.parse(self.text).strip()
+            expected = expected.replace('\n', os.linesep)                    # ???
     
-            expected = self._23support_decode(self._mecab_parse('', self.text))
+            actual = self._23support_decode(self._mecab_parse('', self.text))
     
-            self.assertEqual(actual, expected)
+            self.assertEqual(expected, actual)
+
+    def test_parse_tostr_wakati(self):
+        with mecab.MeCab('-Owakati') as nm:
+            expected = nm.parse(self.text)
+
+            actual = self._23support_decode(self._mecab_parse('-Owakati', self.text))
+    
+            self.assertEqual(expected, actual)
+
 
     def test_parse_tonode_default(self):
         with mecab.MeCab('-N2') as nm:
-            actual = nm.parse(self.text, as_nodes=True)
-            actual = [e for e in actual if not e.is_eos()]
+            expected = nm.parse(self.text, as_nodes=True)
+            expected = [e for e in expected if not e.is_eos()]
         
-            expected = self._23support_decode(self._mecab_parse('-N2', self.text))
-            expected = [e for e in expected.split(os.linesep) if e != 'EOS']
+            actual = self._23support_decode(self._mecab_parse('-N2', self.text))
+            actual = [e for e in actual.split(os.linesep) if e != 'EOS']
     
-            for i, e in enumerate(expected):
-                s, f = expected[i].split()
-                self.assertEqual(actual[i].surface, s)
-                self.assertEqual(actual[i].feature, f)
+            for i, e in enumerate(actual):
+                s, f = actual[i].split()
+                self.assertEqual(expected[i].surface, s)
+                self.assertEqual(expected[i].feature, f)
     
 
 '''

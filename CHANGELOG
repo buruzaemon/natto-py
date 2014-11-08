@@ -1,7 +1,7 @@
 CHANGELOG
 ---------
 
-- 2014/10/31: 0.0.3 release.
+- 2014/11/08: 0.0.3 release.
     - Upgrading to beta status
     - String-Unicode conversion to support Python 2 and 3, keeping to principal
       of least surprise with regards to behavior of strings
