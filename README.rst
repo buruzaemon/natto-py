@@ -1,48 +1,6 @@
 natto-py
 ========
 
-What is natto-py?
------------------
-``natto-py`` combines the Python_ programming language with MeCab_, the part-of-speech
-and morphological analyzer for the Japanese language.
-
-You can learn more about `natto-py at Bitbucket`_.
-
-Requirements
--------------
-``natto-py`` requires the following:
-
-- `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
-- `cffi 0.8.6`_
-
-``natto-py`` is compatible with the following Python versions:
-
-- `Python 2.7.8`_
-- `Python 3.2.5`_
-- `Python 3.3.5`_
-- `Python 3.4.2`_
-
-Installation
-------------
-Install ``natto-py`` with the following command::
-
-    pip install natto-py
-
-This will automatically install the ``cffi`` package, which natto-py uses to
-bind to the ``mecab`` library.
-
-
-Configuration
--------------
-As long as the ``mecab`` (and ``mecab-config`` for *nix and Mac OS) executables 
-are on your ``PATH``, ``natto-py`` should just work without any explicit configuration.
-
-If not, or if you are using a custom-built system dictionary located in a
-non-default directory, or if you are using a non-default character encoding,
-then you will need to explicitly set the ``MECAB_PATH`` and ``MECAB_CHARSET``
-environment variables.
-
-
 Learn More
 ----------
 You can read more about ``natto-py`` on the `project Wiki`_.
