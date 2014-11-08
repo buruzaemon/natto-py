@@ -46,6 +46,29 @@ Set the ``MECAB_PATH`` environment variable to the exact name/path to your
 compiled ``mecab`` and the related dictionary to use a non-default character
 encoding.
 
+e.g., for Mac OS X::
+
+    export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib 
+    export MECAB_CHARSET=utf8
+
+e.g., for bash on UNIX/Linux::
+
+    export MECAB_PATH=/usr/local/lib/libmecab.so
+    export MECAB_CHARSET=euc-jp
+
+e.g., on Windows::
+
+    set MECAB_PATH=C:\Program Files\MeCab\bin\libmecab.dll
+    set MECAB_CHARSET=shift-jis
+
+e.g., from within a Python program::
+
+    import os
+
+    os.environ['MECAB_PATH']='/usr/local/lib/libmecab.so'
+    os.environ['MECAB_CHARSET']=utf-16
+
+
 
 Learn More
 ----------
