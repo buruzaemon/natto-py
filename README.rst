@@ -8,6 +8,26 @@ and morphological analyzer for the Japanese language.
 
 You can learn more about `natto-py at Bitbucket`_.
 
+Requirements
+-------------
+``natto-py`` requires the following:
+
+- `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
+- `cffi 0.8.6`_
+
+``natto-py`` is compatible with the following Python versions:
+
+- `Python 2.7.8`_
+- `Python 3.2.5`_
+- `Python 3.3.5`_
+- `Python 3.4.2`_
+
+
+
+
+
+
+
 Learn More
 ----------
 You can read more about ``natto-py`` on the `project Wiki`_.
