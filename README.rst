@@ -31,10 +31,7 @@ Install ``natto-py`` with the following command::
 This will automatically install the ``cffi`` package, which natto-py uses to
 bind to the ``mecab`` library.
 
-Configuration
--------------
-As long as the ``mecab`` (and ``mecab-config`` for *nix and Mac OS) executables 
-are on your ``PATH``, ``natto-py`` should just work without any explicit configuration.
+
 
 
 
