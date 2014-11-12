@@ -1,6 +1,13 @@
 CHANGELOG
 ---------
 
+- 2014/11/08: 0.0.5 release.
+    - Issue #4: adding lib to natto.mecab.MeCab.
+    - Issue #6: adding __del__ to natto.mecab.MeCab.
+
+- 2014/11/08: 0.0.4 release.
+    - Minor cosmetic fixes.
+
 - 2014/11/08: 0.0.3 release.
     - Upgrading to beta status
     - String-Unicode conversion to support Python 2 and 3, keeping to principal
