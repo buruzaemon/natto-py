@@ -48,7 +48,7 @@ class MeCab(object):
     _ERROR_EMPTY_STR = 'Text to parse cannot be None'
     _ERROR_NOTUNICODE = 'Text should be Unicode string'
 
-    _REPR_FMT = '<%s.%s tagger=%s, options=%s, dicts=%s, version="%s">'
+    _REPR_FMT = '<%s.%s lib="%s", tagger=%s, options=%s, dicts=%s, version="%s">'
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
     _FN_NBEST_TONODE = 'mecab_nbest_init'
@@ -247,12 +247,9 @@ class MeCab(object):
         '''
         try:
             env = MeCabEnv()
-
-            # Instantiate ffi handle
             self.ffi = _ffi_libmecab()
-
-            # Set up mecab pointer
             self.mecab = self.ffi.dlopen(env.libpath)
+            self.lib = env.libpath 
 
             # Set up byte/Unicode converters (Python 3 support)
             self.__u, self.__b = self.__string_support(env.charset)
@@ -324,14 +321,21 @@ class MeCab(object):
 
         # Set MeCab version string
         self.version = self.__u(self.ffi.string(self.mecab.mecab_version()))
-
+    
+    def __del__(self):
+        if hasattr(self, 'tagger') and hasattr(self, 'mecab') and hasattr(self, 'ffi'):
+            if self.tagger != self.ffi.NULL and self.mecab != self.ffi.NULL:
+                self.mecab.mecab_destroy(self.tagger)
+        if hasattr(self, 'mecab'):
+            del self.mecab
+        if hasattr(self, 'ffi'):
+            del self.ffi
+        
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, traceback):
-        if self.tagger != self.ffi.NULL and self.mecab != self.ffi.NULL:
-            self.mecab.mecab_destroy(self.tagger)
-        del(self.tagger, self.mecab, self.ffi)
+        self.__del__()
 
     def __string_support(self, enc):
         '''Returns a tuple of functions for coding/decoding bytes and Unicode.
@@ -440,6 +444,7 @@ class MeCab(object):
         '''Returns a string representation of this MeCab instance.'''
         return self._REPR_FMT % (type(self).__module__,
                                  type(self).__name__,
+                                 self.lib,
                                  self.tagger,
                                  self.options,
                                  self.dicts,
