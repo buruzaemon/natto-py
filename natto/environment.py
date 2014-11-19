@@ -114,20 +114,25 @@ class MeCabEnv(object):
             plat = sys.platform
             if plat == 'win32':
                 lib = 'libmecab.%s' % self._WINLIB_EXT
+                
                 try:
-                    cmd = ['mecab', '-D']
-                    res = Popen(cmd, stdout=PIPE).communicate()
-                    lines = res[0].decode()
-                    if not lines.startswith('unrecognized'):
-                        dicinfo = lines.split(os.linesep)
-                        t = [t for t in dicinfo if t.startswith('filename')]
-                        if len(t) > 0:
-                            ldir = t[0].split('etc')[0][10:].strip()
-                            libp = os.path.join(ldir, 'bin', lib)
-                        else:
-                            raise EnvironmentError(self._ERROR_MECABD % lib)
-                    else:
-                        raise EnvironmentError(self._ERROR_MECABD % lib)
+#                    cmd = ['mecab', '-D']
+#                    res = Popen(cmd, stdout=PIPE).communicate()
+#                    lines = res[0].decode()                    
+#                    if not lines.startswith('unrecognized'):
+#                        dicinfo = lines.split(os.linesep)
+#                        t = [t for t in dicinfo if t.startswith('filename')]
+#                        if len(t) > 0:
+#                            ldir = t[0].split('etc')[0][10:].strip()
+#                            libp = os.path.join(ldir, 'bin', lib)
+#                        else:
+#                            raise EnvironmentError(self._ERROR_MECABD % lib)
+
+                    v = self.__regkey_value('HKEY_CURRENT_USER\Software\MeCab', 'mecabrc')
+                    ldir = v.split('etc')[0]
+                    libp = os.path.join(ldir, 'bin', lib)
+#                    else:
+#                        raise EnvironmentError(self._ERROR_MECABD % lib)
                 except EnvironmentError:
                     sys.stderr.write('%s\n' % sys.exc_info()[0])
                     raise EnvironmentError(self._ERROR_NOLIB % lib)
@@ -157,6 +162,30 @@ class MeCabEnv(object):
             else:
                 raise EnvironmentError(self._ERROR_NOLIB % libp)
 
+    def __regkey_value(self, path, name="", start_key=None):
+        if sys.version < '3':
+            import _winreg as reg
+        else:
+            import winreg as reg
+        def _fn(path, name="", start_key=None):
+            if isinstance(path, str):
+                path = path.split("\\")
+            if start_key is None:
+                start_key = getattr(reg, path[0])
+                return _fn(path[1:], name, start_key)
+            else:
+                subkey = path.pop(0)
+            with reg.OpenKey(start_key, subkey) as handle:
+                if path:
+                    return _fn(path, name, handle)
+                else:
+                    desc, i = None, 0
+                    while not desc or desc[0] != name:
+                        desc = reg.EnumValue(handle, i)
+                        i += 1
+                    return desc[1]
+        return _fn(path, name, start_key)           
+            
 
 '''
 Copyright (c) 2014, Brooke M. Fujita.
