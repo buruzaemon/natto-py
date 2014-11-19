@@ -10,8 +10,9 @@ import natto.environment as env
 import natto.mecab as mecab
 from StringIO import StringIO
 from subprocess import Popen, PIPE
+from tests import Test23Support
 
-class TestMecab(unittest.TestCase):
+class TestMecab(unittest.TestCase, Test23Support):
     '''Tests the behavior of the natto.mecab.MeCab class.
 
     Assumes that the MECAB_PATH and MECAB_CHARSET environment variables have
@@ -23,9 +24,9 @@ class TestMecab(unittest.TestCase):
             self.testfile = os.path.join(cwd, 'tests', 'test_sjis')
         else:
             self.testfile = os.path.join(cwd, 'tests', 'test_utf8')
-
-        self.text = self._read_text()
+        
         self.env = env.MeCabEnv()
+        self.text = self._read_text()
 
     def tearDown(self):
         self.testfile = None
@@ -35,7 +36,7 @@ class TestMecab(unittest.TestCase):
     def _read_text(self):
         with codecs.open(self.testfile, 'r') as f:
             text = f.readlines()
-        return text[0].strip()
+        return self._2unicode(text[0].strip())
 
     def _mecab_parse(self, options):
         cmd = ['mecab']
@@ -52,25 +53,30 @@ class TestMecab(unittest.TestCase):
 
         res = mout[0].strip()
         return res
-
+        
     def _23support_prep(self, morphs):
         if sys.version < '3':
             morphs = [e.decode('utf-8').encode(self.env.charset) for e in morphs]
         return morphs
 
-    def _23support_decode(self, b):
-        if sys.version < '3':
-            return b
-        else:
-            return b.decode(self.env.charset)
 
-    def _23support_encode(self, b):
-        if sys.version < '3':
-            return b
-        else:
-            return b.encode(self.env.charset)
+#
+#    def _23support_encode(self, b):
+#        if sys.version < '3':
+#            return b
+#        else:
+#            return b.encode(self.env.charset)
 
     # ------------------------------------------------------------------------
+    def test_parse_unicode(self):
+        s = '日本語だよ、これが。' 
+        with mecab.MeCab() as nm:
+            if sys.version < '3':
+                with self.assertRaises(api.MeCabError):                
+                    nm.parse(s)
+            else:
+                self.assertIsNotNone(nm.parse(s))     
+
     def test_parse_mecab_options_none(self):
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options(None)
@@ -394,7 +400,7 @@ class TestMecab(unittest.TestCase):
                                           'theta': 0.999,
                                           'cost_factor': 888,
                                           'unknown':1000})
-            expected = self._23support_decode(opts)
+            expected = self._2bytes(opts)
 
             actual = ['--dicdir=/foo',
                       '--userdic=/bar',
@@ -407,7 +413,7 @@ class TestMecab(unittest.TestCase):
                       '--max-grouping-size=666',
                       '--node-format=node\\\\n',
                       '--unk-format=unk\\\\n',
-                      '--bos-format=bos\\\\n',
+                      '--bos-format=bos\\\\n', 
                       '--eos-format=eos\\\\n',
                       '--eon-format=eon\\\\n',
                       '--unk-feature=unkf\\\\n',
@@ -444,7 +450,9 @@ class TestMecab(unittest.TestCase):
     def test_version(self):
         with mecab.MeCab() as nm:
             res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
-            expected = self._23support_decode(res[0])
+            expected = self._b2u(res[0])
+            print(isinstance(nm.version, str))
+            print(isinstance(expected, str))
             self.assertIsNotNone(re.search(nm.version, expected))
 
     # ------------------------------------------------------------------------
@@ -458,7 +466,7 @@ class TestMecab(unittest.TestCase):
             expected = nm.parse(self.text).strip()
             expected = expected.replace('\n', os.linesep)                 # ???
 
-            actual = self._23support_decode(self._mecab_parse(''))
+            actual = self._b2u(self._mecab_parse(''))
 
             self.assertEqual(expected, actual)
 
@@ -474,7 +482,7 @@ class TestMecab(unittest.TestCase):
                 expected = nm.parse(self.text)
                 expected = expected.replace('\n', os.linesep)
 
-                actual = self._23support_decode(self._mecab_parse(argf))
+                actual = self._b2u(self._mecab_parse(argf))
 
                 self.assertEqual(expected, actual)
 
@@ -485,7 +493,7 @@ class TestMecab(unittest.TestCase):
                 expected = nm.parse(self.text, as_nodes=True)
                 expected = [e for e in expected if not e.is_eos()]
 
-                actual = self._23support_decode(self._mecab_parse(argf))
+                actual = self._b2u(self._mecab_parse(argf))
                 actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
                 for i, e in enumerate(actual):

@@ -122,7 +122,7 @@ class MeCab(object):
                     if options[name]:
                         val = options[name]
                         if isinstance(val, bytes):
-                            val = self.__u(options[name])
+                            val = self.__b2u(options[name])
                         dopts[name] = val
         else:
             p = MeCabArgumentParser()
@@ -231,7 +231,7 @@ class MeCab(object):
                 else:
                     opts.append('--%s=%s' % (key, options[name]))
 
-        return self.__b(" ".join(opts))
+        return self.__u2b(" ".join(opts))
 
     def __init__(self, options=None):
         '''Initializes the MeCab instance with the given options.
@@ -252,7 +252,8 @@ class MeCab(object):
             self.lib = env.libpath 
 
             # Set up byte/Unicode converters (Python 3 support)
-            self.__u, self.__b = self.__string_support(env.charset)
+            self.__b2u, self.__u2b, self.__out2str, self.__isu = \
+                                                self.__23_support(env.charset)
 
             # Set up dictionary of MeCab options to use
             self.options = self.__parse_mecab_options(options)
@@ -311,8 +312,8 @@ class MeCab(object):
         self.dicts = []
         dptr = self.mecab.mecab_dictionary_info(self.tagger)
         while dptr != self.ffi.NULL:
-            fname = self.__u(self.ffi.string(dptr.filename))
-            chset = self.__u(self.ffi.string(dptr.charset))
+            fname = self.__out2str(self.ffi.string(dptr.filename))
+            chset = self.__out2str(self.ffi.string(dptr.charset))
             self.dicts.append(DictionaryInfo(dptr, fname, chset))
             dptr = getattr(dptr, 'next')
 
@@ -320,7 +321,7 @@ class MeCab(object):
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.__u(self.ffi.string(self.mecab.mecab_version()))
+        self.version = self.__out2str(self.ffi.string(self.mecab.mecab_version()))
     
     def __del__(self):
         if hasattr(self, 'tagger') and hasattr(self, 'mecab') and hasattr(self, 'ffi'):
@@ -337,26 +338,34 @@ class MeCab(object):
     def __exit__(self, type, value, traceback):
         self.__del__()
 
-    def __string_support(self, enc):
+    def __23_support(self, enc):
         '''Returns a tuple of functions for coding/decoding bytes and Unicode.
 
         For supporting both Python 2 and 3.
         '''
         if sys.version < '3':
-            def _u(b):
-                '''Identity function, returns the argument string (bytes).'''
-                return b
-            def _b(u):
-                '''Identity function, returns the argument string (bytes).'''
-                return u
-        else:
-            def _u(b):
+            def b2u(b):
                 '''Transforms byte string into Unicode.'''
                 return b.decode(enc)
-            def _b(u):
-                '''Transforms Unicode string into encoded bytes.'''
+            def u2b(u):
+                '''Transforms the Unicode string into encoded bytes.'''
                 return u.encode(enc)
-        return(_u, _b)
+            def out2str(out):
+                return out
+            def isunicode(text):
+                return isinstance(text, unicode)
+        else:
+            def b2u(b):
+                '''Identity function, returns the argument string (unicode).'''                
+                return b.decode(enc)
+            def u2b(u):
+                '''Identity function, returns the argument string (unicode).'''
+                return u.encode(enc)
+            def out2str(out):
+                return out.decode(enc)
+            def isunicode(text):
+                return isinstance(text, str)
+        return(b2u, u2b, out2str, isunicode)
 
     def __build_parse_tostr(self, fn_name):
         '''Builds and returns the MeCab function for parsing Unicode text.
@@ -381,10 +390,10 @@ class MeCab(object):
             res = getattr(self.mecab, fn_name)(*args)
             if res != self.ffi.NULL:
                 raw = self.ffi.string(res)
-                return self.__u(raw).strip()
+                return self.__b2u(raw).strip()
             else:
                 err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.__u(self.ffi.string(err)))
+                raise MeCabError(self.__b2u(self.ffi.string(err)))
         return _fn
 
     def __build_parse_tonodes(self, fn_name):
@@ -418,7 +427,7 @@ class MeCab(object):
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.ffi.string(nptr.surface[0:nptr.length])
-                            surf = self.__u(raws).strip()
+                            surf = self.__b2u(raws).strip()
 
                             if self.format_node_feature:
                                 sp = self.mecab.mecab_format_node(self.tagger,
@@ -426,7 +435,7 @@ class MeCab(object):
                                 rawf = self.ffi.string(sp)
                             else:
                                 rawf = self.ffi.string(nptr.feature)
-                            feat = self.__u(rawf).strip()
+                            feat = self.__b2u(rawf).strip()
 
                             mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
@@ -437,9 +446,9 @@ class MeCab(object):
                 return nodes
             else:
                 err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.__u(self.ffi.string(err)))
+                raise MeCabError(self.__b2u(self.ffi.string(err)))
         return _fn
-
+        
     def __repr__(self):
         '''Returns a string representation of this MeCab instance.'''
         return self._REPR_FMT % (type(self).__module__,
@@ -454,7 +463,7 @@ class MeCab(object):
         '''Parses the given text.
 
         Args:
-            text: the text to parse.
+            text: the Unicode text to parse.
             as_nodes: flag indicating whether to parse as nodes or strings;
                 defaults to False (string parsing).
 
@@ -464,12 +473,16 @@ class MeCab(object):
         '''
         if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
+        elif not self.__isu(text):
+            raise MeCabError(self._ERROR_NOTUNICODE)
 
-        btext = self.__b(text)
+        btext = self.__u2b(text)
         if as_nodes:
             return self.__parse_tonodes(btext)
         else:
             return self.__parse_tostr(btext)
+
+
 
 
 '''

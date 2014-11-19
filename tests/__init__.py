@@ -3,6 +3,25 @@ import sys
 from natto.mecab import MeCab
 from subprocess import Popen, PIPE
 
+__all__ = ['Test23Support']
+
+class Test23Support(object):
+    def _b2u(self, text):
+        return text.decode(self.env.charset)
+        
+    def _2unicode(self, text):
+        if sys.version < '3':
+            return text.decode(self.env.charset)
+        else:
+            return text
+
+    def _2bytes(self, text):
+        if sys.version < '3':
+            return text
+        else:
+            return text.decode(self.env.charset)
+
+
 # full path to MeCab library is required for testing...
 if not os.getenv(MeCab.MECAB_PATH):
     raise EnvironmentError('Please set MECAB_PATH before running the tests')
