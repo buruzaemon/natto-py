@@ -23,18 +23,21 @@ class MeCabEnv(object):
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
 
-    _WINLIB_EXT = 'dll'
+    _LIBMECAB = 'libmecab.{}'
     _MACLIB_EXT = 'dylib'
-
     _UNIXLIB_EXT = 'so'
+    _WINLIB_EXT = 'dll'
+    _WINHKEY = r'HKEY_CURRENT_USER\Software\MeCab'
+    _WINVALUE = 'mecabrc'
+
     _INFO_EUCJP_DEFAULT = 'INFO: defaulting MeCab charset to euc-jp'
     _INFO_SJIS_DEFAULT = 'INFO: defaulting MeCab charset to shift-jis'
     _INFO_UTF8_DEFAULT = 'INFO: defaulting MeCab charset to utf-8'
     _ERROR_NODIC = 'ERROR: MeCab dictionary charset not found'
     _ERROR_NOCMD = 'ERROR: mecab -D command not recognized'
-    _ERROR_NOLIB = 'ERROR: %s could not be found, please use MECAB_PATH'
-    _ERROR_MECABD = 'ERROR: mecab -D could not be used to locate %s'
-    _ERROR_MECABCONFIG = 'ERROR: mecab-config could not locate %s'
+    _ERROR_NOLIB = 'ERROR: {} could not be found, please use MECAB_PATH'
+    _ERROR_WINREG = 'ERROR: No value {} in Windows Registry at {}'
+    _ERROR_MECABCONFIG = 'ERROR: mecab-config could not locate {}'
 
     def __init__(self):
         '''Initializes the MeCabEnv instance.
@@ -72,20 +75,20 @@ class MeCabEnv(object):
                     if len(t) > 0:
                         return t[0].split()[1].lower()
                     else:
-                        sys.stderr.write('%s\n' % self._ERROR_NODIC)
+                        sys.stderr.write('{}\n'.format(self._ERROR_NODIC))
                         raise EnvironmentError(self._ERROR_NODIC)
                 else:
-                    sys.stderr.write('%s\n' % self._ERROR_NOCMD)
+                    sys.stderr.write('{}\n'.format(self._ERROR_NOCMD))
                     raise EnvironmentError(self._ERROR_NOCMD)
             except OSError:
                 if sys.platform == 'win32':
-                    sys.stderr.write('%s\n' % self._INFO_SJIS_DEFAULT)
+                    sys.stderr.write('{}\n'.format(self._INFO_SJIS_DEFAULT))
                     return 'shift-jis'
                 elif sys.platform == 'darwin':
-                    sys.stderr.write('%s\n' % self._INFO_UTF8_DEFAULT)
+                    sys.stderr.write('{}\n'.format(self._INFO_UTF8_DEFAULT))
                     return 'utf8'
                 else:
-                    sys.stderr.write('%s\n' % self._INFO_EUCJP_DEFAULT)
+                    sys.stderr.write('{}\n'.format(self._INFO_EUCJP_DEFAULT))
                     return 'euc-jp'
 
     def __get_libpath(self):
@@ -113,35 +116,24 @@ class MeCabEnv(object):
         else:
             plat = sys.platform
             if plat == 'win32':
-                lib = 'libmecab.%s' % self._WINLIB_EXT
-                
-                try:
-#                    cmd = ['mecab', '-D']
-#                    res = Popen(cmd, stdout=PIPE).communicate()
-#                    lines = res[0].decode()                    
-#                    if not lines.startswith('unrecognized'):
-#                        dicinfo = lines.split(os.linesep)
-#                        t = [t for t in dicinfo if t.startswith('filename')]
-#                        if len(t) > 0:
-#                            ldir = t[0].split('etc')[0][10:].strip()
-#                            libp = os.path.join(ldir, 'bin', lib)
-#                        else:
-#                            raise EnvironmentError(self._ERROR_MECABD % lib)
+                lib = self._LIBMECAB.format(self._WINLIB_EXT)
 
-                    v = self.__regkey_value('HKEY_CURRENT_USER\Software\MeCab', 'mecabrc')
+                try:
+                    v = self.__regkey_value(self._WINHKEY, self._WINVALUE)
                     ldir = v.split('etc')[0]
                     libp = os.path.join(ldir, 'bin', lib)
-#                    else:
-#                        raise EnvironmentError(self._ERROR_MECABD % lib)
-                except EnvironmentError:
-                    sys.stderr.write('%s\n' % sys.exc_info()[0])
-                    raise EnvironmentError(self._ERROR_NOLIB % lib)
+                except EnvironmentError as err:
+                    sys.stderr.write('{}\n'.format(err))
+                    sys.stderr.write('{}\n'.format(sys.exc_info()[0]))
+                    raise EnvironmentError(
+                        self._ERROR_WINREG.format(self._WINVALUE,
+                                                  self._WINHKEY))
             else:
                 # UNIX-y OS?
                 if plat == 'darwin':
-                    lib = 'libmecab.%s' % self._MACLIB_EXT
+                    lib = self._LIBMECAB.format(self._MACLIB_EXT)
                 else:
-                    lib = 'libmecab.%s' % self._UNIXLIB_EXT
+                    lib = self._LIBMECAB.format(self._UNIXLIB_EXT)
 
                 try:
                     cmd = ['mecab-config', '--libs-only-L']
@@ -151,25 +143,40 @@ class MeCabEnv(object):
                         linfo = lines.strip()
                         libp = os.path.join(linfo, lib)
                     else:
-                        raise EnvironmentError(self._ERROR_MECABCONFIG % lib)
-                except EnvironmentError:
-                    sys.stderr.write('%s\n' % sys.exc_info()[0])
-                    raise EnvironmentError(self._ERROR_NOLIB % lib)
+                        raise EnvironmentError(
+                            self._ERROR_MECABCONFIG.format(lib))
+                except EnvironmentError as err:
+                    sys.stderr.write('{}\n'.format(err))
+                    sys.stderr.write('{}\n'.format(sys.exc_info()[0]))
+                    raise EnvironmentError(self._ERROR_NOLIB.format(lib))
 
             if libp and os.path.exists(libp):
                 os.environ[self.MECAB_PATH] = libp
                 return libp
             else:
-                raise EnvironmentError(self._ERROR_NOLIB % libp)
+                raise EnvironmentError(self._ERROR_NOLIB.format(libp))
 
-    def __regkey_value(self, path, name="", start_key=None):
+    def __regkey_value(self, path, name='', start_key=None):
+        r'''Return the data of value mecabrc at MeCab HKEY node.
+
+        On Windows, the path to the mecabrc as set in the Windows Registry is
+        used to deduce the path to libmecab.dll.
+
+        Returns:
+            The full path to the mecabrc on Windows.
+
+        Raises:
+            WindowsError: A problem was encountered in trying to locate the
+                value mecabrc at HKEY_CURRENT_USER\Software\MeCab.
+        '''
         if sys.version < '3':
             import _winreg as reg
         else:
             import winreg as reg
-        def _fn(path, name="", start_key=None):
+
+        def _fn(path, name='', start_key=None):
             if isinstance(path, str):
-                path = path.split("\\")
+                path = path.split('\\')
             if start_key is None:
                 start_key = getattr(reg, path[0])
                 return _fn(path[1:], name, start_key)
@@ -184,8 +191,8 @@ class MeCabEnv(object):
                         desc = reg.EnumValue(handle, i)
                         i += 1
                     return desc[1]
-        return _fn(path, name, start_key)           
-            
+        return _fn(path, name, start_key)
+
 
 '''
 Copyright (c) 2014, Brooke M. Fujita.
