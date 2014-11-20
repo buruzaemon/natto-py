@@ -21,18 +21,18 @@ class DictionaryInfo(object):
     Example usage:
 
         from natto import MeCab
-        
+
         with MeCab() as nm:
             # first dictionary info is MeCab's system dictionary
             sysdic = nm.dicts[0]
-    
+
             print(sysdic.filename)
-    
+
             print(sysdic.charset)
-    
+
             print(sysdic.is_sysdic())
     '''
-    _REPR_FMT = '<%s.%s pointer=%s, type=%d, filename="%s", charset="%s">'
+    _REPR_FMT = '<{}.{} pointer={}, type={}, filename="{}", charset="{}">'
 
     # System dictionary
     SYS_DIC = 0
@@ -67,12 +67,12 @@ class DictionaryInfo(object):
 
     def __repr__(self):
         '''Returns a string representation of this MeCab dictionary.'''
-        return self._REPR_FMT % (type(self).__module__,
-                                 type(self).__name__,
-                                 self.ptr,
-                                 self.type,
-                                 self.filename,
-                                 self.charset)
+        return self._REPR_FMT.format(type(self).__module__,
+                                     type(self).__name__,
+                                     self.ptr,
+                                     self.type,
+                                     self.filename,
+                                     self.charset)
 
 
 '''
