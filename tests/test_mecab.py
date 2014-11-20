@@ -24,7 +24,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.testfile = os.path.join(cwd, 'tests', 'test_sjis')
         else:
             self.testfile = os.path.join(cwd, 'tests', 'test_utf8')
-        
+
         self.env = env.MeCabEnv()
         self.text = self._read_text()
 
@@ -53,7 +53,7 @@ class TestMecab(unittest.TestCase, Test23Support):
 
         res = mout[0].strip()
         return res
-        
+
     def _23support_prep(self, morphs):
         if sys.version < '3':
             morphs = [e.decode('utf-8').encode(self.env.charset) for e in morphs]
@@ -69,13 +69,13 @@ class TestMecab(unittest.TestCase, Test23Support):
 
     # ------------------------------------------------------------------------
     def test_parse_unicode(self):
-        s = '日本語だよ、これが。' 
+        s = '日本語だよ、これが。'
         with mecab.MeCab() as nm:
             if sys.version < '3':
-                with self.assertRaises(api.MeCabError):                
+                with self.assertRaises(api.MeCabError):
                     nm.parse(s)
             else:
-                self.assertIsNotNone(nm.parse(s))     
+                self.assertIsNotNone(nm.parse(s))
 
     def test_parse_mecab_options_none(self):
         with mecab.MeCab() as nm:
@@ -413,7 +413,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                       '--max-grouping-size=666',
                       '--node-format=node\\\\n',
                       '--unk-format=unk\\\\n',
-                      '--bos-format=bos\\\\n', 
+                      '--bos-format=bos\\\\n',
                       '--eos-format=eos\\\\n',
                       '--eon-format=eon\\\\n',
                       '--unk-feature=unkf\\\\n',
@@ -451,8 +451,6 @@ class TestMecab(unittest.TestCase, Test23Support):
         with mecab.MeCab() as nm:
             res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
             expected = self._b2u(res[0])
-            print(isinstance(nm.version, str))
-            print(isinstance(expected, str))
             self.assertIsNotNone(re.search(nm.version, expected))
 
     # ------------------------------------------------------------------------
