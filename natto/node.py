@@ -35,16 +35,15 @@ class MeCabNode(object):
 
     Example usage:
 
-        import natto
+        from natto import MeCab
+        with MeCab() as nm:
 
-        nm = natto.MeCab()
-
-        nodes = nm.parse('卓球なんて死ぬまでの暇つぶしだよ。', as_nodes=True)
-        for n in nodes:
-            if n.is_nor():
-                print "%s\t%s" % (n.surface, n.cost)
+            nodes = nm.parse('卓球なんて死ぬまでの暇つぶしだよ。', as_nodes=True)
+            for n in nodes:
+                if n.is_nor():
+                    print('{}\t{}'.format(n.surface, n.cost))
     '''
-    _REPR_FMT = '<%s.%s pointer=%s, stat=%s, surface="%s", feature="%s">'
+    _REPR_FMT = '<{}.{} pointer={}, stat={}, surface="{}", feature="{}">'
 
     # Normal MeCab node defined in the dictionary.
     NOR_NODE = 0
@@ -105,12 +104,12 @@ class MeCabNode(object):
 
     def __repr__(self):
         '''Returns a string representation of this MeCab node.'''
-        return self._REPR_FMT % (type(self).__module__,
-                                 type(self).__name__,
-                                 self.ptr,
-                                 self.stat,
-                                 self.surface,
-                                 self.feature)
+        return self._REPR_FMT.format(type(self).__module__,
+                                     type(self).__name__,
+                                     self.ptr,
+                                     self.stat,
+                                     self.surface,
+                                     self.feature)
 
 
 '''
