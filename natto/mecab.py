@@ -37,18 +37,19 @@ class MeCab(object):
             nodes = nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True)
             for n in nodes:
                 if n.is_nor():
-                    print("%s\t%d\t%d" % (n.surface, n.posid, n.wcost))
+                    print("{}\t{}\t{}".format(n.surface, n.posid, n.wcost))
     '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
 
-    _ERROR_PATH_UNSET = 'Please set %s to the full path to MeCab library'
-    _ERROR_INIT = 'Could not initialize MeCab: %s'
-    _ERROR_NULLPTR = 'Could not initialize MeCab'
     _ERROR_EMPTY_STR = 'Text to parse cannot be None'
+    _ERROR_INIT = 'Could not initialize MeCab: {}'
     _ERROR_NOTUNICODE = 'Text should be Unicode string'
+    _ERROR_NULLPTR = 'Could not initialize MeCab'
+    _ERROR_NVALUE = 'Invalid N value'
 
-    _REPR_FMT = '<%s.%s lib="%s", tagger=%s, options=%s, dicts=%s, version="%s">'
+    _REPR_FMT = ('<{}.{} lib="{}", tagger={}, options={}, dicts={},'
+                 ' version="{}">')
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
     _FN_NBEST_TONODE = 'mecab_nbest_init'
@@ -82,8 +83,8 @@ class MeCab(object):
 
     _NBEST_MAX = 512
 
-    _WARN_LATTICE_LEVEL = 'lattice-level is DEPRECATED, ' + \
-                          'please use marginal or nbest'
+    _WARN_LATTICE_LEVEL = ('lattice-level is DEPRECATED, '
+                           'please use marginal or nbest')
 
     def __parse_mecab_options(self, options):
         '''Parses the MeCab options, returning them in a dictionary.
@@ -151,27 +152,27 @@ class MeCab(object):
                            help='output marginal probability (default false)',
                            action='store_true', default=False)
             p.add_argument('-M', '--max-grouping-size',
-                           help='maximum grouping size for unknown words ' + \
-                                '(default 24)',
+                           help=('maximum grouping size for unknown words '
+                                 '(default 24)'),
                            action='store', dest='max_grouping_size', type=int)
             p.add_argument('-F', '--node-format',
                            help='use STR as the user-defined node format',
                            action='store', dest='node_format')
             p.add_argument('-U', '--unk-format',
-                           help='use STR as the user-defined unknown ' + \
-                           'node format',
+                           help=('use STR as the user-defined unknown '
+                                 'node format'),
                            action='store', dest='unk_format')
             p.add_argument('-B', '--bos-format',
-                           help='use STR as the user-defined ' + \
-                           'beginning-of-sentence format',
+                           help=('use STR as the user-defined '
+                                 'beginning-of-sentence format'),
                            action='store', dest='bos_format')
             p.add_argument('-E', '--eos-format',
-                           help='use STR as the user-defined ' + \
-                                'end-of-sentence format',
+                           help=('use STR as the user-defined '
+                                 'end-of-sentence format'),
                            action='store', dest='eos_format')
             p.add_argument('-S', '--eon-format',
-                           help='use STR as the user-defined end-of-NBest ' + \
-                           'format',
+                           help=('use STR as the user-defined end-of-NBest '
+                                 'format'),
                            action='store', dest='eon_format')
             p.add_argument('-x', '--unk-feature',
                            help='use STR as the feature for unknown word',
@@ -184,8 +185,8 @@ class MeCab(object):
                            action='store_true', dest='allocate_sentence',
                            default=False)
             p.add_argument('-t', '--theta',
-                           help='set temperature parameter theta ' + \
-                           '(default 0.75)',
+                           help=('set temperature parameter theta '
+                                 '(default 0.75)'),
                            action='store', dest='theta', type=float)
             p.add_argument('-c', '--cost-factor',
                            help='set cost factor (default 700)',
@@ -202,11 +203,11 @@ class MeCab(object):
         # final checks
         if 'nbest' in dopts \
             and (dopts['nbest'] < 1 or dopts['nbest'] > MeCab._NBEST_MAX):
-            raise ValueError('Invalid N value')
+            raise ValueError(self._ERROR_NVALUE)
 
         # warning for lattice-level deprecation
         if 'lattice_level' in dopts:
-            sys.stderr.write('WARNING: %s\n' % MeCab._WARN_LATTICE_LEVEL)
+            sys.stderr.write('WARNING: {}\n'.format(MeCab._WARN_LATTICE_LEVEL))
 
         return dopts
 
@@ -227,11 +228,11 @@ class MeCab(object):
                 key = name.replace('_', '-')
                 if key in self._BOOLEAN_OPTIONS:
                     if options[name]:
-                        opts.append('--%s' % key)
+                        opts.append('--{}'.format(key))
                 else:
-                    opts.append('--%s=%s' % (key, options[name]))
+                    opts.append('--{}={}'.format(key, options[name]))
 
-        return self.__u2b(" ".join(opts))
+        return self.__u2b(' '.join(opts))
 
     def __init__(self, options=None):
         '''Initializes the MeCab instance with the given options.
@@ -249,11 +250,34 @@ class MeCab(object):
             env = MeCabEnv()
             self.ffi = _ffi_libmecab()
             self.mecab = self.ffi.dlopen(env.libpath)
-            self.lib = env.libpath 
+            self.lib = env.libpath
 
             # Set up byte/Unicode converters (Python 3 support)
-            self.__b2u, self.__u2b, self.__out2str, self.__isu = \
-                                                self.__23_support(env.charset)
+            def __23_support():
+                if sys.version < '3':
+                    def b2u(b):
+                        '''Transforms byte string into Unicode.'''
+                        return b.decode(env.charset)
+                    def u2b(u):
+                        '''Transforms the Unicode string into encoded bytes.'''
+                        return u.encode(env.charset)
+                    def out2str(out):
+                        return out
+                    def isunicode(text):
+                        return isinstance(text, unicode)
+                else:
+                    def b2u(b):
+                        '''Identity, returns the argument string (unicode).'''
+                        return b.decode(env.charset)
+                    def u2b(u):
+                        '''Identity, returns the argument string (unicode).'''
+                        return u.encode(env.charset)
+                    def out2str(out):
+                        return out.decode(env.charset)
+                    def isunicode(text):
+                        return isinstance(text, str)
+                return(b2u, u2b, out2str, isunicode)
+            self.__b2u, self.__u2b, self.__out2str, self.__isu = __23_support()
 
             # Set up dictionary of MeCab options to use
             self.options = self.__parse_mecab_options(options)
@@ -267,7 +291,7 @@ class MeCab(object):
         except EnvironmentError as err:
             raise MeCabError(err)
         except ValueError as verr:
-            raise MeCabError(self._ERROR_INIT % str(verr))
+            raise MeCabError(self._ERROR_INIT.format(str(verr)))
 
         # Set add'l MeCab options on the tagger as needed
         if 'partial' in self.options:
@@ -298,15 +322,11 @@ class MeCab(object):
                 lat = 1
             self.mecab.mecab_set_lattice_level(self.tagger, lat)
 
-            self.__parse_tostr = \
-                    self.__build_parse_tostr(self._FN_NBEST_TOSTR)
-            self.__parse_tonodes = \
-                    self.__build_parse_tonodes(self._FN_NBEST_TONODE)
+            self.__parse2str = self.__parse_tostr(self._FN_NBEST_TOSTR)
+            self.__parse2nodes = self.__parse_tonodes(self._FN_NBEST_TONODE)
         else:
-            self.__parse_tostr = \
-                    self.__build_parse_tostr(self._FN_TOSTR)
-            self.__parse_tonodes = \
-                    self.__build_parse_tonodes(self._FN_TONODE)
+            self.__parse2str = self.__parse_tostr(self._FN_TOSTR)
+            self.__parse2nodes = self.__parse_tonodes(self._FN_TONODE)
 
         # Prepare copy for list of MeCab dictionaries
         self.dicts = []
@@ -321,53 +341,26 @@ class MeCab(object):
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.__out2str(self.ffi.string(self.mecab.mecab_version()))
-    
+        self.version = self.__out2str( \
+                            self.ffi.string(self.mecab.mecab_version()))
+
     def __del__(self):
-        if hasattr(self, 'tagger') and hasattr(self, 'mecab') and hasattr(self, 'ffi'):
+        if hasattr(self, 'tagger') and hasattr(self, 'mecab') and \
+           hasattr(self, 'ffi'):
             if self.tagger != self.ffi.NULL and self.mecab != self.ffi.NULL:
                 self.mecab.mecab_destroy(self.tagger)
         if hasattr(self, 'mecab'):
             del self.mecab
         if hasattr(self, 'ffi'):
             del self.ffi
-        
+
     def __enter__(self):
         return self
 
     def __exit__(self, type, value, traceback):
         self.__del__()
 
-    def __23_support(self, enc):
-        '''Returns a tuple of functions for coding/decoding bytes and Unicode.
-
-        For supporting both Python 2 and 3.
-        '''
-        if sys.version < '3':
-            def b2u(b):
-                '''Transforms byte string into Unicode.'''
-                return b.decode(enc)
-            def u2b(u):
-                '''Transforms the Unicode string into encoded bytes.'''
-                return u.encode(enc)
-            def out2str(out):
-                return out
-            def isunicode(text):
-                return isinstance(text, unicode)
-        else:
-            def b2u(b):
-                '''Identity function, returns the argument string (unicode).'''                
-                return b.decode(enc)
-            def u2b(u):
-                '''Identity function, returns the argument string (unicode).'''
-                return u.encode(enc)
-            def out2str(out):
-                return out.decode(enc)
-            def isunicode(text):
-                return isinstance(text, str)
-        return(b2u, u2b, out2str, isunicode)
-
-    def __build_parse_tostr(self, fn_name):
+    def __parse_tostr(self, fn_name):
         '''Builds and returns the MeCab function for parsing Unicode text.
 
         Args:
@@ -396,7 +389,7 @@ class MeCab(object):
                 raise MeCabError(self.__b2u(self.ffi.string(err)))
         return _fn
 
-    def __build_parse_tonodes(self, fn_name):
+    def __parse_tonodes(self, fn_name):
         '''Builds and returns the MeCab function for parsing to nodes.
 
         Args:
@@ -448,16 +441,16 @@ class MeCab(object):
                 err = self.mecab.mecab_strerror((self.tagger))
                 raise MeCabError(self.__b2u(self.ffi.string(err)))
         return _fn
-        
+
     def __repr__(self):
         '''Returns a string representation of this MeCab instance.'''
-        return self._REPR_FMT % (type(self).__module__,
-                                 type(self).__name__,
-                                 self.lib,
-                                 self.tagger,
-                                 self.options,
-                                 self.dicts,
-                                 self.version)
+        return self._REPR_FMT.format(type(self).__module__,
+                                     type(self).__name__,
+                                     self.lib,
+                                     self.tagger,
+                                     self.options,
+                                     self.dicts,
+                                     self.version)
 
     def parse(self, text, as_nodes=False):
         '''Parses the given text.
@@ -478,9 +471,9 @@ class MeCab(object):
 
         btext = self.__u2b(text)
         if as_nodes:
-            return self.__parse_tonodes(btext)
+            return self.__parse2nodes(btext)
         else:
-            return self.__parse_tostr(btext)
+            return self.__parse2str(btext)
 
 
 
