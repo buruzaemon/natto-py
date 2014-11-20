@@ -33,13 +33,25 @@ bind to the ``mecab`` library.
 
 Configuration
 -------------
-As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS) executables
-are on your ``PATH``, ``natto-py`` should just work without any explicit configuration.
+``natto-py`` should just work without any explicit configuration.
 
-If not, or if you are using a custom-built system dictionary located in a
-non-default directory, or if you are using a non-default character encoding,
-then you will need to explicitly set the ``MECAB_PATH`` and ``MECAB_CHARSET``
-environment variables.
+On \*nix and Mac OS, it queries ``mecab-config`` to discover the
+path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
+
+On Windows, it queries the Windows Registry to locate the MeCab 
+installation folder.
+
+In order to convert character encodings to/from Unicode, ``natto-py``
+will examine the charset of the ``mecab`` system dictionary.
+
+Therefore, as long as the ``mecab`` (and ``mecab-config`` for \*nix
+and Mac OS) executables are on your ``PATH``, ``natto-py`` should
+not require any explicit configuration.
+
+If ``natto-py``, for some reason, cannot locate the ``mecab`` library,
+or if it cannot determine the correct charset used internally by
+``mecab``, then you will need to set the ``MECAB_PATH`` and ``MECAB_CHARSET``
+environment variables. 
 
 Set the ``MECAB_PATH`` environment variable to the exact name/path to your
 ``mecab`` library. Set the ``MECAB_CHARSET`` environment variable if you
@@ -71,6 +83,10 @@ e.g., from within a Python program::
 Usage
 -----
 Here's a very quick guide to using ``natto-py``.
+
+Following `NLTK3`_ lead, ``natto-py`` requires all input
+to be unicode, and always returns text as unicode.
+On Python 2.7, you will have to decode/encode accordingly.
 
 Instantiate a reference to the ``mecab`` library, and display some details::
 
@@ -180,6 +196,7 @@ LICENSE file for further details.
 .. _Python 3.2.5: https://www.python.org/download/releases/3.2.5/
 .. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
 .. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
+.. _NTLK3: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src

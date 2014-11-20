@@ -1,8 +1,9 @@
 CHANGELOG
 ---------
 
-- 2014/11/nn: 0.0.6 release.
-    - Issue #5: changes to code so that all input/output should be in Unicode.
+- 2014/11/21: 0.0.6 release.
+    - Issue #5: All input/output in Unicode; Python 2.7 users take heed.
+    - Issue #7: MeCabEnv now uses Windows Registry to discover lib path.
 
 - 2014/11/08: 0.0.5 release.
     - Issue #4: adding lib to natto.mecab.MeCab.
