@@ -48,7 +48,7 @@ Therefore, as long as the ``mecab`` (and ``mecab-config`` for \*nix
 and Mac OS) executables are on your ``PATH``, ``natto-py`` should
 not require any explicit configuration.
 
-If ``natto-py``, for some reason, cannot locate the ``mecab`` library,
+If ``natto-py`` for some reason cannot locate the ``mecab`` library,
 or if it cannot determine the correct charset used internally by
 ``mecab``, then you will need to set the ``MECAB_PATH`` and ``MECAB_CHARSET``
 environment variables. 
@@ -84,7 +84,7 @@ Usage
 -----
 Here's a very quick guide to using ``natto-py``.
 
-Following `NLTK3`_ lead, ``natto-py`` requires all input
+Following `NLTK3's lead`_, ``natto-py`` requires all input
 to be unicode, and always returns text as unicode.
 On Python 2.7, you will have to decode/encode accordingly.
 
@@ -196,7 +196,7 @@ LICENSE file for further details.
 .. _Python 3.2.5: https://www.python.org/download/releases/3.2.5/
 .. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
 .. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
-.. _NTLK3: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
+.. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
