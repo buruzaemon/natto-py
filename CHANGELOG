@@ -1,7 +1,10 @@
 CHANGELOG
 ---------
 
-- 2014/11/nn: 0.0.7 release.
+- 2014/11/24: 0.0.7 release.
+    - Issue 7: reversing decision in Issue #5: input/output in Python 2
+      is a string in the encoding of the mecab lib; while in Python 3,
+      both input/output will be in Unicode.
     - Minor refactoring to tighten up attribute visibility in MeCab and
       DictionaryInfo
     - Now testing on Ubuntu 14 (32-bit) as well.
