@@ -14,6 +14,12 @@ class Test23Support(object):
             return text.decode(self.env.charset)
         else:
             return text
+            
+    def _2str(self, text):  
+        if sys.version < '3':
+            return text
+        else:
+            return text.encode(self.env.charset)
 
     def _2bytes(self, text):
         if sys.version < '3':

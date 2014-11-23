@@ -26,17 +26,14 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.testfile = os.path.join(cwd, 'tests', 'test_utf8')
 
         self.env = env.MeCabEnv()
-        self.text = self._read_text()
+
+        with codecs.open(self.testfile, 'r') as f:
+            self.text = f.readlines()[0].strip()
 
     def tearDown(self):
         self.testfile = None
         self.text = None
         self.env = None
-
-    def _read_text(self):
-        with codecs.open(self.testfile, 'r') as f:
-            text = f.readlines()
-        return self._2unicode(text[0].strip())
 
     def _mecab_parse(self, options):
         cmd = ['mecab']
@@ -59,23 +56,17 @@ class TestMecab(unittest.TestCase, Test23Support):
             morphs = [e.decode('utf-8').encode(self.env.charset) for e in morphs]
         return morphs
 
-
-#
-#    def _23support_encode(self, b):
-#        if sys.version < '3':
-#            return b
-#        else:
-#            return b.encode(self.env.charset)
-
     # ------------------------------------------------------------------------
-    def test_parse_unicode(self):
+    def test_parse_unicodeRstr(self):
         s = '日本語だよ、これが。'
         with mecab.MeCab() as nm:
             if sys.version < '3':
-                with self.assertRaises(api.MeCabError):
-                    nm.parse(s)
+                b = s.decode('utf-8')
             else:
-                self.assertIsNotNone(nm.parse(s))
+                b = s.encode('utf-8')
+
+            with self.assertRaises(api.MeCabError):
+                nm.parse(b)
 
     def test_parse_mecab_options_none(self):
         with mecab.MeCab() as nm:
@@ -464,7 +455,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = nm.parse(self.text).strip()
             expected = expected.replace('\n', os.linesep)                 # ???
 
-            actual = self._b2u(self._mecab_parse(''))
+            actual = self._2bytes(self._mecab_parse(''))
 
             self.assertEqual(expected, actual)
 
@@ -480,7 +471,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 expected = nm.parse(self.text)
                 expected = expected.replace('\n', os.linesep)
 
-                actual = self._b2u(self._mecab_parse(argf))
+                actual = self._2bytes(self._mecab_parse(argf))
 
                 self.assertEqual(expected, actual)
 
@@ -491,7 +482,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 expected = nm.parse(self.text, as_nodes=True)
                 expected = [e for e in expected if not e.is_eos()]
 
-                actual = self._b2u(self._mecab_parse(argf))
+                actual = self._2bytes(self._mecab_parse(argf))
                 actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
                 for i, e in enumerate(actual):

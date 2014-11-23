@@ -44,11 +44,11 @@ class MeCab(object):
 
     _ERROR_EMPTY_STR = 'Text to parse cannot be None'
     _ERROR_INIT = 'Could not initialize MeCab: {}'
-    _ERROR_NOTUNICODE = 'Text should be Unicode string'
+    _ERROR_NOTSTR = 'Text should be of type str'
     _ERROR_NULLPTR = 'Could not initialize MeCab'
     _ERROR_NVALUE = 'Invalid N value'
 
-    _REPR_FMT = ('<{}.{} lib="{}", tagger={}, options={}, dicts={},'
+    _REPR_FMT = ('<{}.{} lib="{}", pointer={}, options={}, dicts={},'
                  ' version="{}">')
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
@@ -123,7 +123,7 @@ class MeCab(object):
                     if options[name]:
                         val = options[name]
                         if isinstance(val, bytes):
-                            val = self.__b2u(options[name])
+                            val = self.__bytes2str(options[name])
                         dopts[name] = val
         else:
             p = MeCabArgumentParser()
@@ -232,7 +232,7 @@ class MeCab(object):
                 else:
                     opts.append('--{}={}'.format(key, options[name]))
 
-        return self.__u2b(' '.join(opts))
+        return self.__str2bytes(' '.join(opts))
 
     def __init__(self, options=None):
         '''Initializes the MeCab instance with the given options.
@@ -248,45 +248,43 @@ class MeCab(object):
         '''
         try:
             env = MeCabEnv()
-            self.ffi = _ffi_libmecab()
-            self.mecab = self.ffi.dlopen(env.libpath)
+            self.__ffi = _ffi_libmecab()
+            self.__mecab = self.__ffi.dlopen(env.libpath)
             self.lib = env.libpath
 
             # Set up byte/Unicode converters (Python 3 support)
             def __23_support():
                 if sys.version < '3':
-                    def b2u(b):
-                        '''Transforms byte string into Unicode.'''
-                        return b.decode(env.charset)
-                    def u2b(u):
-                        '''Transforms the Unicode string into encoded bytes.'''
-                        return u.encode(env.charset)
+                    def bytes2str(b):
+                        '''Identity, returns the argument string (bytes).'''
+                        return b
+                    def str2bytes(s):
+                        '''Identity, returns the argument string (bytes).'''
+                        return s
                     def out2str(out):
+                        '''Identity, returns output from mecab lib.'''
                         return out
-                    def isunicode(text):
-                        return isinstance(text, unicode)
                 else:
-                    def b2u(b):
-                        '''Identity, returns the argument string (unicode).'''
+                    def bytes2str(b):
+                        '''Transforms bytes into string (Unicode).'''
                         return b.decode(env.charset)
-                    def u2b(u):
-                        '''Identity, returns the argument string (unicode).'''
+                    def str2bytes(u):
+                        '''Transforms Unicode into string (bytes).'''
                         return u.encode(env.charset)
                     def out2str(out):
+                        '''Transforms output from mecab lib into Unicode.'''
                         return out.decode(env.charset)
-                    def isunicode(text):
-                        return isinstance(text, str)
-                return(b2u, u2b, out2str, isunicode)
-            self.__b2u, self.__u2b, self.__out2str, self.__isu = __23_support()
+                return(bytes2str, str2bytes, out2str)
+            self.__bytes2str, self.__str2bytes, self.__out2str = __23_support()
 
             # Set up dictionary of MeCab options to use
             self.options = self.__parse_mecab_options(options)
 
             # Set up tagger pointer
             ostr = self.__build_options_str(self.options)
-            self.tagger = self.mecab.mecab_new2(ostr)
+            self.pointer = self.__mecab.mecab_new2(ostr)
 
-            if self.tagger == self.ffi.NULL:
+            if self.pointer == self.__ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR)
         except EnvironmentError as err:
             raise MeCabError(err)
@@ -295,22 +293,19 @@ class MeCab(object):
 
         # Set add'l MeCab options on the tagger as needed
         if 'partial' in self.options:
-            self.mecab.mecab_set_partial(self.tagger,
-                                         self.options['partial'])
+            self.__mecab.mecab_set_partial(self.pointer,
+                                           self.options['partial'])
         if 'theta' in self.options:
-            self.mecab.mecab_set_theta(self.tagger, self.options['theta'])
+            self.__mecab.mecab_set_theta(self.pointer, self.options['theta'])
         if 'lattice_level' in self.options:
-            self.mecab.mecab_set_lattice_level(self.tagger,
-                                               self.options['lattice_level'])
+            self.__mecab.mecab_set_lattice_level(self.pointer,
+                                                 self.options['lattice_level'])
         if 'all_morphs' in self.options:
-            self.mecab.mecab_set_all_morphs(self.tagger,
-                                            self.options['all_morphs'])
+            self.__mecab.mecab_set_all_morphs(self.pointer,
+                                              self.options['all_morphs'])
 
-        if 'output_format_type' in self.options or \
-                'node_format' in self.options:
-            self.format_node_feature = True
-        else:
-            self.format_node_feature = False
+        format_feature = True if 'output_format_type' in self.options or \
+            'node_format' in self.options else False
 
         # Set parsing routines for both parsing as strings and nodes
         # for both N-best and non-N-best
@@ -320,20 +315,22 @@ class MeCab(object):
                 lat = self.options['lattice_level']
             else:
                 lat = 1
-            self.mecab.mecab_set_lattice_level(self.tagger, lat)
+            self.__mecab.mecab_set_lattice_level(self.pointer, lat)
 
             self.__parse2str = self.__parse_tostr(self._FN_NBEST_TOSTR)
-            self.__parse2nodes = self.__parse_tonodes(self._FN_NBEST_TONODE)
+            self.__parse2nodes = self.__parse_tonodes(self._FN_NBEST_TONODE,
+                                                      format_feature)
         else:
             self.__parse2str = self.__parse_tostr(self._FN_TOSTR)
-            self.__parse2nodes = self.__parse_tonodes(self._FN_TONODE)
+            self.__parse2nodes = self.__parse_tonodes(self._FN_TONODE,
+                                                      format_feature)
 
         # Prepare copy for list of MeCab dictionaries
         self.dicts = []
-        dptr = self.mecab.mecab_dictionary_info(self.tagger)
-        while dptr != self.ffi.NULL:
-            fname = self.__out2str(self.ffi.string(dptr.filename))
-            chset = self.__out2str(self.ffi.string(dptr.charset))
+        dptr = self.__mecab.mecab_dictionary_info(self.pointer)
+        while dptr != self.__ffi.NULL:
+            fname = self.__out2str(self.__ffi.string(dptr.filename))
+            chset = self.__out2str(self.__ffi.string(dptr.charset))
             self.dicts.append(DictionaryInfo(dptr, fname, chset))
             dptr = getattr(dptr, 'next')
 
@@ -342,17 +339,18 @@ class MeCab(object):
 
         # Set MeCab version string
         self.version = self.__out2str( \
-                            self.ffi.string(self.mecab.mecab_version()))
+                            self.__ffi.string(self.__mecab.mecab_version()))
 
     def __del__(self):
-        if hasattr(self, 'tagger') and hasattr(self, 'mecab') and \
+        if hasattr(self, 'pointer') and hasattr(self, 'mecab') and \
            hasattr(self, 'ffi'):
-            if self.tagger != self.ffi.NULL and self.mecab != self.ffi.NULL:
-                self.mecab.mecab_destroy(self.tagger)
+            if self.pointer != self.__ffi.NULL and \
+               self.__mecab != self.__ffi.NULL:
+                self.__mecab.mecab_destroy(self.pointer)
         if hasattr(self, 'mecab'):
-            del self.mecab
+            del self.__mecab
         if hasattr(self, 'ffi'):
-            del self.ffi
+            del self.__ffi
 
     def __enter__(self):
         return self
@@ -375,21 +373,21 @@ class MeCab(object):
         '''
         def _fn(text):
             '''Parse text and return MeCab result as string.'''
-            args = [self.tagger]
+            args = [self.pointer]
             if fn_name == self._FN_NBEST_TOSTR:
                 args.append(self.options['nbest'])
             args.append(text)
 
-            res = getattr(self.mecab, fn_name)(*args)
-            if res != self.ffi.NULL:
-                raw = self.ffi.string(res)
-                return self.__b2u(raw).strip()
+            res = getattr(self.__mecab, fn_name)(*args)
+            if res != self.__ffi.NULL:
+                raw = self.__ffi.string(res)
+                return self.__bytes2str(raw).strip()
             else:
-                err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.__b2u(self.ffi.string(err)))
+                err = self.__mecab.mecab_strerror((self.pointer))
+                raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
         return _fn
 
-    def __parse_tonodes(self, fn_name):
+    def __parse_tonodes(self, fn_name, format_feature=False):
         '''Builds and returns the MeCab function for parsing to nodes.
 
         Args:
@@ -405,41 +403,43 @@ class MeCab(object):
 
             if fn_name == self._FN_NBEST_TONODE:
                 # N-best node parsing
-                getattr(self.mecab, fn_name)(self.tagger, text)
-                nptr = self.mecab.mecab_nbest_next_tonode(self.tagger)
+                getattr(self.__mecab, fn_name)(self.pointer, text)
+                nptr = self.__mecab.mecab_nbest_next_tonode(self.pointer)
                 count = self.options['nbest']
             else:
                 # default string-based node parsing
-                nptr = getattr(self.mecab, fn_name)(self.tagger, text)
+                nptr = getattr(self.__mecab, fn_name)(self.pointer, text)
                 count = 1
 
             nodes = []
-            if nptr != self.ffi.NULL:
+            if nptr != self.__ffi.NULL:
                 for _ in range(count):
-                    while nptr != self.ffi.NULL:
+                    while nptr != self.__ffi.NULL:
                         # ignore any BOS nodes?
                         if nptr.stat != MeCabNode.BOS_NODE:
-                            raws = self.ffi.string(nptr.surface[0:nptr.length])
-                            surf = self.__b2u(raws).strip()
+                            raws = self.__ffi.string(
+                                nptr.surface[0:nptr.length])
+                            surf = self.__bytes2str(raws).strip()
 
-                            if self.format_node_feature:
-                                sp = self.mecab.mecab_format_node(self.tagger,
-                                                                  nptr)
-                                rawf = self.ffi.string(sp)
+                            if format_feature:
+                                sp = self.__mecab.mecab_format_node(
+                                    self.pointer, nptr)
+                                rawf = self.__ffi.string(sp)
                             else:
-                                rawf = self.ffi.string(nptr.feature)
-                            feat = self.__b2u(rawf).strip()
+                                rawf = self.__ffi.string(nptr.feature)
+                            feat = self.__bytes2str(rawf).strip()
 
                             mnode = MeCabNode(nptr, surf, feat)
                             nodes.append(mnode)
                         nptr = getattr(nptr, 'next')
 
                     if fn_name == self._FN_NBEST_TONODE:
-                        nptr = self.mecab.mecab_nbest_next_tonode(self.tagger)
+                        nptr = self.__mecab.mecab_nbest_next_tonode(
+                            self.pointer)
                 return nodes
             else:
-                err = self.mecab.mecab_strerror((self.tagger))
-                raise MeCabError(self.__b2u(self.ffi.string(err)))
+                err = self.__mecab.mecab_strerror((self.pointer))
+                raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
         return _fn
 
     def __repr__(self):
@@ -447,7 +447,7 @@ class MeCab(object):
         return self._REPR_FMT.format(type(self).__module__,
                                      type(self).__name__,
                                      self.lib,
-                                     self.tagger,
+                                     self.pointer,
                                      self.options,
                                      self.dicts,
                                      self.version)
@@ -466,16 +466,14 @@ class MeCab(object):
         '''
         if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
-        elif not self.__isu(text):
-            raise MeCabError(self._ERROR_NOTUNICODE)
+        if not isinstance(text, str):
+            raise MeCabError(self._ERROR_NOTSTR)
 
-        btext = self.__u2b(text)
+        btext = self.__str2bytes(text)
         if as_nodes:
             return self.__parse2nodes(btext)
         else:
             return self.__parse2str(btext)
-
-
 
 
 '''
