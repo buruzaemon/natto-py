@@ -1,6 +1,11 @@
 CHANGELOG
 ---------
 
+- 2014/11/nn: 0.0.7 release.
+    - Minor refactoring to tighten up attribute visibility in MeCab and
+      DictionaryInfo
+    - Now testing on Ubuntu 14 (32-bit) as well.
+
 - 2014/11/21: 0.0.6 release.
     - Issue #5: All input/output in Unicode; Python 2.7 users take heed.
     - Issue #7: MeCabEnv now uses Windows Registry to discover lib path.

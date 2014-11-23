@@ -3,8 +3,8 @@ natto-py
 
 What is natto-py?
 -----------------
-``natto-py`` combines the Python_ programming language with MeCab_, the part-of-speech
-and morphological analyzer for the Japanese language.
+``natto-py`` combines the Python_ programming language with MeCab_, the 
+part-of-speech and morphological analyzer for the Japanese language.
 
 You can learn more about `natto-py at Bitbucket`_.
 
@@ -28,8 +28,8 @@ Install ``natto-py`` with the following command::
 
     pip install natto-py
 
-This will automatically install the ``cffi`` package, which ``natto-py`` uses to
-bind to the ``mecab`` library.
+This will automatically install the ``cffi`` package, which ``natto-py`` uses
+to bind to the ``mecab`` library.
 
 Configuration
 -------------
@@ -84,10 +84,6 @@ Usage
 -----
 Here's a very quick guide to using ``natto-py``.
 
-Following `NLTK3's lead`_, ``natto-py`` requires all input
-to be unicode, and always returns text as unicode.
-On Python 2.7, you will have to decode/encode accordingly.
-
 Instantiate a reference to the ``mecab`` library, and display some details::
 
     from natto import MeCab
@@ -98,7 +94,7 @@ Instantiate a reference to the ``mecab`` library, and display some details::
     # displays details about the MeCab instance
     <natto.mecab.MeCab
      lib="/usr/local/lib/libmecab.so",
-     tagger=<cdata 'mecab_t *' 0x000000000037AB40>,
+     pointer=<cdata 'mecab_t *' 0x000000000037AB40>,
      options={},
      dicts=[<natto.dictionary.DictionaryInfo
              pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>,
