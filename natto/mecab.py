@@ -411,35 +411,78 @@ class MeCab(object):
                 nptr = getattr(self.__mecab, fn_name)(self.pointer, text)
                 count = 1
 
-            nodes = []
-            if nptr != self.__ffi.NULL:
-                for _ in range(count):
-                    while nptr != self.__ffi.NULL:
-                        # ignore any BOS nodes?
-                        if nptr.stat != MeCabNode.BOS_NODE:
-                            raws = self.__ffi.string(
-                                nptr.surface[0:nptr.length])
-                            surf = self.__bytes2str(raws).strip()
+            ffi = self.__ffi
+            mc = self.__mecab
+            tg = self.pointer
+            b2s = self.__bytes2str
+            c = count
+            nbest = self._FN_NBEST_TONODE
 
-                            if format_feature:
-                                sp = self.__mecab.mecab_format_node(
-                                    self.pointer, nptr)
-                                rawf = self.__ffi.string(sp)
-                            else:
-                                rawf = self.__ffi.string(nptr.feature)
-                            feat = self.__bytes2str(rawf).strip()
+            class _IterableNodeParser(object):
 
-                            mnode = MeCabNode(nptr, surf, feat)
-                            nodes.append(mnode)
-                        nptr = getattr(nptr, 'next')
+                def __init__(self, np, ffi):
+                    self.np = np
+                    self.ffi = ffi
 
-                    if fn_name == self._FN_NBEST_TONODE:
-                        nptr = self.__mecab.mecab_nbest_next_tonode(
-                            self.pointer)
-                return nodes
-            else:
-                err = self.__mecab.mecab_strerror((self.pointer))
-                raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
+                def __iter__(self):
+                    #np = self.np
+                    if self.np != ffi.NULL:
+                        for _ in range(c):
+                            while self.np != ffi.NULL:
+                                if self.np.stat != 2:
+                                    print(self.np.length)
+                                    raws = ffi.string(self.np.surface[0:self.np.length])
+                                    surf = b2s(raws).strip()
+    
+                                    if format_feature:
+                                        sp = mc.mecab_format_node(tg, self.np)
+                                        rawf = ffi.string(sp)
+                                    else:
+                                        rawf = ffi.string(self.np.feature)
+    
+                                    feat = b2s(rawf).strip()
+    
+                                    mnode = MeCabNode(self.np, surf, feat)
+                                    yield(mnode)
+                                    
+
+                                self.np = getattr(self.np, 'next')
+
+                            if fn_name == nbest:
+                                self.np = mc.mecab_nbest_next_tonode(tg)
+            return _IterableNodeParser(nptr, self.__ffi)
+#            # <<< turn this into iterable!
+#            nodes = []
+#            if nptr != self.__ffi.NULL:
+#                for _ in range(count):
+#                    while nptr != self.__ffi.NULL:
+#                        print(nptr.length)
+#                        # ignore any BOS nodes?
+#                        if nptr.stat != MeCabNode.BOS_NODE:
+#                            raws = self.__ffi.string(
+#                                nptr.surface[0:nptr.length])
+#                            surf = self.__bytes2str(raws).strip()
+#
+#                            if format_feature:
+#                                sp = self.__mecab.mecab_format_node(
+#                                    self.pointer, nptr)
+#                                rawf = self.__ffi.string(sp)
+#                            else:
+#                                rawf = self.__ffi.string(nptr.feature)
+#                            feat = self.__bytes2str(rawf).strip()
+#
+#                            mnode = MeCabNode(nptr, surf, feat)
+#                            nodes.append(mnode)
+#                        nptr = getattr(nptr, 'next')
+#
+#                    if fn_name == self._FN_NBEST_TONODE:
+#                        nptr = self.__mecab.mecab_nbest_next_tonode(
+#                            self.pointer)
+#                return nodes
+#            else:
+#                err = self.__mecab.mecab_strerror((self.pointer))
+#                raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
+#            # <<< turn this into iterable!
         return _fn
 
     def __repr__(self):
