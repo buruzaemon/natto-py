@@ -19,6 +19,7 @@ class TestDictionary(unittest.TestCase, Test23Support):
     CHARSETS = ['utf-16', 'utf-8', 'utf8', 'shift-jis', 'euc-jp']
 
     def test_sysdic(self):
+        '''Test dictionary interface on system dictionary.'''
         with mecab.MeCab() as nm:
             sysdic = nm.dicts[0]
             cs = sysdic.charset.lower()

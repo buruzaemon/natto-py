@@ -19,6 +19,7 @@ class TestMeCabEnv(unittest.TestCase):
     # ------------------------------------------------------------------------
 
     def test_charset_defaulting(self):
+        '''Test automatic charset defaulting.'''
         orig = os.getenv(environment.MeCabEnv.MECAB_CHARSET)
 
         try:
@@ -36,6 +37,7 @@ class TestMeCabEnv(unittest.TestCase):
             os.environ[environment.MeCabEnv.MECAB_CHARSET] = orig
 
     def test_libpath_defaulting(self):
+        '''Test automatic library path defaulting.'''
         orig = os.getenv(environment.MeCabEnv.MECAB_PATH)
 
         try:

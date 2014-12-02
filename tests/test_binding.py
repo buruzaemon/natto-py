@@ -7,6 +7,7 @@ class TestBinding(unittest.TestCase):
     '''Tests the functions in the natto.binding module.'''
 
     def test_ffi_libmecab(self):
+        '''Test FFI binding to mecab library.'''
         ffi = binding._ffi_libmecab()
         self.assertIsNotNone(ffi)
 

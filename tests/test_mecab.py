@@ -57,33 +57,26 @@ class TestMecab(unittest.TestCase, Test23Support):
         return morphs
 
     # ------------------------------------------------------------------------
-    def test_parse_unicodeRstr(self):
-        s = '日本語だよ、これが。'
-        with mecab.MeCab() as nm:
-            if sys.version < '3':
-                b = s.decode('utf-8')
-            else:
-                b = s.encode('utf-8')
-
-            with self.assertRaises(api.MeCabError):
-                nm.parse(b)
-
     def test_parse_mecab_options_none(self):
+        '''Test option-parsing: None.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options(None)
             self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_emptystr(self):
+        '''Test option-parsing: empty string.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('')
             self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_emptydict(self):
+        '''Test option-parsing: empty dictionary.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options({})
             self.assertEqual(len(dopts), 0)
 
     def test_parse_mecab_options_dicdir(self):
+        '''Test option-parsing: dicdir.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-d/foo/bar')
             self.assertDictEqual(dopts, {'dicdir':'/foo/bar'})
@@ -98,6 +91,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'dicdir': '/foo/bar'})
 
     def test_parse_mecab_options_userdic(self):
+        '''Test option-parsing: userdic.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-u/baz/qux.dic')
             self.assertDictEqual(dopts, {'userdic':'/baz/qux.dic'})
@@ -112,23 +106,31 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'userdic': '/baz/qux.dic'})
 
     def test_parse_mecab_options_latticelevel(self):
+        '''Test option-parsing: lattice-level warning.'''
         with mecab.MeCab() as nm:
             # setting lattice-level issues warning on stderr
             orig_err = sys.stderr
             try:
-                tmp_err = StringIO()
-                sys.stderr = tmp_err
+                opts = ['-l777',
+                        '-l 777',
+                        '--lattice-level=777',
+                        {'lattice_level':777} ]
 
-                dopts = nm._MeCab__parse_mecab_options('-l 777')
-                self.assertDictEqual(dopts, {'lattice_level':777})
+                for o in opts:
+                    tmp_err = StringIO()
+                    sys.stderr = tmp_err
 
-                res = re.search(nm._WARN_LATTICE_LEVEL,
-                                tmp_err.getvalue().strip())
-                self.assertIsNotNone(res)
+                    dopts = nm._MeCab__parse_mecab_options(o)
+                    self.assertDictEqual(dopts, {'lattice_level':777})
+
+                    res = re.search(nm._WARN_LATTICE_LEVEL,
+                                    tmp_err.getvalue().strip())
+                    self.assertIsNotNone(res)
             finally:
                 sys.stderr = orig_err
 
     def test_parse_mecab_options_outputformattype(self):
+        '''Test option-parsing: output-format-type.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-Owakati')
             self.assertDictEqual(dopts, {'output_format_type':'wakati'})
@@ -143,6 +145,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'output_format_type': 'wakati'})
 
     def test_parse_mecab_options_allmorphs(self):
+        '''Test option-parsing: all-morphs.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-a')
             self.assertDictEqual(dopts, {'all_morphs':True})
@@ -154,6 +157,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'all_morphs':True})
 
     def test_parse_mecab_options_nbest(self):
+        '''Test option-parsing: nbest.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-N2')
             self.assertDictEqual(dopts, {'nbest':2})
@@ -173,6 +177,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertIsNotNone(re.search('--nbest', str(ctx.exception)))
 
     def test_parse_mecab_options_partial(self):
+        '''Test option-parsing: partial.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-p')
             self.assertDictEqual(dopts, {'partial':True})
@@ -184,6 +189,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'partial':True})
 
     def test_parse_mecab_options_marginal(self):
+        '''Test option-parsing: marginal.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-m')
             self.assertDictEqual(dopts, {'marginal':True})
@@ -195,6 +201,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'marginal':True})
 
     def test_parse_mecab_options_maxgroupingsize(self):
+        '''Test option-parsing: max-grouping-size.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-M99')
             self.assertDictEqual(dopts, {'max_grouping_size':99})
@@ -215,6 +222,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                                            str(ctx.exception)))
 
     def test_parse_mecab_options_nodeformat(self):
+        '''Test option-parsing: node-format.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-F%m\\n')
             self.assertDictEqual(dopts, {'node_format':'%m\\n'})
@@ -229,6 +237,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'node_format': '%m\\n'})
 
     def test_parse_mecab_options_unkformat(self):
+        '''Test option-parsing: unk-format.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-U???\\n')
             self.assertDictEqual(dopts, {'unk_format':'???\\n'})
@@ -243,6 +252,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'unk_format': '???\\n'})
 
     def test_parse_mecab_options_bosformat(self):
+        '''Test option-parsing: bos-format.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-B>>>\\n')
             self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
@@ -257,6 +267,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'bos_format': '>>>\\n'})
 
     def test_parse_mecab_options_eosformat(self):
+        '''Test option-parsing: eos-format.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-E<<<\\n')
             self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
@@ -271,6 +282,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'eos_format': '<<<\\n'})
 
     def test_parse_mecab_options_eonformat(self):
+        '''Test option-parsing: eon-format.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-S___\\n')
             self.assertDictEqual(dopts, {'eon_format':'___\\n'})
@@ -285,6 +297,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'eon_format': '___\\n'})
 
     def test_parse_mecab_options_unkfeature(self):
+        '''Test option-parsing: unk-feature.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-x!!!\\n')
             self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
@@ -299,6 +312,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'unk_feature': '!!!\\n'})
 
     def test_parse_mecab_options_inputbuffersize(self):
+        '''Test option-parsing: input-buffer-size.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-b8888')
             self.assertDictEqual(dopts, {'input_buffer_size':8888})
@@ -319,6 +333,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                                            str(ctx.exception)))
 
     def test_parse_mecab_options_allocatesentence(self):
+        '''Test option-parsing: allocation-sentence.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-C')
             self.assertDictEqual(dopts, {'allocate_sentence':True})
@@ -330,6 +345,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertDictEqual(dopts, {'allocate_sentence':True})
 
     def test_parse_mecab_options_theta(self):
+        '''Test option-parsing: theta.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-t0.777')
             self.assertDictEqual(dopts, {'theta':0.777})
@@ -349,6 +365,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertIsNotNone(re.search('--theta', str(ctx.exception)))
 
     def test_parse_mecab_options_costfactor(self):
+        '''Test option-parsing: cost-factor.'''
         with mecab.MeCab() as nm:
             dopts = nm._MeCab__parse_mecab_options('-c666')
             self.assertDictEqual(dopts, {'cost_factor':666})
@@ -369,6 +386,7 @@ class TestMecab(unittest.TestCase, Test23Support):
 
     # ------------------------------------------------------------------------
     def test_build_options_str(self):
+        '''Test option-building logic.'''
         with mecab.MeCab() as nm:
             opts = nm._MeCab__build_options_str(
                                          {'dicdir':'/foo',
@@ -418,13 +436,13 @@ class TestMecab(unittest.TestCase, Test23Support):
 
     # ------------------------------------------------------------------------
     def test_init_unknownoption(self):
-        # MeCabError if unrecognized option passed in
+        '''Test instantiation of MeCab with unrecognized option.'''
         with self.assertRaises(api.MeCabError) as ctx:
             with mecab.MeCab('--unknown'):
                 self.assertIsNotNone(re.search('--unknown', str(ctx.exception)))
 
     def test_init_libunset(self):
-        # load error when MeCab lib is not found
+        '''Test for load error when MeCab lib is not found.'''
         try:
             orig_env = os.getenv(mecab.MeCab.MECAB_PATH)
             os.environ[mecab.MeCab.MECAB_PATH] = '/foo/bar'
@@ -439,18 +457,33 @@ class TestMecab(unittest.TestCase, Test23Support):
 
     # ------------------------------------------------------------------------
     def test_version(self):
+        '''Test mecab_version.'''
         with mecab.MeCab() as nm:
             res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
             expected = self._b2u(res[0])
             self.assertIsNotNone(re.search(nm.version, expected))
 
     # ------------------------------------------------------------------------
+    def test_parse_unicodeRstr(self):
+        '''Test parse: unicode input (Python 2) and bytes input (Python 3).'''
+        s = '日本語だよ、これが。'
+        with mecab.MeCab() as nm:
+            if sys.version < '3':
+                b = s.decode('utf-8')
+            else:
+                b = s.encode('utf-8')
+
+            with self.assertRaises(api.MeCabError):
+                nm.parse(b)
+
     def test_null_text_error(self):
+        '''Test invocation of parse with null argument.'''
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
                 nm.parse(None)
 
     def test_parse_tostr_default(self):
+        '''Test simple default parsing.'''
         with mecab.MeCab() as nm:
             expected = nm.parse(self.text).strip()
             expected = expected.replace('\n', os.linesep)                 # ???
@@ -460,6 +493,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.assertEqual(expected, actual)
 
     def test_parse_tostr(self):
+        '''Test default parsing, across different output formats.'''
         formats = ['',
                    '-Owakati',
                    '-Oyomi',
@@ -476,7 +510,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 self.assertEqual(expected, actual)
 
     def test_parse_tonode_default(self):
-        '''Skipping over any BOS or EOS nodes, test output node-by-node.'''
+        '''Test node parsing, skipping over any BOS or EOS nodes.'''
         formats = ['', '-N2']
         for argf in formats:
             with mecab.MeCab(argf) as nm:

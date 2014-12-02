@@ -32,10 +32,9 @@ class MeCab(object):
             # parse a string
             print(nm.parse('この星の一等賞になりたいの卓球で俺は、そんだけ！'))
 
-            # parse string into MeCab nodes,
+            # parse text into Python Generator yielding MeCab nodes,
             # and display much more detailed information about each morpheme
-            nodes = nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True)
-            for n in nodes:
+            for n in nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True):
                 if n.is_nor():
                     print("{}\t{}\t{}".format(n.surface, n.posid, n.wcost))
     '''
@@ -395,8 +394,8 @@ class MeCab(object):
                 behavior, either 'mecab_sparse_tonode' or 'mecab_nbest_init'.
 
         Returns:
-            A function definition, tailored to parsing as nodes, using either
-            the default or N-best behavior.
+            A function which returns a Generator, tailored to parsing as nodes,
+            using either the default or N-best behavior.
         '''
         def _fn(text):
             '''Parse text and return MeCab result as a node.'''

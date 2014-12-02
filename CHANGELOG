@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+- 2014/12/nn: 0.0.8 release.
+    - Issue 10: now returning a Generator instead of an array when parsing into
+      nodes.
+
 - 2014/11/24: 0.0.7 release.
     - Issue 7: reversing decision in Issue #5: input/output in Python 2
       is a string in the encoding of the mecab lib; while in Python 3,
