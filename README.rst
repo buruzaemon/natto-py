@@ -3,12 +3,11 @@ natto-py
 
 What is natto-py?
 -----------------
-``natto-py`` combines the Python_ programming language with MeCab_, the 
-part-of-speech and morphological analyzer for the Japanese language. 
-
-``natto-py`` is a package bridging Python and MeCab using FFI (foreign function
-interface). No compiler is necessary, as it is **not** a C extension. 
-``natto-py`` will run on Mac OS, Windows and \*nix.
+A package leveraging FFI (foreign function interface), ``natto-py`` combines
+the Python_ programming language with MeCab_, the part-of-speech and
+morphological analyzer for the Japanese language. No compiler is necessary, as
+it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
+\*nix.
 
 You can learn more about `natto-py at Bitbucket`_.
 
@@ -131,12 +130,11 @@ Parse Japanese text as a string, outputting to ``stdout``::
     。      記号,句点,*,*,*,*,。,。,。
     EOS
 
-Next, try parsing the text with MeCab node parsing, using the more detailed
-information related to each morpheme::
+Next, try parsing the text with MeCab node parsing. A generator yielding the
+MeCab nodes lets you intelligently iterate over the output, allowing access to
+more detailed information about to each morpheme::
 
-        nodes = nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True)
-
-        for n in nodes:
+        for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     if not n.is_eos():
     ...         print('%s\t%s' % (n.surface, n.cost))
     ...
