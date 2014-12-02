@@ -4,7 +4,11 @@ natto-py
 What is natto-py?
 -----------------
 ``natto-py`` combines the Python_ programming language with MeCab_, the 
-part-of-speech and morphological analyzer for the Japanese language.
+part-of-speech and morphological analyzer for the Japanese language. 
+
+``natto-py`` is a package bridging Python and MeCab using FFI (foreign function
+interface). No compiler is necessary, as it is **not** a C extension. 
+``natto-py`` will run on Mac OS, Windows and \*nix.
 
 You can learn more about `natto-py at Bitbucket`_.
 
@@ -12,10 +16,11 @@ Requirements
 -------------
 ``natto-py`` requires the following:
 
-- `MeCab 0.996`_ along with an appropriate dictionary (`mecab-ipadic`_ recommended)
-- `cffi 0.8.6`_
+- `MeCab 0.996`_
+- A system dictionary, like `mecab-ipadic`_ or `mecab-jumandic`_
+- `cffi 0.8.6`_ or greater
 
-``natto-py`` is compatible with the following Python versions:
+The following Python versions are supported:
 
 - `Python 2.7.8`_
 - `Python 3.2.5`_
@@ -24,39 +29,32 @@ Requirements
 
 Installation
 ------------
-Install ``natto-py`` with the following command::
+Install ``natto-py`` as you would any other Python package::
 
-    pip install natto-py
+    $ pip install natto-py
 
 This will automatically install the ``cffi`` package, which ``natto-py`` uses
 to bind to the ``mecab`` library.
 
 Configuration
 -------------
-``natto-py`` should just work without any explicit configuration.
+As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS)
+executables are on your ``PATH``, ``natto-py`` should not require any explicit
+configuration. 
 
-On \*nix and Mac OS, it queries ``mecab-config`` to discover the
-path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
+* On \*nix and Mac OS, it queries ``mecab-config`` to discover the path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
+* On Windows, it queries the Windows Registry to locate the MeCab installation folder.
+* In order to convert character encodings to/from Unicode, ``natto-py`` will examine the charset of the ``mecab`` system dictionary.
 
-On Windows, it queries the Windows Registry to locate the MeCab 
-installation folder.
-
-In order to convert character encodings to/from Unicode, ``natto-py``
-will examine the charset of the ``mecab`` system dictionary.
-
-Therefore, as long as the ``mecab`` (and ``mecab-config`` for \*nix
-and Mac OS) executables are on your ``PATH``, ``natto-py`` should
-not require any explicit configuration.
-
+Explicit configuration via MECAB_PATH and MECAB_CHARSET
+-------------------------------------------------------
 If ``natto-py`` for some reason cannot locate the ``mecab`` library,
 or if it cannot determine the correct charset used internally by
 ``mecab``, then you will need to set the ``MECAB_PATH`` and ``MECAB_CHARSET``
 environment variables. 
 
-Set the ``MECAB_PATH`` environment variable to the exact name/path to your
-``mecab`` library. Set the ``MECAB_CHARSET`` environment variable if you
-compiled ``mecab`` and the related dictionary to use a non-default character
-encoding.
+* Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
+* Set the ``MECAB_CHARSET`` environment variable if you compiled ``mecab`` and the related dictionary to use a non-default character encoding.
 
 e.g., for Mac OS X::
 
@@ -78,7 +76,7 @@ e.g., from within a Python program::
     import os
 
     os.environ['MECAB_PATH']='/usr/local/lib/libmecab.so'
-    os.environ['MECAB_CHARSET']=utf-16
+    os.environ['MECAB_CHARSET']='utf-16'
 
 Usage
 -----
@@ -184,7 +182,8 @@ LICENSE file for further details.
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
-.. _mecab-ipadic: http://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
+.. _mecab-ipadic: https://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
+.. _mecab-jumandic: https://mecab.googlecode.com/files/mecab-jumandic-5.1-20070304.tar.gz
 .. _natto-py at Bitbucket: https://bitbucket.org/buruzaemon/natto-py
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
