@@ -452,9 +452,13 @@ class MeCab(object):
         '''Parses the given text.
 
         Args:
-            text: the Unicode text to parse.
+            text: the text to parse.
             as_nodes: flag indicating whether to parse as nodes or strings;
                 defaults to False (string parsing).
+
+       Returns:
+            A single string containing the entire MeCab output;
+            or a Generator yielding the MeCab nodes.
 
         Raises:
             MeCabError: a null argument was passed in;

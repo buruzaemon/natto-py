@@ -1,9 +1,10 @@
 CHANGELOG
 ---------
 
-- 2014/12/nn: 0.0.8 release.
+- 2014/12/02: 0.0.8 release.
     - Issue 10: now returning a Generator instead of an array when parsing into
       nodes.
+    - Cleaning up the README.rst and comments a bit.
 
 - 2014/11/24: 0.0.7 release.
     - Issue 7: reversing decision in Issue #5: input/output in Python 2
