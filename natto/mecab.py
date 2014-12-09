@@ -333,9 +333,9 @@ class MeCab(object):
         dptr = self.__mecab.mecab_dictionary_info(self.pointer)
         while dptr != self.__ffi.NULL:
             fpath = self.__out2str(self.__ffi.string(dptr.filename))
+            fpath = os.path.abspath(fpath)
             chset = self.__out2str(self.__ffi.string(dptr.charset))
-            self.dicts.append(DictionaryInfo(dptr, os.path.normpath(fpath),
-                                             chset))
+            self.dicts.append(DictionaryInfo(dptr, fpath, chset))
             dptr = getattr(dptr, 'next')
 
         # Save value for MeCab's internal character encoding
