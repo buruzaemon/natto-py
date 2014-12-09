@@ -15,7 +15,7 @@ Requirements
 -------------
 ``natto-py`` requires the following:
 
-- `MeCab 0.996`_
+- An existing installation of `MeCab 0.996`_
 - A system dictionary, like `mecab-ipadic`_ or `mecab-jumandic`_
 - `cffi 0.8.6`_ or greater
 
@@ -55,7 +55,7 @@ environment variables.
 * Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
 * Set the ``MECAB_CHARSET`` environment variable if you compiled ``mecab`` and the related dictionary to use a non-default character encoding.
 
-e.g., for Mac OS X::
+e.g., for Mac OS::
 
     export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
     export MECAB_CHARSET=utf8
@@ -175,8 +175,8 @@ Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
-Copyright |copy| 2014, Brooke M. Fujita. All rights reserved. Please see the
-LICENSE file for further details.
+Copyright |copy| 2014-2015, Brooke M. Fujita. All rights reserved. Please see
+the LICENSE file for further details.
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
