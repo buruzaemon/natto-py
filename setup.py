@@ -15,7 +15,7 @@ with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
 setup(
     name='natto-py',
 
-    version='0.0.8',
+    version='0.0.9',
 
     description=' '.join(['A Tasty Python Binding with MeCab',
                           '(FFI-based, no SWIG or compiler necessary)']),
@@ -43,8 +43,9 @@ setup(
 
         'License :: OSI Approved :: BSD License',
         
-        'Operating System :: Unix',
-        'Operating System :: MacOS',
+        'Operating System :: POSIX :: BSD',
+        'Operating System :: POSIX :: Linux',
+        'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
 
         'Programming Language :: Python :: 2',
