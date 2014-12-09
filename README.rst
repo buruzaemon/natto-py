@@ -90,15 +90,15 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
     # displays details about the MeCab instance
     <natto.mecab.MeCab
-     lib="/usr/local/lib/libmecab.so",
      pointer=<cdata 'mecab_t *' 0x000000000037AB40>,
+     libpath="/usr/local/lib/libmecab.so",
      options={},
      dicts=[<natto.dictionary.DictionaryInfo
              pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>,
-             type="0",
-             filename="/usr/local/lib/mecab/dic/ipadic/sys.dic",
-             charset="utf8">],
-     version="0.996">
+             filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
+             charset=utf8,
+             type=0],
+     version=0.996>
 
 Display details about the ``mecab`` system dictionary used::
 
@@ -108,9 +108,9 @@ Display details about the ``mecab`` system dictionary used::
     # displays the MeCab system dictionary info
     <natto.dictionary.DictionaryInfo
      pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>,
-     type=0,
-     filename="/usr/local/lib/mecab/dic/ipadic/sys.dic",
-     charset="utf8">
+     filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
+     charset=utf8,
+     type=0>
 
 
 Parse Japanese text as a string, outputting to ``stdout``::
