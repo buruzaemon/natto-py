@@ -24,13 +24,13 @@ class TestDictionary(unittest.TestCase, Test23Support):
             sysdic = nm.dicts[0]
             cs = sysdic.charset.lower()
             self.assertIn(cs, self.CHARSETS)
-            self.assertIsNotNone(re.search('sys.dic$', sysdic.filename))
+            self.assertIsNotNone(re.search('sys.dic$', sysdic.filepath))
             self.assertEqual(sysdic.type, 0)
             self.assertEqual(sysdic.version, 102)
 
 
 '''
-Copyright (c) 2014, Brooke M. Fujita.
+Copyright (c) 2014-2015, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
