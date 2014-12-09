@@ -9,8 +9,8 @@ class DictionaryInfo(object):
 
     Attributes:
         ptr: This dictionary's pointer.
-        filename: Full path to the dictionary file.
-        charset: Dictionary character set, e.g., "SHIFT-JIS", "UTF-8".
+        filepath: Full path to the dictionary file.
+        charset: Dictionary character set, e.g., SHIFT-JIS, UTF-8.
         size: Number of words registered in this dictionary.
         type: Dictionary type; 0 (SYS_DIC), 1 (USR_DIC), 2 (UNK_DIC)
         lsize: Left attributes size.
@@ -26,13 +26,13 @@ class DictionaryInfo(object):
             # first dictionary info is MeCab's system dictionary
             sysdic = nm.dicts[0]
 
-            print(sysdic.filename)
+            print(sysdic.filepath)
 
             print(sysdic.charset)
 
             print(sysdic.is_sysdic())
     '''
-    _REPR_FMT = '<{}.{} pointer={}, type={}, filename="{}", charset="{}">'
+    _REPR_FMT = '<{}.{} pointer={}, filepath="{}", charset={}, type={}>'
 
     # System dictionary
     SYS_DIC = 0
@@ -41,10 +41,10 @@ class DictionaryInfo(object):
     # Unknown dictionary.
     UNK_DIC = 2
 
-    def __init__(self, dptr, filename, charset):
+    def __init__(self, dptr, filepath, charset):
         '''Initializes the MeCab dictionary information.'''
         self.ptr = dptr
-        self.filename = filename
+        self.filepath = filepath
         self.charset = charset
         self.size = dptr.size
         self.type = dptr.type
@@ -70,13 +70,13 @@ class DictionaryInfo(object):
         return self._REPR_FMT.format(type(self).__module__,
                                      type(self).__name__,
                                      self.ptr,
-                                     self.type,
-                                     self.filename,
-                                     self.charset)
+                                     self.filepath,
+                                     self.charset,
+                                     self.type)
 
 
 '''
-Copyright (c) 2014, Brooke M. Fujita.
+Copyright (c) 2014-2015, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
