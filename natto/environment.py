@@ -12,7 +12,7 @@ class MeCabEnv(object):
     system dictionary, which will determine the encoding used when passing
     strings in and obtaining string results from MeCab.
 
-    Also attempts to locate and obtain the full path to the MeCab library.
+    Also attempts to locate and obtain the absolute path to the MeCab library.
 
     This makes invocations to the mecab and mecab-config (not available on
     Windows) executables.
@@ -92,7 +92,7 @@ class MeCabEnv(object):
                     return 'euc-jp'
 
     def __get_libpath(self):
-        '''Return the full path to the MeCab library.
+        '''Return the absolute path to the MeCab library.
 
         On Windows, the path to the system dictionary is used to deduce the
         path to libmecab.dll.
@@ -104,7 +104,7 @@ class MeCabEnv(object):
         set.
 
         Returns:
-            The full path to the MeCab library.
+            The absolute path to the MeCab library.
 
         Raises:
             EnvironmentError: A problem was encountered in trying to locate the
@@ -112,7 +112,7 @@ class MeCabEnv(object):
         '''
         libp = os.getenv(self.MECAB_PATH)
         if libp:
-            return libp
+            return os.path.abspath(libp)
         else:
             plat = sys.platform
             if plat == 'win32':
@@ -151,6 +151,7 @@ class MeCabEnv(object):
                     raise EnvironmentError(self._ERROR_NOLIB.format(lib))
 
             if libp and os.path.exists(libp):
+                libp = os.path.abspath(libp)
                 os.environ[self.MECAB_PATH] = libp
                 return libp
             else:
@@ -195,7 +196,7 @@ class MeCabEnv(object):
 
 
 '''
-Copyright (c) 2014, Brooke M. Fujita.
+Copyright (c) 2014-2015, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
