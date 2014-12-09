@@ -38,11 +38,14 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
         'Topic :: Software Development :: Libraries :: Python Modules',
-        'Topic :: Software Development :: Build Tools',
         'Topic :: Text Processing :: Linguistic',
         'Natural Language :: Japanese',
 
         'License :: OSI Approved :: BSD License',
+        
+        'Operating System :: Unix',
+        'Operating System :: MacOS',
+        'Operating System :: Microsoft :: Windows',
 
         'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.7',
@@ -54,6 +57,7 @@ setup(
 
     keywords=' '.join(['MeCab',
                        '和布蕪',
+                       '納豆',
                        'Japanese morphological analyzer',
                        'NLP',
                        '形態素解析',
