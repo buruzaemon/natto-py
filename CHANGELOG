@@ -1,6 +1,10 @@
 CHANGELOG
 ---------
 
+- 2014/12/nn: 0.0.9 releae.
+    - MeCab: libpath attribute returns absolute path to MeCab library.
+    - DictionaryInfo: filepath attribute returns absolute path to dictionary.
+
 - 2014/12/02: 0.0.8 release.
     - Issue 10: now returning a Generator instead of an array when parsing into
       nodes.
