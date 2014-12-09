@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 '''The main interface to MeCab via natto-py.'''
 import argparse
+import os
 import sys
 from .api import MeCabError
 from .binding import _ffi_libmecab
@@ -23,10 +24,13 @@ class MeCab(object):
         with MeCab() as nm:
             # output MeCab version
             print(nm.version)
+            
+            # output absolute path to MeCab library
+            print(nm.libpath)
 
-            # output filename and charset for the MeCab system dictionary
+            # output file path and charset for the MeCab system dictionary
             sysdic = nm.dicts[0]
-            print(sysdic.filename)
+            print(sysdic.filepath)
             print(sysdic.charset)
 
             # parse a string
@@ -47,8 +51,8 @@ class MeCab(object):
     _ERROR_NULLPTR = 'Could not initialize MeCab'
     _ERROR_NVALUE = 'Invalid N value'
 
-    _REPR_FMT = ('<{}.{} lib="{}", pointer={}, options={}, dicts={},'
-                 ' version="{}">')
+    _REPR_FMT = ('<{}.{} pointer={}, libpath="{}", options={}, dicts={},'
+                 ' version={}>')
 
     _FN_NBEST_TOSTR = 'mecab_nbest_sparse_tostr'
     _FN_NBEST_TONODE = 'mecab_nbest_init'
@@ -249,7 +253,7 @@ class MeCab(object):
             env = MeCabEnv()
             self.__ffi = _ffi_libmecab()
             self.__mecab = self.__ffi.dlopen(env.libpath)
-            self.lib = env.libpath
+            self.libpath = env.libpath
 
             # Set up byte/Unicode converters (Python 3 support)
             def __23_support():
@@ -328,9 +332,10 @@ class MeCab(object):
         self.dicts = []
         dptr = self.__mecab.mecab_dictionary_info(self.pointer)
         while dptr != self.__ffi.NULL:
-            fname = self.__out2str(self.__ffi.string(dptr.filename))
+            fpath = self.__out2str(self.__ffi.string(dptr.filename))
             chset = self.__out2str(self.__ffi.string(dptr.charset))
-            self.dicts.append(DictionaryInfo(dptr, fname, chset))
+            self.dicts.append(DictionaryInfo(dptr, os.path.normpath(fpath),
+                                             chset))
             dptr = getattr(dptr, 'next')
 
         # Save value for MeCab's internal character encoding
@@ -442,8 +447,8 @@ class MeCab(object):
         '''Returns a string representation of this MeCab instance.'''
         return self._REPR_FMT.format(type(self).__module__,
                                      type(self).__name__,
-                                     self.lib,
                                      self.pointer,
+                                     self.libpath,
                                      self.options,
                                      self.dicts,
                                      self.version)
@@ -477,7 +482,7 @@ class MeCab(object):
 
 
 '''
-Copyright (c) 2014, Brooke M. Fujita.
+Copyright (c) 2014-2015, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
