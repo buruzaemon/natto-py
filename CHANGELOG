@@ -1,7 +1,7 @@
 CHANGELOG
 ---------
 
-- 2014/12/nn: 0.0.9 releae.
+- 2014/12/17: 0.0.9 release.
     - MeCab: libpath attribute returns absolute path to MeCab library.
     - DictionaryInfo: filepath attribute returns absolute path to dictionary.
 
