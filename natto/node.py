@@ -8,32 +8,31 @@ class MeCabNode(object):
     as_nodes=True. Each node will contain detailed information about the
     morpheme encompassed.
 
-    Attributes:
-        ptr: This node's pointer.
-        prev: Pointer to previous node.
-        next: Pointer to next node.
-        enext: Pointer to the node which ends at the same position.
-        bnext: Pointer to the node which starts at the same position.
-        rpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
-        lpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
-        surface: Surface string, Unicode.
-        feature: Feature string, Unicode.
-        nodeid: Unique node id.
-        length: Length of surface form.
-        rlength: Length of the surface form including leading white space.
-        rcattr: Right attribute id.
-        lcattr: Left attribute id.
-        posid: Part-of-speech id.
-        char_type: Character type.
-        stat: Node status; 0 (NOR), 1 (UNK), 2 (BOS), 3 (EOS), 4 (EON).
-        isbest: 1 if this node is best node.
-        alpha: Forward accumulative log summation (with marginal probability).
-        beta: Backward accumulative log summation (with marginal probability).
-        prob: Marginal probability, only with marginal probability flag.
-        wcost: Word cost.
-        cost: Best accumulative cost from bos node to this node.
+    :ivar ptr: This node's pointer.
+    :ivar prev: Pointer to previous node.
+    :ivar next: Pointer to next node.
+    :ivar enext: Pointer to the node which ends at the same position.
+    :ivar bnext: Pointer to the node which starts at the same position.
+    :ivar rpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
+    :ivar lpath: Pointer to the right path; None if MECAB_ONE_BEST mode.
+    :ivar surface: Surface string, Unicode.
+    :ivar feature: Feature string, Unicode.
+    :ivar nodeid: Unique node id.
+    :ivar length: Length of surface form.
+    :ivar rlength: Length of the surface form including leading white space.
+    :ivar rcattr: Right attribute id.
+    :ivar lcattr: Left attribute id.
+    :ivar posid: Part-of-speech id.
+    :ivar char_type: Character type.
+    :ivar stat: Node status; 0 (NOR), 1 (UNK), 2 (BOS), 3 (EOS), 4 (EON).
+    :ivar isbest: 1 if this node is best node.
+    :ivar alpha: Forward accumulative log summation (with marginal probability).
+    :ivar beta: Backward accumulative log summation (with marginal probability).
+    :ivar prob: Marginal probability, only with marginal probability flag.
+    :ivar wcost: Word cost.
+    :ivar cost: Best accumulative cost from bos node to this node.
 
-    Example usage:
+    Example usage::
 
         from natto import MeCab
         with MeCab() as nm:
@@ -83,27 +82,45 @@ class MeCabNode(object):
         self.cost = nptr.cost
 
     def is_nor(self):
-        '''Returns True if this is a normal node (defined in dictionary).'''
+        '''Is this a normal node, defined in a dictionary?
+
+        :return: True if normal node, False otherwise.
+        '''
         return self.stat == self.NOR_NODE
 
     def is_unk(self):
-        '''Returns True if this is an unknown node (not in dictionary).'''
+        '''Is this an unknown node, not defined in any dictionary?
+
+        :return: True if unknown node, False otherwise.
+        '''
         return self.stat == self.UNK_NODE
 
     def is_bos(self):
-        '''Returns True if this is a beginning-of-sentence node.'''
+        '''Is this a beginning-of-sentence node?
+
+        :return: True if beginning-of-sentence node, False otherwise.
+        '''
         return self.stat == self.BOS_NODE
 
     def is_eos(self):
-        '''Returns True if this is an end-of-sentence node.'''
+        '''Is this an end-of-sentence node?
+
+        :return: True if end-of-sentence node, False otherwise.
+        '''
         return self.stat == self.EOS_NODE
 
     def is_eon(self):
-        '''Returns True if this is an end of an N-best node list.'''
+        '''Is this an end of an N-best node list?
+
+        :return: True if end of an N-best node list, False otherwise.
+        '''
         return self.stat == self.EON_NODE
 
     def __repr__(self):
-        '''Returns a string representation of this MeCab node.'''
+        '''Return a string representation of this MeCab node.
+
+        :return: str - string representation.
+        '''
         return self._REPR_FMT.format(type(self).__module__,
                                      type(self).__name__,
                                      self.ptr,

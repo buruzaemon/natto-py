@@ -63,7 +63,9 @@ setup(
                        'NLP',
                        '形態素解析',
                        '自然言語処理',
-                       'FFI']),
+                       'FFI',
+                       'binding',
+                       'バインディング']),
 
     packages=['natto', 'tests'],
 

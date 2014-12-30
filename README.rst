@@ -85,8 +85,8 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
     from natto import MeCab
 
-    with MeCab() as nm:
-        print(nm)
+    nm = MeCab()
+    print(nm)
 
     # displays details about the MeCab instance
     <natto.mecab.MeCab
@@ -102,8 +102,8 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
 Display details about the ``mecab`` system dictionary used::
 
-        sysdic = nm.dicts[0]
-        print(sysdic)
+    sysdic = nm.dicts[0]
+    print(sysdic)
 
     # displays the MeCab system dictionary info
     <natto.dictionary.DictionaryInfo
@@ -115,7 +115,7 @@ Display details about the ``mecab`` system dictionary used::
 
 Parse Japanese text as a string, outputting to ``stdout``::
 
-        print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
+    print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
 
     # MeCab's parsing as a string sent to stdout
     ピンチ    名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
@@ -131,9 +131,16 @@ Parse Japanese text as a string, outputting to ``stdout``::
     EOS
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
-MeCab nodes lets you intelligently iterate over the output, allowing access to
-more detailed information about to each morpheme::
+MeCab nodes lets you efficiently iterate over the output, without first
+materializing each and every resulting MeCab node instance. The generator 
+returned allows access to more detailed information about to each morpheme.
 
+Here we use a `Python with statement`_ to automatically clean up after we 
+finish node parsing with the MeCab tagger::
+
+    # use a Python with statement 
+    # to ensure mecab_destroy is invoked
+    with MeCab() as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     if not n.is_eos():
     ...         print('%s\t%s' % (n.surface, n.cost))
@@ -190,6 +197,7 @@ the LICENSE file for further details.
 .. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
 .. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
+.. _Python with statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src

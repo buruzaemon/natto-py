@@ -7,18 +7,17 @@ class DictionaryInfo(object):
     A list of dictionaries used by MeCab is returned by the dicts attribute of
     MeCab. Each dictionary information includes the attributes listed below.
 
-    Attributes:
-        ptr: This dictionary's pointer.
-        filepath: Full path to the dictionary file.
-        charset: Dictionary character set, e.g., SHIFT-JIS, UTF-8.
-        size: Number of words registered in this dictionary.
-        type: Dictionary type; 0 (SYS_DIC), 1 (USR_DIC), 2 (UNK_DIC)
-        lsize: Left attributes size.
-        rsize: Right attributes size.
-        version: Dictionary version.
-        next: Pointer to next dictionary information struct.
+    :ivar ptr: FFI pointer to the mecab_dictionary_info_t.
+    :ivar filepath: Full path to the dictionary file.
+    :ivar charset: Dictionary character set, e.g., SHIFT-JIS, UTF-8.
+    :ivar size: Number of words registered in this dictionary.
+    :ivar type: Dictionary type; 0 (SYS_DIC), 1 (USR_DIC), 2 (UNK_DIC)
+    :ivar lsize: Left attributes size.
+    :ivar rsize: Right attributes size.
+    :ivar version: Dictionary version.
+    :ivar next: Pointer to next dictionary information struct.
 
-    Example usage:
+    Example usage::
 
         from natto import MeCab
 
@@ -42,7 +41,6 @@ class DictionaryInfo(object):
     UNK_DIC = 2
 
     def __init__(self, dptr, filepath, charset):
-        '''Initializes the MeCab dictionary information.'''
         self.ptr = dptr
         self.filepath = filepath
         self.charset = charset
@@ -54,19 +52,31 @@ class DictionaryInfo(object):
         self.next = getattr(dptr, 'next')
 
     def is_sysdic(self):
-        '''Returns True if this is a system dictionary.'''
+        '''Is this a system dictionary?
+
+        :return: True if system dictionary, False otherwise.
+        '''
         return self.type == self.SYS_DIC
 
     def is_usrdic(self):
-        '''Returns True if this is a user-defined dictionary.'''
+        '''Is this a user-defined dictionary?
+
+        :return: True if user-defined dictionary, False otherwise.
+        '''
         return self.type == self.USR_DIC
 
     def is_unkdic(self):
-        '''Returns True if this is a unknown dictionary.'''
+        '''Is this an unknown dictionary?
+
+        :return: True if unknown dictionary, False otherwise.
+        '''
         return self.type == self.UNK_DIC
 
     def __repr__(self):
-        '''Returns a string representation of this MeCab dictionary.'''
+        '''Return a string representation of this MeCab dictionary.
+
+        :return: str - string representation.
+        '''
         return self._REPR_FMT.format(type(self).__module__,
                                      type(self).__name__,
                                      self.ptr,

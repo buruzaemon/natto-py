@@ -17,7 +17,7 @@ class MeCab(object):
     surface and related features, or for parsing as MeCab nodes which contain
     detailed information about the morphemes encompassed.
 
-    Example usage:
+    Example usage::
 
         from natto import MeCab
 
@@ -40,7 +40,7 @@ class MeCab(object):
             # and display much more detailed information about each morpheme
             for n in nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True):
                 if n.is_nor():
-                    print("{}\t{}\t{}".format(n.surface, n.posid, n.wcost))
+                    print("{}\\t{}\\t{}".format(n.surface, n.posid, n.wcost))
     '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
@@ -95,8 +95,7 @@ class MeCab(object):
         Lattice-level option has been deprecated; please use marginal or nbest
         instead.
 
-        Args:
-            options: string or dictionary of options to use when instantiating
+        :options string or dictionary of options to use when instantiating
                 the MeCab instance. May be in short- or long-form, or in a
                 Python dictionary.
 
@@ -454,20 +453,15 @@ class MeCab(object):
                                      self.version)
 
     def parse(self, text, as_nodes=False):
-        '''Parses the given text.
+        '''Parse the given text.
 
-        Args:
-            text: the text to parse.
-            as_nodes: flag indicating whether to parse as nodes or strings;
-                defaults to False (string parsing).
-
-       Returns:
-            A single string containing the entire MeCab output;
+        :param text: the text to parse.
+        :type text: str
+        :param as_nodes: flag indicating whether to parse as nodes or strings;
+        :type as_nodes: bool, defaults to False
+        :return: A single string containing the entire MeCab output;
             or a Generator yielding the MeCab nodes.
-
-        Raises:
-            MeCabError: a null argument was passed in;
-                        or an unforseen error occurred during the operation.
+        :raises: MeCabError
         '''
         if text is None:
             raise MeCabError(self._ERROR_EMPTY_STR)
