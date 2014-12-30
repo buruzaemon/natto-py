@@ -132,8 +132,8 @@ Parse Japanese text as a string, outputting to ``stdout``::
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
 MeCab nodes lets you efficiently iterate over the output, without first
-materializing each and every resulting MeCab node instance. The generator 
-returned allows access to more detailed information about to each morpheme.
+materializing each and every resulting MeCab node instance. The MeCab nodes 
+yielded allow access to more detailed information about to each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
 finish node parsing with the MeCab tagger::
