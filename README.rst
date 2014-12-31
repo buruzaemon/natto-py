@@ -141,7 +141,7 @@ materializing each and every resulting MeCab node instance. The MeCab nodes
 yielded allow access to more detailed information about each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
-finish node parsing with the MeCab tagger. This is the recommended approach if
+finish node parsing with the MeCab tagger. This is the recommended approach
 for using ``natto-py`` in a production environment::
 
     # use a Python with statement 
@@ -164,12 +164,12 @@ for using ``natto-py`` in a production environment::
 
 ----
 
-MeCab output formatting is extremely flexible, and is highly recommended for
+MeCab output formatting is extremely flexible and is highly recommended for
 any serious natural language processing task. Rather than obtaining MeCab's
 output as a single, large string and then parsing that, use MeCab's 
 ``--node-format`` option to customize the node's feature value.
 
-This example formats the node feature example and extracts the following as a
+This example formats the node feature and extracts the following as a
 comma-separated value:
 
 * morpheme surface
