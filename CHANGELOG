@@ -1,8 +1,9 @@
 CHANGELOG
 ---------
 
-- 2015/01/nn: 0.1.0 release.
-    - 
+- 2015/01/02: 0.1.0 release.
+    - Issue 9: Refactored Python 23 support logic. 
+    - On-going improvements and clarifications to natto-py documentation.
 
 - 2014/12/31: 0.0.9 release.
     - MeCab: libpath attribute returns absolute path to MeCab library.
