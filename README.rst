@@ -141,7 +141,7 @@ materializing each and every resulting MeCab node instance. The MeCab nodes
 yielded allow access to more detailed information about each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
-finish node parsing with the MeCab tagger. This is the recommended usage if
+finish node parsing with the MeCab tagger. This is the recommended approach if
 you are use ``natto-py`` in a production environment::
 
     # use a Python with statement 
@@ -204,7 +204,8 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 Learn More
 ----------
-You can read more about ``natto-py`` on the `project Wiki`_.
+* You can read more about ``natto-py`` on the `project Wiki`_.
+* `API documentation on Read the Docs`_.
 
 Contributing to natto-py
 ------------------------
@@ -245,6 +246,7 @@ the LICENSE file for further details.
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
+.. `API documentation on Read the Docs`_: http://natto-py.readthedocs.org/en/latest/
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
 .. _Browse the issue tracker: https://bitbucket.org/buruzaemon/natto-py/issues?status=new&status=open
