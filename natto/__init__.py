@@ -6,12 +6,12 @@ from .dictionary import DictionaryInfo
 from .mecab import MeCab
 from .node import MeCabNode
 
-__version__ = '0.0.9'
-__version_info__ = (0, 0, 9)
+__version__ = '0.1.0'
+__version_info__ = (0, 1, 0)
 
 
 '''
-Copyright (c) 2014-2015, Brooke M. Fujita.
+Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

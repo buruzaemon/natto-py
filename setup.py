@@ -15,7 +15,7 @@ with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
 setup(
     name='natto-py',
 
-    version='0.0.9',
+    version='0.1.0',
 
     description=' '.join(['A Tasty Python Binding with MeCab',
                           '(FFI-based, no SWIG or compiler necessary)']),
