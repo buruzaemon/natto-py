@@ -1,0 +1,20 @@
+# use glob syntax.
+syntax: glob
+
+# Compiled Python files
+*.pyc
+
+.py*env/
+py*env*
+build/
+cffi*/
+dist/
+docs/
+natto_py.egg-info/
+pycparser*.egg
+
+# Temporary files used by the vim editor.
+.*.swp
+
+# mercurial tmp files
+*.orig

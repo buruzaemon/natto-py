@@ -1,0 +1,57 @@
+CHANGELOG
+---------
+
+- 2015/01/02: 0.1.0 release.
+    - Issue 9: Refactored Python 23 support logic. 
+    - On-going improvements and clarifications to natto-py documentation.
+
+- 2014/12/31: 0.0.9 release.
+    - MeCab: libpath attribute returns absolute path to MeCab library.
+    - DictionaryInfo: filepath attribute returns absolute path to dictionary.
+    - Improvements and clarifications to natto-py documentation.
+
+- 2014/12/02: 0.0.8 release.
+    - Issue 10: now returning a Generator instead of an array when parsing into
+      nodes.
+    - Cleaning up the README.rst and comments a bit.
+
+- 2014/11/24: 0.0.7 release.
+    - Issue 7: reversing decision in Issue #5: input/output in Python 2
+      is a string in the encoding of the mecab lib; while in Python 3,
+      both input/output will be in Unicode.
+    - Minor refactoring to tighten up attribute visibility in MeCab and
+      DictionaryInfo
+    - Now testing on Ubuntu 14 (32-bit) as well.
+
+- 2014/11/21: 0.0.6 release.
+    - Issue #5: All input/output in Unicode; Python 2.7 users take heed.
+    - Issue #7: MeCabEnv now uses Windows Registry to discover lib path.
+
+- 2014/11/08: 0.0.5 release.
+    - Issue #4: adding lib to natto.mecab.MeCab.
+    - Issue #6: adding __del__ to natto.mecab.MeCab.
+
+- 2014/11/08: 0.0.4 release.
+    - Minor cosmetic fixes.
+
+- 2014/11/08: 0.0.3 release.
+    - Upgrading to beta status
+    - String-Unicode conversion to support Python 2 and 3, keeping to principal
+      of least surprise with regards to behavior of strings
+    - Supporting Python 3.4
+    - Supporting Python 3.3
+    - Supporting Python 3.2
+    - Supporting Python 2.7
+    - Node-formatting for node parsing
+    - Automagic defaulting for MeCab library path and charset, but allowing for
+      overriding with MECAB_PATH and MECAB_CHARSET
+    - Tested on Windows XP (32-bit) and Windows 7 (64-bit)
+    - Tested on Mac OS Yosemite (64-bit)
+    - Tested on FreeBSD 10 (32-bit)
+
+- 2014/10/26: 0.0.2 release.
+    - work in progress
+
+- 2014/10/24: Project inception, initial archiving on Bitbucket.
+    - Initial archiving 
+    - natto-py is to provide an easy-to-use Python binding with MeCab
