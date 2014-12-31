@@ -4,7 +4,7 @@ CHANGELOG
 - 2014/12/31: 0.0.9 release.
     - MeCab: libpath attribute returns absolute path to MeCab library.
     - DictionaryInfo: filepath attribute returns absolute path to dictionary.
-    - Various improvements and clarifications to natto-py documentation.
+    - Improvements and clarifications to natto-py documentation.
 
 - 2014/12/02: 0.0.8 release.
     - Issue 10: now returning a Generator instead of an array when parsing into
