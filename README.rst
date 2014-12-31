@@ -246,7 +246,7 @@ the LICENSE file for further details.
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
-.. `API documentation on Read the Docs`_: http://natto-py.readthedocs.org/en/latest/
+.. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/latest/
 .. _mercurial: http://mercurial.selenic.com/
 .. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
 .. _Browse the issue tracker: https://bitbucket.org/buruzaemon/natto-py/issues?status=new&status=open
