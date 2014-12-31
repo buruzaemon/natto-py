@@ -141,8 +141,8 @@ materializing each and every resulting MeCab node instance. The MeCab nodes
 yielded allow access to more detailed information about each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
-finish node parsing with the MeCab tagger. If you are using ``natto-py`` in a
-production environment, then this is the recommended usage::
+finish node parsing with the MeCab tagger. This is the recommended usage if
+you are use ``natto-py`` in a production environment::
 
     # use a Python with statement 
     # to ensure mecab_destroy is invoked
