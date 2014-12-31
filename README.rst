@@ -100,6 +100,8 @@ Instantiate a reference to the ``mecab`` library, and display some details::
              type=0],
      version=0.996>
 
+----
+
 Display details about the ``mecab`` system dictionary used::
 
     sysdic = nm.dicts[0]
@@ -112,12 +114,13 @@ Display details about the ``mecab`` system dictionary used::
      charset=utf8,
      type=0>
 
+----
 
-Parse Japanese text as a string, outputting to ``stdout``::
+Parse Japanese text and send the MeCab result as a string to ``stdout``::
 
     print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
 
-    # MeCab's parsing as a string sent to stdout
+    # MeCab result as a single string
     ピンチ    名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
     の      助詞,連体化,*,*,*,*,の,ノ,ノ
     時      名詞,非自立,副詞可能,*,*,*,時,トキ,トキ
@@ -130,31 +133,74 @@ Parse Japanese text as a string, outputting to ``stdout``::
     。      記号,句点,*,*,*,*,。,。,。
     EOS
 
+----
+
 Next, try parsing the text with MeCab node parsing. A generator yielding the
 MeCab nodes lets you efficiently iterate over the output, without first
 materializing each and every resulting MeCab node instance. The MeCab nodes 
-yielded allow access to more detailed information about to each morpheme.
+yielded allow access to more detailed information about each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
-finish node parsing with the MeCab tagger::
+finish node parsing with the MeCab tagger. If you are using ``natto-py`` in a
+production environment, then this is the recommended usage::
 
     # use a Python with statement 
     # to ensure mecab_destroy is invoked
     with MeCab() as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     if not n.is_eos():
-    ...         print('%s\t%s' % (n.surface, n.cost))
+    ...         print("{}\t{}".format(n.surface, n.cost))
     ...
-    ピンチ	3348
-    の	3722
-    時	5176
-    に	5083
-    は	5305
-    必ず	7525
-    ヒーロー	11363
-    が	10508
-    現れる	10841
-    。	7127
+    ピンチ    3348
+    の        3722
+    時        5176
+    に        5083
+    は        5305
+    必ず    7525
+    ヒーロー   11363
+    が       10508
+    現れる   10841
+    。        7127
+
+----
+
+MeCab output formatting is extremely flexible, and is highly recommended for
+any serious natural language processing task. Rather than obtaining MeCab's
+output as a large, single string and then parsing that, try using MeCab's 
+``--node-format`` option to customize the node's feature value.
+
+This example formats the node feature example and extracts the following as a
+comma-separated value:
+
+* morpheme surface
+* part-of-speech
+* part-of-speech ID
+* pronunciation
+
+The ``-F`` short form of the ``--node-format`` option is used here::
+
+    # -F    ... short-form of --node-format
+    # %m    ... morpheme surface
+    # %f[0] ... part-of-speech
+    # %h    ... part-of-speech id (ipadic)
+    # %f[8] ... pronunciation
+    with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
+        for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
+    ...     if not n.is_eos():
+    ...         print(n.feature)
+    ...
+    ピンチ,名詞,38,ピンチ
+    の,助詞,24,ノ
+    時,名詞,66,トキ
+    に,助詞,13,ニ
+    は,助詞,16,ワ
+    必ず,副詞,35,カナラズ
+    ヒーロー,名詞,38,ヒーロー
+    が,助詞,13,ガ
+    現れる,動詞,31,アラワレル
+    。,記号,7,。
+
+----
 
 Learn More
 ----------
