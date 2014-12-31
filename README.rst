@@ -136,13 +136,13 @@ Parse Japanese text and send the MeCab result as a string to ``stdout``::
 ----
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
-MeCab nodes lets you efficiently iterate over the output, without first
+MeCab nodes lets you efficiently iterate over the output without first
 materializing each and every resulting MeCab node instance. The MeCab nodes 
 yielded allow access to more detailed information about each morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
 finish node parsing with the MeCab tagger. This is the recommended approach if
-you are use ``natto-py`` in a production environment::
+for using ``natto-py`` in a production environment::
 
     # use a Python with statement 
     # to ensure mecab_destroy is invoked
@@ -166,7 +166,7 @@ you are use ``natto-py`` in a production environment::
 
 MeCab output formatting is extremely flexible, and is highly recommended for
 any serious natural language processing task. Rather than obtaining MeCab's
-output as a large, single string and then parsing that, try using MeCab's 
+output as a single, large string and then parsing that, use MeCab's 
 ``--node-format`` option to customize the node's feature value.
 
 This example formats the node feature example and extracts the following as a
@@ -229,7 +229,7 @@ Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
-Copyright |copy| 2014-2015, Brooke M. Fujita. All rights reserved. Please see
+Copyright |copy| 2015, Brooke M. Fujita. All rights reserved. Please see
 the LICENSE file for further details.
 
 .. _Python: http://www.python.org/
