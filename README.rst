@@ -136,12 +136,12 @@ Parse Japanese text and send the MeCab result as a string to ``stdout``::
 ----
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
-MeCab nodes lets you efficiently iterate over the output without first
+MeCabNode instances lets you efficiently iterate over the output without first
 materializing each and every resulting MeCabNode instance. The MeCabNode 
 instances yielded allow access to more detailed information about each
 morpheme.
 
-Here we use a `Python with statement`_ to automatically clean up after we 
+Here we use a `Python with-statement`_ to automatically clean up after we 
 finish node parsing with the MeCab tagger. This is the recommended approach
 for using ``natto-py`` in a production environment::
 
@@ -250,7 +250,7 @@ the LICENSE file for further details.
 .. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
 .. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
-.. _Python with statement: https://www.python.org/dev/peps/pep-0343/
+.. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
 .. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/latest/
 .. _mercurial: http://mercurial.selenic.com/
