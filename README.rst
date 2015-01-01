@@ -53,7 +53,7 @@ or if it cannot determine the correct charset used internally by
 environment variables. 
 
 * Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
-* Set the ``MECAB_CHARSET`` environment variable the ``charset`` character encoding used by your system dictionary.
+* Set the ``MECAB_CHARSET`` environment variable to the ``charset`` character encoding used by your system dictionary.
 
 e.g., for Mac OS::
 
@@ -149,7 +149,7 @@ for using ``natto-py`` in a production environment::
     #
     with MeCab() as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
-    ...     # ignore the end-of-sentence node
+    ...     # ignore any end-of-sentence nodes
     ...     if not n.is_eos():
     ...         print('{}\t{}'.format(n.surface, n.cost))
     ...
@@ -169,7 +169,7 @@ for using ``natto-py`` in a production environment::
 MeCab output formatting is extremely flexible and is highly recommended for
 any serious natural language processing task. Rather than obtaining MeCab's
 output as a single, large string and then parsing that, use MeCab's 
-``--node-format`` option to customize the node's feature value.
+``--node-format`` option to customize the node's ``feature`` attribute.
 
 This example formats the node feature to extract the following as a
 comma-separated value:
@@ -191,8 +191,8 @@ The ``-F`` short form of the ``--node-format`` option is used here::
     #
     with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
-    ...     # ignore the end-of-sentence node
-    ...     if not n.is_eos():
+    ...     # only normal nodes, ignore any end-of-sentence and unknown nodes
+    ...     if n.is_nor():
     ...         print(n.feature)
     ...
     ピンチ,名詞,38,ピンチ
