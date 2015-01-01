@@ -37,10 +37,11 @@ class MeCabNode(object):
         from natto import MeCab
         with MeCab() as nm:
 
-            nodes = nm.parse('卓球なんて死ぬまでの暇つぶしだよ。', as_nodes=True)
-            for n in nodes:
-                if n.is_nor():
-                    print('{}\t{}'.format(n.surface, n.cost))
+            for n in nm.parse('卓球なんて死ぬまでの暇つぶしだよ。', as_nodes=True):
+    ...         # ignore the end-of-sentence nodes
+    ...         if not n.is_eos():
+    ...             print('{}\t{}'.format(n.surface, n.cost))
+    ...
     '''
     _REPR_FMT = '<{}.{} pointer={}, stat={}, surface="{}", feature="{}">'
 
