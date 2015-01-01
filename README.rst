@@ -53,7 +53,7 @@ or if it cannot determine the correct charset used internally by
 environment variables. 
 
 * Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
-* Set the ``MECAB_CHARSET`` environment variable if you compiled ``mecab`` and the related dictionary to use a non-default character encoding.
+* Set the ``MECAB_CHARSET`` environment variable the ``charset`` character encoding used by your system dictionary.
 
 e.g., for Mac OS::
 
@@ -145,13 +145,13 @@ Here we use a `Python with statement`_ to automatically clean up after we
 finish node parsing with the MeCab tagger. This is the recommended approach
 for using ``natto-py`` in a production environment::
 
-    # use a Python with statement 
-    # to ensure mecab_destroy is invoked
+    # Use a Python with statement to ensure mecab_destroy is invoked
+    #
     with MeCab() as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     # ignore the end-of-sentence node
     ...     if not n.is_eos():
-    ...         print("{}\t{}".format(n.surface, n.cost))
+    ...         print('{}\t{}'.format(n.surface, n.cost))
     ...
     ピンチ    3348
     の        3722
@@ -171,7 +171,7 @@ any serious natural language processing task. Rather than obtaining MeCab's
 output as a single, large string and then parsing that, use MeCab's 
 ``--node-format`` option to customize the node's feature value.
 
-This example formats the node feature and extracts the following as a
+This example formats the node feature to extract the following as a
 comma-separated value:
 
 * morpheme surface
@@ -181,11 +181,14 @@ comma-separated value:
 
 The ``-F`` short form of the ``--node-format`` option is used here::
 
+    # MeCab options used:
+    #
     # -F    ... short-form of --node-format
     # %m    ... morpheme surface
     # %f[0] ... part-of-speech
     # %h    ... part-of-speech id (ipadic)
     # %f[8] ... pronunciation
+    #
     with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     # ignore the end-of-sentence node

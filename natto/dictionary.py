@@ -22,6 +22,7 @@ class DictionaryInfo(object):
         from natto import MeCab
 
         with MeCab() as nm:
+        
             # first dictionary info is MeCab's system dictionary
             sysdic = nm.dicts[0]
 

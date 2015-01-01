@@ -22,6 +22,7 @@ class MeCab(object):
         from natto import MeCab
 
         with MeCab() as nm:
+        
             # output MeCab version
             print(nm.version)
             
@@ -36,7 +37,7 @@ class MeCab(object):
             # parse a string
             print(nm.parse('この星の一等賞になりたいの卓球で俺は、そんだけ！'))
 
-            # parse text into Python Generator yielding MeCab nodes,
+            # parse text into Python Generator yielding MeCabNode instances,
             # and display much more detailed information about each morpheme
             for n in nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True):
                 if n.is_nor():
@@ -460,7 +461,7 @@ class MeCab(object):
         :param as_nodes: flag indicating whether to parse as nodes or strings;
         :type as_nodes: bool, defaults to False
         :return: A single string containing the entire MeCab output;
-            or a Generator yielding the MeCab nodes.
+            or a Generator yielding the MeCabNode instances.
         :raises: MeCabError
         '''
         if text is None:
