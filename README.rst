@@ -38,7 +38,7 @@ to bind to the ``mecab`` library.
 Configuration
 -------------
 As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS)
-executables are on your ``PATH``, ``natto-py`` should not require any explicit
+executables are on your ``PATH``, ``natto-py`` does not require any explicit
 configuration. 
 
 * On \*nix and Mac OS, it queries ``mecab-config`` to discover the path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
@@ -137,8 +137,9 @@ Parse Japanese text and send the MeCab result as a string to ``stdout``::
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
 MeCab nodes lets you efficiently iterate over the output without first
-materializing each and every resulting MeCab node instance. The MeCab nodes 
-yielded allow access to more detailed information about each morpheme.
+materializing each and every resulting MeCabNode instance. The MeCabNode 
+instances yielded allow access to more detailed information about each
+morpheme.
 
 Here we use a `Python with statement`_ to automatically clean up after we 
 finish node parsing with the MeCab tagger. This is the recommended approach
@@ -148,6 +149,7 @@ for using ``natto-py`` in a production environment::
     # to ensure mecab_destroy is invoked
     with MeCab() as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
+    ...     # ignore the end-of-sentence node
     ...     if not n.is_eos():
     ...         print("{}\t{}".format(n.surface, n.cost))
     ...
@@ -186,6 +188,7 @@ The ``-F`` short form of the ``--node-format`` option is used here::
     # %f[8] ... pronunciation
     with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
+    ...     # ignore the end-of-sentence node
     ...     if not n.is_eos():
     ...         print(n.feature)
     ...
