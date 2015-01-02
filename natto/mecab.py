@@ -22,10 +22,10 @@ class MeCab(object):
         from natto import MeCab
 
         with MeCab() as nm:
-        
+
             # output MeCab version
             print(nm.version)
-            
+
             # output absolute path to MeCab library
             print(nm.libpath)
 
@@ -264,9 +264,6 @@ class MeCab(object):
                     def str2bytes(s):
                         '''Identity, returns the argument string (bytes).'''
                         return s
-                    def out2str(out):
-                        '''Identity, returns output from mecab lib.'''
-                        return out
                 else:
                     def bytes2str(b):
                         '''Transforms bytes into string (Unicode).'''
@@ -274,11 +271,8 @@ class MeCab(object):
                     def str2bytes(u):
                         '''Transforms Unicode into string (bytes).'''
                         return u.encode(env.charset)
-                    def out2str(out):
-                        '''Transforms output from mecab lib into Unicode.'''
-                        return out.decode(env.charset)
-                return(bytes2str, str2bytes, out2str)
-            self.__bytes2str, self.__str2bytes, self.__out2str = __23_support()
+                return(bytes2str, str2bytes)
+            self.__bytes2str, self.__str2bytes = __23_support()
 
             # Set up dictionary of MeCab options to use
             self.options = self.__parse_mecab_options(options)
@@ -332,9 +326,9 @@ class MeCab(object):
         self.dicts = []
         dptr = self.__mecab.mecab_dictionary_info(self.pointer)
         while dptr != self.__ffi.NULL:
-            fpath = self.__out2str(self.__ffi.string(dptr.filename))
+            fpath = self.__bytes2str(self.__ffi.string(dptr.filename))
             fpath = os.path.abspath(fpath)
-            chset = self.__out2str(self.__ffi.string(dptr.charset))
+            chset = self.__bytes2str(self.__ffi.string(dptr.charset))
             self.dicts.append(DictionaryInfo(dptr, fpath, chset))
             dptr = getattr(dptr, 'next')
 
@@ -342,7 +336,7 @@ class MeCab(object):
         self.__enc = self.dicts[0].charset
 
         # Set MeCab version string
-        self.version = self.__out2str( \
+        self.version = self.__bytes2str( \
                             self.__ffi.string(self.__mecab.mecab_version()))
 
     def __del__(self):
