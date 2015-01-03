@@ -2,7 +2,7 @@
 '''Wrapper for MeCab node.'''
 
 class MeCabNode(object):
-    '''Representation of a MeCab node, wrapping the mecab_node_t struct.
+    '''Representation of a MeCab Node struct.
 
     A list of MeCab nodes is returned when parsing a string of Japanese with
     as_nodes=True. Each node will contain detailed information about the
@@ -35,13 +35,54 @@ class MeCabNode(object):
     Example usage::
 
         from natto import MeCab
-        with MeCab() as nm:
 
-            for n in nm.parse('卓球なんて死ぬまでの暇つぶしだよ。', as_nodes=True):
-    ...         # ignore the end-of-sentence nodes
-    ...         if not n.is_eos():
-    ...             print('{}\t{}'.format(n.surface, n.cost))
-    ...
+        text = '卓球なんて死ぬまでの暇つぶしだよ。'
+
+        # Ex. basic node parsing
+        #
+        with MeCab() as nm:
+            for n in nm.parse(text, as_nodes=True):
+        ...     # ignore the end-of-sentence nodes
+        ...     if not n.is_eos():
+        ...         # output the morpheme surface and default ChaSen feature
+        ...         print('{}\\t{}'.format(n.surface, n.feature))
+        ...
+        卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+        なんて  助詞,副助詞,*,*,*,*,なんて,ナンテ,ナンテ
+        死ぬ    動詞,自立,*,*,五段・ナ行,基本形,死ぬ,シヌ,シヌ
+        まで    助詞,副助詞,*,*,*,*,まで,マデ,マデ
+        の      助詞,連体化,*,*,*,*,の,ノ,ノ
+        暇つぶし        名詞,一般,*,*,*,*,暇つぶし,ヒマツブシ,ヒマツブシ
+        だ      助動詞,*,*,*,特殊・ダ,基本形,だ,ダ,ダ
+        よ      助詞,終助詞,*,*,*,*,よ,ヨ,ヨ
+        。      記号,句点,*,*,*,*,。,。,。
+
+        # Ex. custom node format
+        #
+        # -F         ... short-form of --node-format
+        # %F,[6,7,0] ... extract these elements from ChaSen feature as CSV
+        #                - morpheme root-form (6th index)
+        #                - reading (7th index)
+        #                - part-of-speech (0th index)
+        # %h         ... part-of-speech ID (IPADIC)
+        #
+        with MeCab('-F%F,[6,8,0],%h') as nm:
+            for n in nm.parse(text, as_nodes=True):
+        ...     # ignore the end-of-sentence nodes
+        ...     if not n.is_eos():
+        ...         # output custom-formatted node feature
+        ...         print(n.feature)
+        ...
+        卓球,タッキュウ,名詞,36
+        なんて,ナンテ,助詞,21
+        死ぬ,シヌ,動詞,31
+        まで,マデ,助詞,21
+        の,ノ,助詞,24
+        暇つぶし,ヒマツブシ,名詞,38
+        だ,ダ,助動詞,25
+        よ,ヨ,助詞,17
+        。,。,記号,7
+
     '''
     _REPR_FMT = '<{}.{} pointer={}, stat={}, surface="{}", feature="{}">'
 

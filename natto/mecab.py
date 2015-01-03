@@ -14,34 +14,68 @@ class MeCab(object):
 
     Instantiate this once, per any MeCab options you wish to use.
     This interface allows for parsing Japanese into simple strings of morpheme
-    surface and related features, or for parsing as MeCab nodes which contain
-    detailed information about the morphemes encompassed.
+    surface and related features, or for iterating over MeCabNode instances
+    which contain detailed information about the morphemes encompassed.
 
     Example usage::
 
         from natto import MeCab
 
+        # Use a Python with-statement to ensure mecab_destroy is invoked
+        #
         with MeCab() as nm:
 
-            # output MeCab version
+            # print MeCab version
             print(nm.version)
+            ...
+            0.996
 
-            # output absolute path to MeCab library
+            # print absolute path to MeCab library
             print(nm.libpath)
+            ...
+            /usr/local/lib/libmecab.so
 
-            # output file path and charset for the MeCab system dictionary
-            sysdic = nm.dicts[0]
-            print(sysdic.filepath)
-            print(sysdic.charset)
-
-            # parse a string
+            # parse text and print result
             print(nm.parse('この星の一等賞になりたいの卓球で俺は、そんだけ！'))
+            ...
+            この    連体詞,*,*,*,*,*,この,コノ,コノ
+            星      名詞,一般,*,*,*,*,星,ホシ,ホシ
+            の      助詞,連体化,*,*,*,*,の,ノ,ノ
+            一等    名詞,一般,*,*,*,*,一等,イットウ,イットー
+            賞      名詞,接尾,一般,*,*,*,賞,ショウ,ショー
+            に      助詞,格助詞,一般,*,*,*,に,ニ,ニ
+            なり    動詞,自立,*,*,五段・ラ行,連用形,なる,ナリ,ナリ
+            たい    助動詞,*,*,*,特殊・タイ,基本形,たい,タイ,タイ
+            の      助詞,連体化,*,*,*,*,の,ノ,ノ
+            卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+            で      助詞,格助詞,一般,*,*,*,で,デ,デ
+            俺      名詞,代名詞,一般,*,*,*,俺,オレ,オレ
+            は      助詞,係助詞,*,*,*,*,は,ハ,ワ
+            、      記号,読点,*,*,*,*,、,、,、
+            そん    名詞,一般,*,*,*,*,そん,ソン,ソン
+            だけ    助詞,副助詞,*,*,*,*,だけ,ダケ,ダケ
+            ！      記号,一般,*,*,*,*,！,！,！
+            EOS
 
             # parse text into Python Generator yielding MeCabNode instances,
             # and display much more detailed information about each morpheme
             for n in nm.parse('飛べねえ鳥もいるってこった。', as_nodes=True):
                 if n.is_nor():
-                    print("{}\\t{}\\t{}".format(n.surface, n.posid, n.wcost))
+            ...     # morpheme surface
+            ...     # part-of-speech ID (IPADIC)
+            ...     # word cost
+            ...     print("{}\\t{}\\t{}".format(n.surface, n.posid, n.wcost))
+            ...
+            飛べ    31      7175
+            ねえ    25      6661
+            鳥      38      4905
+            も      16      4669
+            いる    31      9109
+            って    15      6984
+            こっ    31      9587
+            た      25      5500
+            。      7       215
+
     '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
@@ -448,11 +482,12 @@ class MeCab(object):
                                      self.version)
 
     def parse(self, text, as_nodes=False):
-        '''Parse the given text.
+        '''Parse the given text and return result from MeCab.
 
         :param text: the text to parse.
         :type text: str
-        :param as_nodes: flag indicating whether to parse as nodes or strings;
+        :param as_nodes: return generator of MeCabNodes if True,
+            or string if False;
         :type as_nodes: bool, defaults to False
         :return: A single string containing the entire MeCab output;
             or a Generator yielding the MeCabNode instances.
