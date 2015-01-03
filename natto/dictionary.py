@@ -2,7 +2,7 @@
 '''Wrapper for MeCab dictionary information.'''
 
 class DictionaryInfo(object):
-    '''Representation of a MeCab dictionary, wrapping mecab_dictionary_info_t.
+    '''Representation of a MeCab DictionaryInfo struct.
 
     A list of dictionaries used by MeCab is returned by the dicts attribute of
     MeCab. Each dictionary information includes the attributes listed below.
@@ -22,15 +22,24 @@ class DictionaryInfo(object):
         from natto import MeCab
 
         with MeCab() as nm:
-        
+
             # first dictionary info is MeCab's system dictionary
             sysdic = nm.dicts[0]
 
+            # print absolute path to system dictionary
             print(sysdic.filepath)
+            ...
+            /usr/local/lib/mecab/dic/ipadic/sys.dic
 
+            # print system dictionary character encoding
             print(sysdic.charset)
+            ...
+            utf8
 
+            # is this really the system dictionary?
             print(sysdic.is_sysdic())
+            ...
+            True
     '''
     _REPR_FMT = '<{}.{} pointer={}, filepath="{}", charset={}, type={}>'
 
