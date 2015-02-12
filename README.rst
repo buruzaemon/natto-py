@@ -212,7 +212,7 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 Learn More
 ----------
 * Examples and more detailed information about ``natto-py`` can be found on the `project Wiki`_.
-* Working code in IPython notebook form can be found under this project's ``notebooks`` directory.
+* Working code in IPython notebook form can be found under this `project's notebooks directory`_.
 * `API documentation on Read the Docs`_.
 
 Contributing to natto-py
@@ -254,6 +254,7 @@ the ``LICENSE`` file for further details.
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
+.. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
 .. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/latest/
 .. _git: http://git-scm.com/downloads
 .. _check out the latest code at GitHub: https://github.com/buruzaemon/natto-py
