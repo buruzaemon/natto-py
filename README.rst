@@ -237,7 +237,7 @@ Please see the ``CHANGELOG`` for the release history.
 Copyright
 ---------
 Copyright |copy| 2015, Brooke M. Fujita. All rights reserved. Please see
-the LICENSE file for further details.
+the ``LICENSE`` file for further details.
 
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
