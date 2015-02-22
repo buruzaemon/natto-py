@@ -1,8 +1,7 @@
 CHANGELOG
 ---------
 
-- 2015/02/??: 0.2.0 release.
-    - .
+- 2015/02/22 0.2.0 release.
     - Enhancement for Issue 11: Debugging should use a kwarg. 
     - On-going improvements and clarifications to natto-py documentation.
 
