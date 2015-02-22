@@ -14,7 +14,7 @@ morphological analyzer for the Japanese language. No compiler is necessary, as
 it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 \*nix.
 
-You can learn more about `natto-py at Bitbucket`_.
+You can learn more about `natto-py at GitHub`_.
 
 Requirements
 -------------
@@ -40,8 +40,8 @@ Install ``natto-py`` as you would any other Python package::
 This will automatically install the ``cffi`` package, which ``natto-py`` uses
 to bind to the ``mecab`` library.
 
-Configuration
--------------
+Automatic Configuration
+-----------------------
 As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS)
 executables are on your ``PATH``, ``natto-py`` does not require any explicit
 configuration. 
@@ -217,10 +217,12 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 Learn More
 ----------
 You can read more about ``natto-py`` on the `project Wiki`_.
+* Working code in IPython notebook form can be found under this `project's notebooks directory`_.
+
 
 Contributing to natto-py
 ------------------------
-- Use mercurial_ and `check out the latest code at Bitbucket`_ to make sure the
+- Use git_ and `check out the latest code at GitHub`_ to make sure the
   feature hasn't been implemented or the bug hasn't been fixed yet.
 - `Browse the issue tracker`_ to make sure someone already hasn't requested it
   and/or contributed it.
@@ -245,7 +247,7 @@ Documentation
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
 .. _mecab-ipadic: https://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
 .. _mecab-jumandic: https://mecab.googlecode.com/files/mecab-jumandic-5.1-20070304.tar.gz
-.. _natto-py at Bitbucket: https://bitbucket.org/buruzaemon/natto-py
+.. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
@@ -254,10 +256,11 @@ Documentation
 .. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
-.. _project Wiki: https://bitbucket.org/buruzaemon/natto-py/wiki/Home
-.. _mercurial: http://mercurial.selenic.com/
-.. _check out the latest code at Bitbucket: https://bitbucket.org/buruzaemon/natto-py/src
-.. _Browse the issue tracker: https://bitbucket.org/buruzaemon/natto-py/issues?status=new&status=open
+.. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
+.. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
+.. _git: http://git-scm.com/downloads
+.. _check out the latest code at GitHub: https://github.com/buruzaemon/natto-py
+.. _Browse the issue tracker: https://github.com/buruzaemon/natto-py/issues
 .. _unittest: http://pythontesting.net/framework/unittest/unittest-introduction/
 .. |copy| unicode:: 0xA9 .. copyright sign
 

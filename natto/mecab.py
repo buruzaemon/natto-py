@@ -271,12 +271,14 @@ class MeCab(object):
 
         return self.__str2bytes(' '.join(opts))
 
-    def __init__(self, options=None):
+    def __init__(self, options=None, **kwargs):
         '''Initializes the MeCab instance with the given options.
 
         Args:
             options: Optional string or dictionary of the MeCab options to be
                      used.
+        Kwargs:
+            debug (bool): Flag for outputting debug messages to stderr.
 
         Raises:
             SystemExit: An unrecognized option was passed in.
@@ -284,7 +286,7 @@ class MeCab(object):
                         or the FFI handle to MeCab could not be created.
         '''
         try:
-            env = MeCabEnv()
+            env = MeCabEnv(**kwargs)
             self.__ffi = _ffi_libmecab()
             self.__mecab = self.__ffi.dlopen(env.libpath)
             self.libpath = env.libpath

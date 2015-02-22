@@ -30,22 +30,26 @@ class MeCabEnv(object):
     _WINHKEY = r'HKEY_CURRENT_USER\Software\MeCab'
     _WINVALUE = 'mecabrc'
 
-    _INFO_EUCJP_DEFAULT = 'INFO: defaulting MeCab charset to euc-jp'
-    _INFO_SJIS_DEFAULT = 'INFO: defaulting MeCab charset to shift-jis'
-    _INFO_UTF8_DEFAULT = 'INFO: defaulting MeCab charset to utf-8'
+    _DEBUG_CSET_DEFAULT = 'DEBUG: defaulting MeCab charset to {}\n'
     _ERROR_NODIC = 'ERROR: MeCab dictionary charset not found'
     _ERROR_NOCMD = 'ERROR: mecab -D command not recognized'
     _ERROR_NOLIB = 'ERROR: {} could not be found, please use MECAB_PATH'
     _ERROR_WINREG = 'ERROR: No value {} in Windows Registry at {}'
     _ERROR_MECABCONFIG = 'ERROR: mecab-config could not locate {}'
 
-    def __init__(self):
+    def __init__(self, **kwargs):
         '''Initializes the MeCabEnv instance.
+        
+        Kwargs:
+            debug (bool): Flag for outputting debug messages to stderr.
 
         Raises:
             EnvironmentError: A problem in obtaining the system dictionary info
                 was encountered.
         '''
+        self.debug = False
+        if 'debug' in kwargs.keys():
+            self.debug = kwargs['debug']
         self.charset = self.__get_charset()
         self.libpath = self.__get_libpath()
 
@@ -64,6 +68,8 @@ class MeCabEnv(object):
         '''
         cset = os.getenv(self.MECAB_CHARSET)
         if cset:
+            if self.debug:
+                sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
             return cset
         else:
             try:
@@ -73,7 +79,10 @@ class MeCabEnv(object):
                     dicinfo = lines.split(os.linesep)
                     t = [t for t in dicinfo if t.startswith('charset')]
                     if len(t) > 0:
-                        return t[0].split()[1].lower()
+                        cset = t[0].split()[1].lower()
+                        if self.debug:
+                            sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
+                        return cset
                     else:
                         sys.stderr.write('{}\n'.format(self._ERROR_NODIC))
                         raise EnvironmentError(self._ERROR_NODIC)
@@ -81,15 +90,14 @@ class MeCabEnv(object):
                     sys.stderr.write('{}\n'.format(self._ERROR_NOCMD))
                     raise EnvironmentError(self._ERROR_NOCMD)
             except OSError:
+                cset = 'euc-jp'
                 if sys.platform == 'win32':
-                    sys.stderr.write('{}\n'.format(self._INFO_SJIS_DEFAULT))
-                    return 'shift-jis'
+                    cset = 'shift-jis'
                 elif sys.platform == 'darwin':
-                    sys.stderr.write('{}\n'.format(self._INFO_UTF8_DEFAULT))
-                    return 'utf8'
-                else:
-                    sys.stderr.write('{}\n'.format(self._INFO_EUCJP_DEFAULT))
-                    return 'euc-jp'
+                    cset = 'utf8'
+                if self.debug:
+                    sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
+                return cset
 
     def __get_libpath(self):
         '''Return the absolute path to the MeCab library.
