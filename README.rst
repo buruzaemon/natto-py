@@ -255,7 +255,7 @@ the ``LICENSE`` file for further details.
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
 .. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
-.. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/latest/
+.. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/master/
 .. _git: http://git-scm.com/downloads
 .. _check out the latest code at GitHub: https://github.com/buruzaemon/natto-py
 .. _Browse the issue tracker: https://github.com/buruzaemon/natto-py/issues
