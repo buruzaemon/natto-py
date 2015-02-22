@@ -15,13 +15,13 @@ with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
 setup(
     name='natto-py',
 
-    version='0.1.0',
+    version='0.2.0',
 
     description=' '.join(['A Tasty Python Binding with MeCab',
                           '(FFI-based, no SWIG or compiler necessary)']),
     long_description=LONG_DESC,
 
-    url='https://bitbucket.org/buruzaemon/natto-py',
+    url='https://github.com/buruzaemon/natto-py',
 
     author='Brooke M. Fujita',
     author_email='buruzaemon@gmail.com',

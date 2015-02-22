@@ -19,6 +19,8 @@ class MeCabEnv(object):
 
     Will defer to the user-provided values in environment variables
     MECAB_PATH and MECAB_CHARSET.
+
+    The debug keyword argument outputs debugging messages to stderr.
     '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'

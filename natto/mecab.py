@@ -17,6 +17,9 @@ class MeCab(object):
     surface and related features, or for iterating over MeCabNode instances
     which contain detailed information about the morphemes encompassed.
 
+    Use the debug keyword argument when instantiating MeCab to output
+    debugging messages to stderr.
+
     Example usage::
 
         from natto import MeCab
