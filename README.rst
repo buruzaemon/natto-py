@@ -41,9 +41,9 @@ As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS)
 executables are on your ``PATH``, ``natto-py`` does not require any explicit
 configuration. 
 
-* On \*nix and Mac OS, it queries ``mecab-config`` to discover the path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
-* On Windows, it queries the Windows Registry to locate the MeCab installation folder.
-* In order to convert character encodings to/from Unicode, ``natto-py`` will examine the charset of the ``mecab`` system dictionary.
+- On \*nix and Mac OS, it queries ``mecab-config`` to discover the path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
+- On Windows, it queries the Windows Registry to locate the MeCab installation folder.
+- In order to convert character encodings to/from Unicode, ``natto-py`` will examine the charset of the ``mecab`` system dictionary.
 
 Explicit configuration via MECAB_PATH and MECAB_CHARSET
 -------------------------------------------------------
@@ -52,8 +52,8 @@ or if it cannot determine the correct charset used internally by
 ``mecab``, then you will need to set the ``MECAB_PATH`` and ``MECAB_CHARSET``
 environment variables. 
 
-* Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
-* Set the ``MECAB_CHARSET`` environment variable to the ``charset`` character encoding used by your system dictionary.
+- Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
+- Set the ``MECAB_CHARSET`` environment variable to the ``charset`` character encoding used by your system dictionary.
 
 e.g., for Mac OS::
 
@@ -175,10 +175,10 @@ customize the node's ``feature`` attribute.
 This example formats the node ``feature`` to capture the following as a
 comma-separated value:
 
-* morpheme surface
-* part-of-speech
-* part-of-speech ID
-* pronunciation
+- morpheme surface
+- part-of-speech
+- part-of-speech ID
+- pronunciation
 
 The ``-F`` short form of the ``--node-format`` option is used here::
 
@@ -211,9 +211,9 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 Learn More
 ----------
-* Examples and more detailed information about ``natto-py`` can be found on the `project Wiki`_.
-* Working code in IPython notebook form can be found under this `project's notebooks directory`_.
-* `API documentation on Read the Docs`_.
+- Examples and more detailed information about ``natto-py`` can be found on the `project Wiki`_.
+- Working code in IPython notebook form can be found under this `project's notebooks directory`_.
+- `API documentation on Read the Docs`_.
 
 Contributing to natto-py
 ------------------------
