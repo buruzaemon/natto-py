@@ -1,4 +1,4 @@
-natto-py
+natto-py [![Build Status](https://travis-ci.org/buruzaemon/natto-py.svg?branch=master)](https://travis-ci.org/buruzaemon/natto-py) 
 ========
 
 What is natto-py?
