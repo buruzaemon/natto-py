@@ -1,7 +1,7 @@
 natto-py 
-========
 .. image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
+========
 
 What is natto-py?
 -----------------
