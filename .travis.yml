@@ -21,4 +21,4 @@ python:
   - "3.4"
 
 # command to run tests
-script: test
+script: "python setup.py test"
