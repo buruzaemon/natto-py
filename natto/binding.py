@@ -54,34 +54,49 @@ def _ffi_libmecab():
             long                               cost;
         };
 
-        typedef struct mecab_t                 mecab_t;
-        typedef struct mecab_model_t           mecab_model_t;
-        typedef struct mecab_lattice_t         mecab_lattice_t;
-        typedef struct mecab_dictionary_info_t mecab_dictionary_info_t;
-        typedef struct mecab_node_t            mecab_node_t;
-        typedef struct mecab_path_t            mecab_path_t;
+        typedef struct   mecab_t                 mecab_t;
+        typedef struct   mecab_model_t           mecab_model_t;
+        typedef struct   mecab_lattice_t         mecab_lattice_t;
+        typedef struct   mecab_dictionary_info_t mecab_dictionary_info_t;
+        typedef struct   mecab_node_t            mecab_node_t;
+        typedef struct   mecab_path_t            mecab_path_t;
 
-        mecab_t*      mecab_new2(const char *arg);
+        mecab_t*         mecab_new2(const char *arg);
 
-        const char*   mecab_version();
-        const char*   mecab_strerror(mecab_t *mecab);
-        void          mecab_destroy(mecab_t *mecab);
+        const char*      mecab_version();
+        const char*      mecab_strerror(mecab_t *mecab);
+        void             mecab_destroy(mecab_t *mecab);
 
-        void          mecab_set_partial(mecab_t *mecab, int partial);
-        void          mecab_set_theta(mecab_t *mecab, float theta);
-        void          mecab_set_lattice_level(mecab_t *mecab, int level);
-        void          mecab_set_all_morphs(mecab_t *mecab, int all_morphs);
+        void             mecab_set_partial(mecab_t *mecab, int partial);
+        void             mecab_set_theta(mecab_t *mecab, float theta);
+        void             mecab_set_lattice_level(mecab_t *mecab, int level);
+        void             mecab_set_all_morphs(mecab_t *mecab, int all_morphs);
 
-        const char*   mecab_sparse_tostr(mecab_t *mecab, const char *str);
+        const char*      mecab_sparse_tostr(mecab_t *mecab, const char *str);
         const mecab_node_t* mecab_sparse_tonode(mecab_t *mecab, const char*);
-        int           mecab_nbest_init(mecab_t *mecab, const char *str);
-        const char*   mecab_nbest_sparse_tostr(mecab_t *mecab, size_t N,
+        int              mecab_nbest_init(mecab_t *mecab, const char *str);
+        const char*      mecab_nbest_sparse_tostr(mecab_t *mecab, size_t N,
                                                const char *str);
         const mecab_node_t* mecab_nbest_next_tonode(mecab_t *mecab);
-        const char*   mecab_format_node(mecab_t *mecab,
+        const char*      mecab_format_node(mecab_t *mecab,
                                         const mecab_node_t *node);
 
         const mecab_dictionary_info_t* mecab_dictionary_info(mecab_t *mecab);
+
+        mecab_lattice_t *mecab_lattice_new();
+        void             mecab_lattice_destroy(mecab_lattice_t *lattice);
+        void             mecab_lattice_clear(mecab_lattice_t *lattice);
+        int              mecab_lattice_is_available(mecab_lattice_t *lattice);
+        mecab_node_t    *mecab_lattice_get_bos_node(mecab_lattice_t *lattice);
+        void             mecab_lattice_set_sentence(mecab_lattice_t *lattice, const char *sentence);
+        void             mecab_lattice_set_z(mecab_lattice_t *lattice, double Z);
+        void             mecab_lattice_set_theta(mecab_lattice_t *lattice, double theta);
+        void             mecab_lattice_set_request_type(mecab_lattice_t *lattice, int request_type);
+        const char      *mecab_lattice_tostr(mecab_lattice_t *lattice);
+        const char      *mecab_lattice_nbest_tostr(mecab_lattice_t *lattice, size_t N);
+        void             mecab_lattice_set_boundary_constraint(mecab_lattice_t *lattice, size_t pos, int boundary_type);
+        int              mecab_parse_lattice(mecab_t *mecab, mecab_lattice_t *lattice);
+        const char      *mecab_lattice_strerror(mecab_lattice_t *lattice);
     ''')
     return ffi
 
