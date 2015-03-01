@@ -2,6 +2,7 @@
 '''The main interface to MeCab via natto-py.'''
 import argparse
 import os
+import re
 import sys
 from .api import MeCabError
 from .binding import _ffi_libmecab
@@ -134,6 +135,14 @@ class MeCab(object):
     MECAB_ANY_BOUNDARY = 0
     MECAB_TOKEN_BOUNDARY = 1
     MECAB_INSIDE_TOKEN = 2
+
+    MECAB_LATTICE_ONE_BEST = 1
+    MECAB_LATTICE_NBEST = 2
+    MECAB_LATTICE_PARTIAL = 4
+    MECAB_LATTICE_MARGINAL_PROB = 8
+    MECAB_LATTICE_ALTERNATIVE = 16
+    MECAB_LATTICE_ALL_MORPHS = 32
+    MECAB_LATTICE_ALLOCATE_SENTENCE = 64
 
     def __parse_mecab_options(self, options):
         '''Parses the MeCab options, returning them in a dictionary.
@@ -364,12 +373,14 @@ class MeCab(object):
             self.__parse2str = self.__parse_tostr(self._FN_NBEST_TOSTR)
             self.__parse2nodes = self.__parse_tonodes(self._FN_NBEST_TONODE,
                                                       format_feature)
+            self.__bcparse2str = self.__bcparse_tostr(self._FN_BCNBEST_TOSTR)
         else:
             self.__parse2str = self.__parse_tostr(self._FN_TOSTR)
             self.__parse2nodes = self.__parse_tonodes(self._FN_TONODE,
                                                       format_feature)
             self.__bcparse2str = self.__bcparse_tostr(self._FN_BCTOSTR)
-            #self.__bcparse2nodes = self.__bcparse_tonodes(self._FN_BCTONODE)
+            self.__bcparse2nodes = self.__bcparse_tonodes(self._FN_BCTONODE,
+                                                          format_feature)
 
         # Prepare copy for list of MeCab dictionaries
         self.dicts = []
@@ -434,6 +445,20 @@ class MeCab(object):
                 raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
         return _fn
 
+    def __split(self, constraints, text):
+        '''Split text given constraints pattern for boundary constraint parsing.'''
+        # IFF using re.U, then text and constraints pattern should be unicode!
+        mark = 0
+        patt = self.__str2bytes(constraints)
+        for t in re.finditer(patt, text):
+            if mark < t.start():
+                yield (text[mark:t.start()], False)
+                mark = t.start()
+            yield (text[mark:t.end()], True)
+            mark = t.end()
+        if mark < len(text):
+            yield (text[mark:], False)
+
     def __bcparse_tostr(self, fn_name):
         '''Builds and returns the MeCab function for boundary-constraint
         parsing Unicode text.
@@ -448,59 +473,152 @@ class MeCab(object):
             Unicode text and returning the result as a string suitable for
             display on stdout, using either the default or N-best behavior.
         '''
-        import re
-
-        def _tokenize(constraints, text):
-            '''Split text given constraints pattern.'''
-            # IFF using re.U, then text and constraints pattern should be unicode!
-            mark = 0
-            patt = self.__str2bytes(constraints)
-            for t in re.finditer(patt, text):
-                if mark < t.start():
-                    yield (text[mark:t.start()], False)
-                    mark = t.start()
-                yield (text[mark:t.end()], True)
-                mark = t.end()
-            if mark < len(text):
-                yield (text[mark:], False)
-
-        def _fn(text, constraints='.', use_any_boundary=True):
+        def _fn(text, morpheme_constraint='.', any_boundary=True):
             '''Boundary constraint parse text and return MeCab result as a string.'''
-            lattice = self.__mecab.mecab_lattice_new()
-            #if fn_name == self._FN_BCNBEST_TOSTR:
-            #    args.append(self.options['nbest'])
-            self.__mecab.mecab_lattice_set_sentence(lattice, text)
-            if use_any_boundary:
-                default_boundary = self.MECAB_ANY_BOUNDARY
-            else:
-                default_boundary = self.MECAB_INSIDE_TOKEN
-                
-            byte_mark = 0
-            self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
-                    byte_mark, self.MECAB_TOKEN_BOUNDARY)
+            try:
+                lattice = self.__mecab.mecab_lattice_new()
+    
+                if lattice != self.__ffi.NULL:
+                    args = [lattice]
+                    if fn_name == self._FN_BCNBEST_TOSTR:
+                        args.append(self.options['nbest'])
+                        self.__mecab.mecab_lattice_set_request_type(lattice,
+                                self.MECAB_LATTICE_NBEST)
 
-            for (token, match) in _tokenize(constraints, text):
-                byte_mark += 1
-                if match:
-                    boundary_constraint = self.MECAB_INSIDE_TOKEN
-                else:
-                    boundary_constraint = default_boundary
-              #for i in range(1, len(token.encode(charset))):
-                for i in range(1, len(token)):
-                    self.__mecab.mecab_lattice_set_boundary_constraint(
-                            lattice, byte_mark, boundary_constraint)
-                    byte_mark += 1
+                    self.__mecab.mecab_lattice_set_sentence(lattice, text)
+
+                    if any_boundary:
+                        default_boundary = self.MECAB_ANY_BOUNDARY
+                    else:
+                        default_boundary = self.MECAB_INSIDE_TOKEN
+                        
+                    pos = 0
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
+                            pos, self.MECAB_TOKEN_BOUNDARY)
+
+                    for (token, match) in self.__split(morpheme_constraint, text):
+                        pos += 1
+                        if match:
+                            boundary_constraint = self.MECAB_INSIDE_TOKEN
+                        else:
+                            boundary_constraint = default_boundary
+                      
+                        for i in range(1, len(token)):
+                            self.__mecab.mecab_lattice_set_boundary_constraint(
+                                    lattice, pos, boundary_constraint)
+                            pos += 1
+                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
+                                pos, self.MECAB_TOKEN_BOUNDARY)
       
-            res = self.__mecab.mecab_parse_lattice(self.pointer, lattice)
+                    res = self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 
-            if res != self.__ffi.NULL:
-                res = self.__mecab.mecab_lattice_tostr(lattice)
-                raw = self.__ffi.string(res)
-                return self.__bytes2str(raw).strip()
-            else:
-                print("WTF?")
+                    if res != self.__ffi.NULL:
+                        res = getattr(self.__mecab, fn_name)(*args)
+                        raw = self.__ffi.string(res)
+                        return self.__bytes2str(raw).strip()
+                    else:
+                        err = self.__mecab.mecab_lattice_strerror(lattice)
+                        raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
+                else:
+                    raise MeCabError("Could not create lattice!")
+            finally:
+                if lattice != self.__ffi.NULL:
+                    print('cleaning up!')
+                    self.__mecab.mecab_lattice_destroy(lattice)
         return _fn
 
+    def __bcparse_tonodes(self, fn_name, format_feature=False):
+        '''Builds and returns the MeCab function for parsing to nodes using morpheme boundary constraints.
+
+        Args:
+            fn_name: MeCab function name that determines the function
+                behavior, either 'mecab_sparse_tonode' or 'mecab_nbest_init'.
+            format_feature: flag indicating whether or not to format the feature
+                value for each node yielded.
+
+        Returns:
+            A function which returns a Generator, tailored to using boundary
+            constraints and parsing as nodes, using either the default or N-best behavior.
+        '''
+        def _fn(text, **kwargs):
+            '''Boundary constraint parse text and return MeCab result Generator.'''
+            try:
+                morpheme_constraint = '.'
+                if 'morpheme_constraint' in kwargs.keys():
+                    morpheme_constraint = kwargs['morpheme_constraint']
+                
+                any_boundary = True
+                if 'any_boundary' in kwargs.keys():
+                    any_boundary = kwargs['any_boundary']
+              
+                lattice = self.__mecab.mecab_lattice_new()
+
+                if lattice != self.__ffi.NULL:
+                    args = [lattice]
+                    #if fn_name == self._FN_BCNBEST_TOSTR:
+                    #    args.append(self.options['nbest'])
+                    #    self.__mecab.mecab_lattice_set_request_type(lattice,
+                    #            self.MECAB_LATTICE_NBEST)
+                    #self.__mecab.mecab_lattice_set_request_type(lattice, self.MECAB_LATTICE_NBEST)
+
+                    self.__mecab.mecab_lattice_set_sentence(lattice, text)
+
+                    if any_boundary:
+                        default_boundary = self.MECAB_ANY_BOUNDARY
+                    else:
+                        default_boundary = self.MECAB_INSIDE_TOKEN
+                        
+                    pos = 0
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
+                            pos, self.MECAB_TOKEN_BOUNDARY)
+
+                    for (token, match) in self.__split(morpheme_constraint, text):
+                        pos += 1
+                        if match:
+                            boundary_constraint = self.MECAB_INSIDE_TOKEN
+                        else:
+                            boundary_constraint = default_boundary
+                      
+                        for i in range(1, len(token)):
+                            self.__mecab.mecab_lattice_set_boundary_constraint(
+                                    lattice, pos, boundary_constraint)
+                            pos += 1
+                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
+                                pos, self.MECAB_TOKEN_BOUNDARY)
+      
+                    res = self.__mecab.mecab_parse_lattice(self.pointer, lattice)
+
+                    if res != self.__ffi.NULL:
+                        nptr = self.__mecab.mecab_lattice_get_bos_node(lattice)
+                        while nptr != self.__ffi.NULL:
+                            # skip over any BOS nodes, since mecab does
+                            if nptr.stat != MeCabNode.BOS_NODE:
+                                raws = self.__ffi.string(
+                                    nptr.surface[0:nptr.length])
+                                surf = self.__bytes2str(raws).strip()
+
+                                if format_feature:
+                                    sp = self.__mecab.mecab_format_node(
+                                        self.pointer, nptr)
+                                    rawf = self.__ffi.string(sp)
+                                else:
+                                    rawf = self.__ffi.string(nptr.feature)
+                                feat = self.__bytes2str(rawf).strip()
+
+                                mnode = MeCabNode(nptr, surf, feat)
+                                yield(mnode)
+                            nptr = getattr(nptr, 'next')
+                    else:
+                        err = self.__mecab.mecab_lattice_strerror(lattice)
+                        raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
+                else:
+                    raise MeCabError("Could not create lattice!")
+            finally:
+                if lattice != self.__ffi.NULL:
+                    print('cleaning up!')
+                    self.__mecab.mecab_lattice_destroy(lattice)
+
+        return _fn
 
     def __parse_tonodes(self, fn_name, format_feature=False):
         '''Builds and returns the MeCab function for parsing to nodes.
@@ -508,6 +626,8 @@ class MeCab(object):
         Args:
             fn_name: MeCab function name that determines the function
                 behavior, either 'mecab_sparse_tonode' or 'mecab_nbest_init'.
+            feature: flag indicating whether or not to format the feature
+                value for each node yielded.
 
         Returns:
             A function which returns a Generator, tailored to parsing as nodes,
@@ -564,7 +684,8 @@ class MeCab(object):
                                      self.dicts,
                                      self.version)
 
-    def parse(self, text, as_nodes=False):
+    #def parse(self, text, as_nodes=False):
+    def parse(self, text, **kwargs):
         '''Parse the given text and return result from MeCab.
 
         :param text: the text to parse.
@@ -582,19 +703,17 @@ class MeCab(object):
             raise MeCabError(self._ERROR_NOTSTR)
 
         btext = self.__str2bytes(text)
-        if as_nodes:
-            return self.__parse2nodes(btext)
+        if 'as_nodes' in kwargs.keys() and kwargs['as_nodes']:
+            if 'morpheme_constraint' in kwargs.keys():
+                return self.__bcparse2nodes(btext, **kwargs)
+            else:
+                return self.__parse2nodes(btext)
         else:
-            return self.__parse2str(btext)
+            if 'morpheme_constraint' in kwargs.keys():
+                return self.__bcparse2str(btext, **kwargs)
+            else:
+                return self.__parse2str(btext)
 
-    def boundary_constraint_parse(self, text, **kwargs):
-        if text is None:
-            raise MeCabError(self._ERROR_EMPTY_STR)
-        if not isinstance(text, str):
-            raise MeCabError(self._ERROR_NOTSTR)
-
-        btext = self.__str2bytes(text)
-        return self.__bcparse2str(btext, **kwargs)
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.
