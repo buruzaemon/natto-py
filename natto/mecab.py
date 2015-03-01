@@ -374,6 +374,8 @@ class MeCab(object):
             self.__parse2nodes = self.__parse_tonodes(self._FN_NBEST_TONODE,
                                                       format_feature)
             self.__bcparse2str = self.__bcparse_tostr(self._FN_BCNBEST_TOSTR)
+            self.__bcparse2nodes = self.__bcparse_tonodes(self._FN_BCTONODE,
+                                                          format_feature)
         else:
             self.__parse2str = self.__parse_tostr(self._FN_TOSTR)
             self.__parse2nodes = self.__parse_tonodes(self._FN_TONODE,
@@ -559,7 +561,7 @@ class MeCab(object):
                     #    args.append(self.options['nbest'])
                     #    self.__mecab.mecab_lattice_set_request_type(lattice,
                     #            self.MECAB_LATTICE_NBEST)
-                    #self.__mecab.mecab_lattice_set_request_type(lattice, self.MECAB_LATTICE_NBEST)
+                    self.__mecab.mecab_lattice_set_request_type(lattice, self.MECAB_LATTICE_NBEST)
 
                     self.__mecab.mecab_lattice_set_sentence(lattice, text)
 
@@ -589,25 +591,28 @@ class MeCab(object):
                     res = self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 
                     if res != self.__ffi.NULL:
-                        nptr = self.__mecab.mecab_lattice_get_bos_node(lattice)
-                        while nptr != self.__ffi.NULL:
-                            # skip over any BOS nodes, since mecab does
-                            if nptr.stat != MeCabNode.BOS_NODE:
-                                raws = self.__ffi.string(
-                                    nptr.surface[0:nptr.length])
-                                surf = self.__bytes2str(raws).strip()
+                        goo = self.__mecab.mecab_lattice_next(lattice)
+                        while goo:
+                            nptr = self.__mecab.mecab_lattice_get_bos_node(lattice)
+                            while nptr != self.__ffi.NULL:
+                                # skip over any BOS nodes, since mecab does
+                                if nptr.stat != MeCabNode.BOS_NODE:
+                                    raws = self.__ffi.string(
+                                        nptr.surface[0:nptr.length])
+                                    surf = self.__bytes2str(raws).strip()
 
-                                if format_feature:
-                                    sp = self.__mecab.mecab_format_node(
-                                        self.pointer, nptr)
-                                    rawf = self.__ffi.string(sp)
-                                else:
-                                    rawf = self.__ffi.string(nptr.feature)
-                                feat = self.__bytes2str(rawf).strip()
+                                    if format_feature:
+                                        sp = self.__mecab.mecab_format_node(
+                                            self.pointer, nptr)
+                                        rawf = self.__ffi.string(sp)
+                                    else:
+                                        rawf = self.__ffi.string(nptr.feature)
+                                    feat = self.__bytes2str(rawf).strip()
 
-                                mnode = MeCabNode(nptr, surf, feat)
-                                yield(mnode)
-                            nptr = getattr(nptr, 'next')
+                                    mnode = MeCabNode(nptr, surf, feat)
+                                    yield(mnode)
+                                nptr = getattr(nptr, 'next')
+                            goo = self.__mecab.mecab_lattice_next(lattice)
                     else:
                         err = self.__mecab.mecab_lattice_strerror(lattice)
                         raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
