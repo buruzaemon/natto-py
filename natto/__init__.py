@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-__all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError']
+__all__ = ['MeCab', 'Lattice',  'DictionaryInfo', 'MeCabNode', 'MeCabError']
 
 from .api import MeCabError
 from .dictionary import DictionaryInfo
 from .mecab import MeCab
+from .lattice import Lattice
 from .node import MeCabNode
+from .support import string_support
 
-__version__ = '0.2.1'
-__version_info__ = (0, 2, 1)
+__version__ = '0.3.0'
+__version_info__ = (0, 3, 0)
 
 
 '''
