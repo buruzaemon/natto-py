@@ -1,4 +1,6 @@
 *.pyc
+*.lnk
+*.bat
 /build/
 /docs/
 /dist/
