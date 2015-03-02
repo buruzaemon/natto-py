@@ -413,7 +413,8 @@ class MeCab(object):
             or string if False.
         :type as_nodes: bool, defaults to False
         :param morpheme_constraints: regular expression for morpheme boundary
-            when using boundary constraint parsing.
+            splitting; if non-None, then boundary constraint parsing will be
+            used.
         :type morpheme_constraints: str
         :param any_boundary: flag for indicating default boundary token when
             using boundary constraint parsing.
