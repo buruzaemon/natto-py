@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-'''Internal-use wrapper interface to Lattice.'''
+'''Internal-use interface to Lattice.'''
 import re
 from .support import string_support
 
 class Lattice(object):
-    '''Wrapper interface to the MeCab Lattice class.'''
+    '''Wrapper interface to the MeCab Lattice class, used internally by natto-py.'''
 
     MECAB_ANY_BOUNDARY = 0
     MECAB_TOKEN_BOUNDARY = 1
