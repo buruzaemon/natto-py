@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-__all__ = ['MeCab', 'Lattice',  'DictionaryInfo', 'MeCabNode', 'MeCabError']
+__all__ = ['MeCab', 'Lattice',  'DictionaryInfo', 'MeCabNode', 'MeCabError',
+           'string_support']
 
 from .api import MeCabError
 from .dictionary import DictionaryInfo
