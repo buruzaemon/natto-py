@@ -119,7 +119,7 @@ class Lattice(object):
     def parse(self):
         '''Return result of applying Lattice-based node parsing. Parse result
         is obtained either thru get_string or by enumerating the nodes in the
-        linked list from bos_node. c.f `mecab_parse_lattice in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`.
+        linked list from bos_node. c.f `mecab_parse_lattice in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
         :return: Lattice-based parse result.
         '''
@@ -127,7 +127,7 @@ class Lattice(object):
 
     def get_string(self):
         '''Return string result of Lattice-based node parsing. c.f
-        `mecab_lattice_tostr in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`.
+        `mecab_lattice_tostr in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
         :return: pointer to beginning-of-sentence node.
         '''
@@ -138,7 +138,7 @@ class Lattice(object):
 
     def next(self):
         '''Return pointer to next node in linked list when node parsing. c.f
-        `mecab_lattice_next in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`.
+        `mecab_lattice_next in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
         :return: pointer to beginning-of-sentence node.
         '''
@@ -146,7 +146,7 @@ class Lattice(object):
 
     def bos_node(self):
         '''Return pointer to beginning-of-sentence node when node parsing. c.f
-        `mecab_lattice_get_bos_node in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`.
+        `mecab_lattice_get_bos_node in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
         :return: pointer to beginning-of-sentence node.
         '''
@@ -154,7 +154,7 @@ class Lattice(object):
 
     def get_error(self):
         '''Return error string from Lattice. c.f. `mecab_lattice_strerror in
-        mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`.
+        mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
         :return: error string from Lattice.
         '''
