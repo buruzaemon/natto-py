@@ -21,7 +21,6 @@ class TestOptionParse(unittest.TestCase, Test23Support):
     def tearDown(self):
         self.op = None
 
-    # ------------------------------------------------------------------------
     def test_parse_mecab_options_none(self):
         '''Test option-parsing: None.'''
         dopts = self.op.parse_mecab_options(None)
