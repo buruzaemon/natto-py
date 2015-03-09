@@ -1,5 +1,7 @@
-natto-py |travis|
+natto-py |version| |travis|
 ========
+.. |version| image:: https://badge.fury.io/py/natto-py.svg
+    :target: http://badge.fury.io/py/natto-py
 .. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
 
