@@ -3,7 +3,7 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-natto-py
+natto-py |version| |travis|
 ========
 
 What is natto-py?
@@ -245,6 +245,10 @@ Please see the ``CHANGELOG`` for the release history.
 Documentation
 -------------
 
+.. |version| image:: https://badge.fury.io/py/natto-py.svg
+    :target: http://badge.fury.io/py/natto-py
+.. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
+    :target: https://travis-ci.org/buruzaemon/natto-py
 .. _Python: http://www.python.org/
 .. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
 .. _mecab-ipadic: https://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
