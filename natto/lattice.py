@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 '''Internal-use interface to Lattice.'''
 import re
-from .support import string_support
+from .support import string_support, unicode_support
 
 class Lattice(object):
     '''Wrapper interface to the MeCab Lattice class, used internally by natto-py.'''
@@ -17,6 +17,9 @@ class Lattice(object):
         self.__fn_name = fn_name
         self.__lattice = self.__mecab.mecab_lattice_new()
         self.__bytes2str, self.__str2bytes = string_support(envch)
+        self.__str2unicode, self.__unicode2bytes = unicode_support(envch)
+        self.__text = None
+        self.__nbest = 1
 
     def __del__(self):
         if hasattr(self, '_Lattice__mecab') and hasattr(self, '_Lattice__lattice'):
@@ -36,6 +39,10 @@ class Lattice(object):
                 del self.__bytes2str
             if hasattr(self, '_Lattice__str2bytes'):
                 del self.__str2bytes
+            if hasattr(self, '_Lattice__str2unicode'):
+                del self.__str2unicode
+            if hasattr(self, '_Lattice__unicode2bytes'):
+                del self.__unicode2bytes
 
     def __enter__(self):
         return self
@@ -53,15 +60,33 @@ class Lattice(object):
         :type text: str
         '''
         mark = 0
-        patt = self.__str2bytes(pattern)
+
+        patt = self.__str2unicode(pattern)
+        text = self.__str2unicode(text)
+
         for token in re.finditer(patt, text):
             if mark < token.start():
-                yield (text[mark:token.start()], False)
+                #yield (text[mark:token.start()], False)
+                chunk = self.__unicode2bytes(text[mark:token.start()])
+                yield (chunk, False)
                 mark = token.start()
-            yield (text[mark:token.end()], True)
+            #yield (text[mark:token.end()], True)
+            chunk = self.__unicode2bytes(text[mark:token.end()])
+            yield (chunk, True)
             mark = token.end()
         if mark < len(text):
-            yield (text[mark:], False)
+            #yield (text[mark:], False)
+            chunk = self.__unicode2bytes(text[mark:])
+            yield (chunk, False)
+
+    def size(self):
+        return self.__mecab.mecab_lattice_get_size(self.__lattice)
+
+    def is_available(self):
+        return self.__mecab.mecab_lattice_is_available(self.__lattice)
+
+    def set_nbest(self, nbest):
+        self.__nbest = nbest
 
     def set_request_type(self, req_type):
         '''Set request type for Lattice-based parsing.
@@ -77,8 +102,11 @@ class Lattice(object):
         :param text: target sentence for parsing.
         :type text: str
         '''
+        print('in set_sentence..')
+        print(text)
         self.__text = text
-        self.__mecab.mecab_lattice_set_sentence(self.__lattice, self.__text)
+        self.__mecab.mecab_lattice_set_sentence(self.__lattice,
+                self.__str2bytes(text))
 
     def set_boundary_constraints(self, morpheme_constraint, any_boundary):
         '''Set the morpheme constraint pattern and preferred boundary marker.
@@ -87,7 +115,7 @@ class Lattice(object):
             constraints.
         :type morpheme_constraint: str
         :param any_boundary: if True, use MECAB_ANY_BOUNDARY for default
-            boundary marke; else use MECAB_INSIDE_TOKEN.
+            boundary marker; else use MECAB_INSIDE_TOKEN.
         :type any_boundary: bool
         '''
         if any_boundary:
@@ -121,20 +149,24 @@ class Lattice(object):
         is obtained either thru get_string or by enumerating the nodes in the
         linked list from bos_node. c.f `mecab_parse_lattice in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
 
-        :return: Lattice-based parse result.
+        :return: Lattice-based parse result code.
         '''
         return self.__mecab.mecab_parse_lattice(self.__tagger, self.__lattice)
 
     def get_string(self):
         '''Return string result of Lattice-based node parsing. c.f
-        `mecab_lattice_tostr in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_.
+        `mecab_lattice_tostr and mecab_lattice_nbest_tostr in mecab.h <https://code.google.com/p/mecab/source/browse/trunk/mecab/src/mecab.h>`_
 
-        :return: pointer to beginning-of-sentence node.
+        :return: A single string containing the entire MeCab output.
         '''
         args = [self.__lattice]
+        if self.__nbest > 1:
+            args.append(self.__nbest)
         res = getattr(self.__mecab, self.__fn_name)(*args)
+        print("res? {}".format(res))
         raw = self.__ffi.string(res)
-        return self.__bytes2str(raw).strip()
+        print("raw? {}".format(repr(raw)))
+        return self.__bytes2str(raw)
 
     def next(self):
         '''Return pointer to next node in linked list when node parsing. c.f

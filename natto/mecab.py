@@ -321,16 +321,22 @@ class MeCab(object):
         def _fn(text, **kwargs):
             '''Boundary constraint parse text and return MeCab result as a string.'''
             with Lattice(self.__mecab, self.pointer, self.__ffi, fn_name, self.__enc) as lattice:
-                morpheme_constraint = kwargs.get('morpheme_constraint', '.')
-                any_boundary = kwargs.get('any_boundary', True)
+                morpheme_constraint = kwargs.get(self._KW_CONSTRAINTS, '.')
+                any_boundary = kwargs.get(self._KW_ANYBOUNDARY, True)
 
-                if fn_name == self._FN_BCNBEST_TOSTR:
+                #if fn_name == self._FN_BCNBEST_TOSTR:
+                n = self.options.get('nbest', 1)
+                if n > 1:
+                    lattice.set_nbest(n)
                     lattice.set_request_type(self.MECAB_LATTICE_NBEST)
+                else:
+                    lattice.set_request_type(self.MECAB_LATTICE_ONE_BEST)
 
                 lattice.set_sentence(text)
                 lattice.set_boundary_constraints(morpheme_constraint, any_boundary)
 
                 res = lattice.parse()
+                print('parse result: {}'.format(res))
                 if res != self.__ffi.NULL:
                     return lattice.get_string()
                 else:
@@ -353,13 +359,15 @@ class MeCab(object):
         def _fn(text, **kwargs):
             '''Boundary constraint parse text and return MeCab result Generator.'''
             with Lattice(self.__mecab, self.pointer, self.__ffi, None, self.__enc) as lattice:
-                morpheme_constraint = kwargs.get('morpheme_constraint', '.')
-                any_boundary = kwargs.get('any_boundary', True)
+                morpheme_constraint = kwargs.get(self._KW_CONSTRAINTS, '.')
+                any_boundary = kwargs.get(self._KW_ANYBOUNDARY, True)
 
                 n = self.options.get('nbest', 1)
                 if n > 1:
+                    lattice.set_nbest(n)
                     lattice.set_request_type(self.MECAB_LATTICE_NBEST)
                 else:
+                    print(self.options)
                     lattice.set_request_type(self.MECAB_LATTICE_ONE_BEST)
 
                 lattice.set_sentence(text)
@@ -367,10 +375,9 @@ class MeCab(object):
 
                 res = lattice.parse()
                 if res != self.__ffi.NULL:
-                    lattice.next()
                     for _ in range(n):
                         check = lattice.next()
-                        if check:
+                        if n==1 or check:
                             nptr = lattice.bos_node()
                             while nptr != self.__ffi.NULL:
                                 # skip over any BOS nodes, since mecab does
@@ -430,17 +437,17 @@ class MeCab(object):
 
         as_nodes = kwargs.get(self._KW_ASNODES, False)
 
-        btext = self.__str2bytes(text)
+        #btext = self.__str2bytes(text)
         if as_nodes:
             if self._KW_CONSTRAINTS in kwargs:
-                return self.__bcparse2nodes(btext, **kwargs)
+                return self.__bcparse2nodes(text, **kwargs)
             else:
-                return self.__parse2nodes(btext)
+                return self.__parse2nodes(self.__str2bytes(text))
         else:
             if self._KW_CONSTRAINTS in kwargs:
-                return self.__bcparse2str(btext, **kwargs)
+                return self.__bcparse2str(text, **kwargs)
             else:
-                return self.__parse2str(btext)
+                return self.__parse2str(self.__str2bytes(text))
 
 
 '''

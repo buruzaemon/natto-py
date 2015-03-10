@@ -10,7 +10,7 @@ def string_support(py3enc):
     :param py3enc: Encoding used by Python 3 environment.
     :type py3enc: str
     '''
-    # Set up byte/Unicode converters (Python 3 support)
+    # Set up byte-str converters (Python 3 support)
     if sys.version < '3':
         def bytes2str(b):
             '''Identity, returns the argument string (bytes).'''
@@ -27,6 +27,30 @@ def string_support(py3enc):
             return u.encode(py3enc)
     return(bytes2str, str2bytes)
 
+def unicode_support(enc):
+    '''Create string-to-Unicode and Unicode-to-byte conversion functions for
+    internal use.
+
+    :param enc: Encoding used.
+    :type enc: str
+    '''
+    # Set up byte-Unicode converters (Python 3 support)
+    if sys.version < '3':
+        def str2unicode(b):
+            '''Transforms bytes (str) into Unicode.'''
+            return b.decode(enc)
+        def unicode2bytes(u):
+            '''Transforms Unicode into bytes (str).'''
+            return u.encode(enc)
+    else:
+        def str2unicode(s):
+            '''Identity, returns the argument string (Unicode).'''
+            return s
+        def unicode2bytes(u):
+            '''Transforms Unicode into bytes (str).'''
+            return u.encode(enc)
+    return(str2unicode, unicode2bytes)
+    
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

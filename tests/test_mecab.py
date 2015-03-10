@@ -21,17 +21,28 @@ class TestMecab(unittest.TestCase, Test23Support):
         cwd = os.getcwd()
         if sys.platform == 'win32':
             self.testfile = os.path.join(cwd, 'tests', 'test_sjis')
+            self.testfile2 = os.path.join(cwd, 'tests', 'test2_sjis')
         else:
             self.testfile = os.path.join(cwd, 'tests', 'test_utf8')
+            self.testfile2 = os.path.join(cwd, 'tests', 'test2_utf8')
 
         self.env = env.MeCabEnv()
 
         with codecs.open(self.testfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
+        with codecs.open(self.testfile2, 'r') as f:
+            text = f.readlines()
+            self.text2 = text[0].strip()
+            self.morph1 = text[1].strip()
+            self.morph2 = text[2].strip()
+
     def tearDown(self):
         self.testfile = None
         self.text = None
+        self.text2 = None
+        self.morph1 = None
+        self.morph2 = None
         self.env = None
 
     def _mecab_parse(self, options):
@@ -147,6 +158,18 @@ class TestMecab(unittest.TestCase, Test23Support):
                     s, f = actual[i].split()
                     self.assertEqual(expected[i].surface, s)
                     self.assertEqual(expected[i].feature, f)
+
+    def test_bcparse_tostr(self):
+        '''Test boundary constraint parsing, across different output formats.'''
+        with mecab.MeCab() as nm:
+            patt = "{}|{}".format(self.morph1, self.morph2)
+            expected = nm.parse(self.text2, morpheme_constraints=patt)
+            lines = expected.split(os.linesep)
+
+            print(lines)
+            self.assertTrue(lines[0].startswith(self.morph1))
+            self.assertTrue(lines[2].startswith(self.morph2))
+
 
 
 '''

@@ -87,6 +87,7 @@ def _ffi_libmecab():
         void             mecab_lattice_destroy(mecab_lattice_t *lattice);
         void             mecab_lattice_clear(mecab_lattice_t *lattice);
         int              mecab_lattice_is_available(mecab_lattice_t *lattice);
+        size_t           mecab_lattice_get_size(mecab_lattice_t *lattice);
         mecab_node_t    *mecab_lattice_get_bos_node(mecab_lattice_t *lattice);
         void             mecab_lattice_set_sentence(mecab_lattice_t *lattice, const char *sentence);
         void             mecab_lattice_set_z(mecab_lattice_t *lattice, double Z);

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 __all__ = ['MeCab', 'Lattice',  'DictionaryInfo', 'MeCabNode', 'MeCabError',
-           'OptionParse', 'string_support']
+           'OptionParse', 'string_support', 'unicode_support']
 
 from .api import MeCabError
 from .dictionary import DictionaryInfo
@@ -8,7 +8,7 @@ from .mecab import MeCab
 from .lattice import Lattice
 from .node import MeCabNode
 from .option_parse import OptionParse
-from .support import string_support
+from .support import string_support, unicode_support
 
 __version__ = '0.3.0'
 __version_info__ = (0, 3, 0)
