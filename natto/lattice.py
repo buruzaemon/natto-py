@@ -66,18 +66,21 @@ class Lattice(object):
 
         for token in re.finditer(patt, text):
             if mark < token.start():
-                #yield (text[mark:token.start()], False)
                 chunk = self.__unicode2bytes(text[mark:token.start()])
+                #chunk = text[mark:token.start()]
                 yield (chunk, False)
                 mark = token.start()
-            #yield (text[mark:token.end()], True)
             chunk = self.__unicode2bytes(text[mark:token.end()])
+            #chunk = text[mark:token.end()]
             yield (chunk, True)
             mark = token.end()
         if mark < len(text):
-            #yield (text[mark:], False)
             chunk = self.__unicode2bytes(text[mark:])
+            #chunk = text[mark:]
             yield (chunk, False)
+
+    def clear(self):
+        self.__mecab.mecab_lattice_clear(self.__lattice)
 
     def size(self):
         return self.__mecab.mecab_lattice_get_size(self.__lattice)
@@ -87,6 +90,9 @@ class Lattice(object):
 
     def set_nbest(self, nbest):
         self.__nbest = nbest
+
+    def get_request_type(self):
+        return self.__mecab.mecab_lattice_get_request_type(self.__lattice)
 
     def set_request_type(self, req_type):
         '''Set request type for Lattice-based parsing.
@@ -103,10 +109,12 @@ class Lattice(object):
         :type text: str
         '''
         print('in set_sentence..')
-        print(text)
+        print("text going in: {}".format(text))
         self.__text = text
-        self.__mecab.mecab_lattice_set_sentence(self.__lattice,
-                self.__str2bytes(text))
+        btext = self.__str2bytes(text)
+        print("bytes going in: {}".format(len(btext)))
+        self.__mecab.mecab_lattice_set_sentence(self.__lattice, btext)
+        #self.__mecab.mecab_lattice_set_sentence2(self.__lattice, btext, len(btext))
 
     def set_boundary_constraints(self, morpheme_constraint, any_boundary):
         '''Set the morpheme constraint pattern and preferred boundary marker.
@@ -123,26 +131,85 @@ class Lattice(object):
         else:
             default_boundary = self.MECAB_INSIDE_TOKEN
 
-        pos = 0
-        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
-                                                           pos,
-                                                           self.MECAB_TOKEN_BOUNDARY)
+        bits = list(self.__split(morpheme_constraint, self.__text))
+        for b in bits:
+            print(len(b[0]))
 
-        for (token, match) in self.__split(morpheme_constraint, self.__text):
-            pos += 1
-            if match:
-                boundary_constraint = self.MECAB_INSIDE_TOKEN
-            else:
-                boundary_constraint = default_boundary
+        foo = self.__mecab.mecab_lattice_get_sentence(self.__lattice)
+        raw = self.__ffi.string(foo)
+        #print("bytes in lattice? {}".format(len(raw)))
+        #print("text returned from lattice: {}".format( self.__bytes2str(raw) ))
+        
+        # niwa
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 0, self.MECAB_TOKEN_BOUNDARY)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 1, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 2, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 3, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 4, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 5, self.MECAB_INSIDE_TOKEN)
 
-            for _ in range(1, len(token)):
-                self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
-                                                                   pos,
-                                                                   boundary_constraint)
-                pos += 1
-            self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
-                                                               pos,
-                                                               self.MECAB_TOKEN_BOUNDARY)
+        # ni
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 6, self.MECAB_TOKEN_BOUNDARY)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 7, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 8, self.MECAB_INSIDE_TOKEN)
+
+        # haniwaniwatori
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice, 9, self.MECAB_TOKEN_BOUNDARY)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,10, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,11, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,12, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,13, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,14, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,15, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,16, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,17, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,18, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,19, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,20, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,21, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,22, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,23, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,24, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,25, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,26, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,27, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,28, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,29, self.MECAB_INSIDE_TOKEN)
+
+        # ga iru .
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,30, self.MECAB_TOKEN_BOUNDARY)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,31, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,32, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,33, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,34, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,35, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,36, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,37, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,38, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,39, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,40, self.MECAB_INSIDE_TOKEN)
+        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,41, self.MECAB_INSIDE_TOKEN)
+
+#        pos = 0
+#        self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
+#                                                           pos,
+#                                                           self.MECAB_TOKEN_BOUNDARY)
+#
+#        for (token, match) in self.__split(morpheme_constraint, self.__text):
+#            pos += 1
+#            if match:
+#                boundary_constraint = self.MECAB_INSIDE_TOKEN
+#            else:
+#                boundary_constraint = default_boundary
+#
+#            for _ in range(1, len(token)):
+#                self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
+#                                                                   pos,
+#                                                                   boundary_constraint)
+#                pos += 1
+#            self.__mecab.mecab_lattice_set_boundary_constraint(self.__lattice,
+#                                                               pos,
+#                                                               self.MECAB_TOKEN_BOUNDARY)
 
     def parse(self):
         '''Return result of applying Lattice-based node parsing. Parse result
@@ -163,10 +230,9 @@ class Lattice(object):
         if self.__nbest > 1:
             args.append(self.__nbest)
         res = getattr(self.__mecab, self.__fn_name)(*args)
-        print("res? {}".format(res))
         raw = self.__ffi.string(res)
-        print("raw? {}".format(repr(raw)))
-        return self.__bytes2str(raw)
+        return raw
+        #return self.__bytes2str(raw)
 
     def next(self):
         '''Return pointer to next node in linked list when node parsing. c.f

@@ -320,7 +320,12 @@ class MeCab(object):
         '''
         def _fn(text, **kwargs):
             '''Boundary constraint parse text and return MeCab result as a string.'''
+            #args = [self.pointer]
+            #args.append(self.__str2bytes(""))
+            #res = getattr(self.__mecab, 'mecab_sparse_tostr')(*args)
+            
             with Lattice(self.__mecab, self.pointer, self.__ffi, fn_name, self.__enc) as lattice:
+                lattice.clear()
                 morpheme_constraint = kwargs.get(self._KW_CONSTRAINTS, '.')
                 any_boundary = kwargs.get(self._KW_ANYBOUNDARY, True)
 
@@ -332,11 +337,16 @@ class MeCab(object):
                 else:
                     lattice.set_request_type(self.MECAB_LATTICE_ONE_BEST)
 
+                print("request type? {}".format( lattice.get_request_type()))
+                
                 lattice.set_sentence(text)
+                print("1. lattice size? {}".format(lattice.size()))
                 lattice.set_boundary_constraints(morpheme_constraint, any_boundary)
+                print("2. lattice size? {}".format(lattice.size()))
 
                 res = lattice.parse()
-                print('parse result: {}'.format(res))
+                print("3. lattice size? {}".format(lattice.size()))
+                print("result available? {}".format(lattice.is_available()))
                 if res != self.__ffi.NULL:
                     return lattice.get_string()
                 else:
