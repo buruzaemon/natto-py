@@ -166,7 +166,6 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = nm.parse(self.text2, morpheme_constraints=patt)
             lines = expected.split(os.linesep)
 
-            print(lines)
             self.assertTrue(lines[0].startswith(self.morph1))
             self.assertTrue(lines[2].startswith(self.morph2))
 
