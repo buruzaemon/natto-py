@@ -133,7 +133,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                    '-Oyomi',
                    '-Ochasen2',
                    '-N2',
-                   '-F%m\\t%h\\t%f[0]\\n']
+                   r'-F%m\t%h\t%f[0]\n']
         for argf in formats:
             with mecab.MeCab(argf) as nm:
                 expected = nm.parse(self.text)
@@ -168,8 +168,6 @@ class TestMecab(unittest.TestCase, Test23Support):
 
             self.assertTrue(lines[0].startswith(self.morph1))
             self.assertTrue(lines[2].startswith(self.morph2))
-
-
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

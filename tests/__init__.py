@@ -47,7 +47,6 @@ try:
 except StandardError as err:
     raise EnvironmentError(err)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

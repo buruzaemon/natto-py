@@ -7,7 +7,7 @@ from .dictionary import DictionaryInfo
 from .mecab import MeCab
 from .node import MeCabNode
 from .option_parse import OptionParse
-from .support import string_support
+from .support import string_support, unicode_support
 
 __version__ = '0.3.0'
 __version_info__ = (0, 3, 0)

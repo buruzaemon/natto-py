@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
+'''Helper class for parsing MeCab options.'''
 import argparse
 import sys
 from .support import string_support
 
 class OptionParse(object):
-    # Mapping of mecab short-style configuration options to the `mecab`
-    # tagger. See the `mecab` help for more details.
+    '''Helper class for transforming user arguments into input for mecab_new2.'''
+
     _SUPPORTED_OPTS = {'-d' : 'dicdir',
                        '-u' : 'userdic',
                        '-l' : 'lattice_level',

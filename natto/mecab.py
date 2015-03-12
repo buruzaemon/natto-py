@@ -331,7 +331,7 @@ class MeCab(object):
                     import re
                     
                     pos = 0
-                    
+
                     for m in re.finditer(pattern, sentence):
                         if pos < m.start():
                             yield (sentence[pos:m.start()], False)

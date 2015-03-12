@@ -11,7 +11,6 @@ class TestBinding(unittest.TestCase):
         ffi = binding._ffi_libmecab()
         self.assertIsNotNone(ffi)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

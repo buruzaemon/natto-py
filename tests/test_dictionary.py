@@ -28,7 +28,6 @@ class TestDictionary(unittest.TestCase, Test23Support):
             self.assertEqual(sysdic.type, 0)
             self.assertEqual(sysdic.version, 102)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

@@ -17,7 +17,6 @@ def test_suite():
     suite.addTest(TestOptionParse)
     return suite
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

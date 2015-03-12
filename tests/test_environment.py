@@ -67,7 +67,6 @@ class TestMeCabEnv(unittest.TestCase):
         finally:
             os.environ[environment.MeCabEnv.MECAB_PATH] = orig
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.
