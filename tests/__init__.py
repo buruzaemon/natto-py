@@ -14,14 +14,14 @@ class Test23Support(object):
 
     def _b2u(self, text):
         return text.decode(self.env.charset)
-        
+
     def _2unicode(self, text):
         if sys.version < '3':
             return text.decode(self.env.charset)
         else:
             return text
-            
-    def _2str(self, text):  
+
+    def _2str(self, text):
         if sys.version < '3':
             return text
         else:

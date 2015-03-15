@@ -6,3 +6,4 @@
 /dist/
 /.py*env/
 /*.egg-info/
+/notebooks/.ipynb_checkpoints/
