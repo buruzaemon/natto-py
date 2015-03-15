@@ -4,6 +4,7 @@ import codecs
 import os
 import re
 import sys
+import yaml
 import unittest
 import natto.api as api
 import natto.environment as env
@@ -20,29 +21,24 @@ class TestMecab(unittest.TestCase, Test23Support):
     def setUp(self):
         cwd = os.getcwd()
         if sys.platform == 'win32':
-            self.testfile = os.path.join(cwd, 'tests', 'test_sjis')
-            self.testfile2 = os.path.join(cwd, 'tests', 'test2_sjis')
+            self.textfile = os.path.join(cwd, 'tests', 'test_sjis.txt')
+            self.yamlfile = os.path.join(cwd, 'tests', 'test_sjis.yml')
         else:
-            self.testfile = os.path.join(cwd, 'tests', 'test_utf8')
-            self.testfile2 = os.path.join(cwd, 'tests', 'test2_utf8')
+            self.textfile = os.path.join(cwd, 'tests', 'test_utf8.txt')
+            self.yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
 
         self.env = env.MeCabEnv()
 
-        with codecs.open(self.testfile, 'r') as f:
+        with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
-        with codecs.open(self.testfile2, 'r') as f:
-            text = f.readlines()
-            self.text2 = text[0].strip()
-            self.morph1 = text[1].strip()
-            self.morph2 = text[2].strip()
+        with open(self.yamlfile, 'r') as f:
+            self.yaml = yaml.load(f)
 
     def tearDown(self):
-        self.testfile = None
+        self.textfile = None
         self.text = None
-        self.text2 = None
-        self.morph1 = None
-        self.morph2 = None
+        self.yaml = None
         self.env = None
 
     def _mecab_parse(self, options):
@@ -50,12 +46,12 @@ class TestMecab(unittest.TestCase, Test23Support):
         if sys.platform == 'win32':
             if len(options) > 0:
                 cmd.append(options)
-            cmd.append(self.testfile)
+            cmd.append(self.textfile)
             mout = Popen(cmd, stdout=PIPE, shell=True).communicate()
         else:
             if len(options) > 0:
                 cmd.append(options)
-            cmd.append(self.testfile)
+            cmd.append(self.textfile)
             mout = Popen(cmd, stdout=PIPE).communicate()
 
         res = mout[0].strip()
@@ -116,6 +112,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             with self.assertRaises(api.MeCabError):
                 nm.parse(None)
 
+    # ------------------------------------------------------------------------
     def test_parse_tostr_default(self):
         '''Test simple default parsing.'''
         with mecab.MeCab() as nm:
@@ -143,6 +140,7 @@ class TestMecab(unittest.TestCase, Test23Support):
 
                 self.assertEqual(expected, actual)
 
+    # ------------------------------------------------------------------------
     def test_parse_tonode_default(self):
         '''Test node parsing, skipping over any BOS or EOS nodes.'''
         formats = ['', '-N2']
@@ -159,15 +157,109 @@ class TestMecab(unittest.TestCase, Test23Support):
                     self.assertEqual(expected[i].surface, s)
                     self.assertEqual(expected[i].feature, f)
 
+    # ------------------------------------------------------------------------
     def test_bcparse_tostr(self):
-        '''Test boundary constraint parsing, across different output formats.'''
+        '''Test boundary constraint parsing to string (output format does NOT apply).'''
         with mecab.MeCab() as nm:
-            patt = "{}|{}".format(self.morph1, self.morph2)
-            expected = nm.parse(self.text2, morpheme_constraints=patt)
-            lines = expected.split(os.linesep)
+            # simple pattern
+            yml1 = self.yaml.get('text1')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
 
-            self.assertTrue(lines[0].startswith(self.morph1))
-            self.assertTrue(lines[2].startswith(self.morph2))
+            actual = nm.parse(txt1, morpheme_constraints=pat1)
+            lines = actual.split(os.linesep)
+
+            for i,e in enumerate(lines):
+                self.assertTrue(lines[i].startswith(expected[i]))
+
+            # slightly more complex pattern
+            yml2 = self.yaml.get('text2')
+            txt2 = self._u2str(yml2.get('text'))
+            pat2 = self._u2str(yml2.get('pattern'))
+            expected = [self._u2str(e) for e in yml2.get('expected')]
+
+            actual = nm.parse(txt2, morpheme_constraints=pat2)
+            lines = actual.split(os.linesep)
+
+            for i,e in enumerate(lines):
+                self.assertTrue(lines[i].startswith(expected[i]))
+            
+            # complex pattern requiring RegExp compiled with re.U flag
+            yml3 = self.yaml.get('text3')
+            txt3 = self._u2str(yml3.get('text'))
+            pat3 = self._u2str(yml3.get('pattern'))
+            expected = [self._u2str(e) for e in yml3.get('expected')]
+
+            actual = nm.parse(txt3, morpheme_constraints=re.compile(pat3, re.U))
+            lines = actual.split(os.linesep)
+
+            for i,e in enumerate(lines):
+                self.assertTrue(lines[i].startswith(expected[i]))
+
+        with mecab.MeCab('-N2') as nm:
+            # 2-Best
+            yml = self.yaml.get('text4')
+            txt = self._u2str(yml.get('text'))
+            pat = self._u2str(yml.get('pattern'))
+            expected = [self._u2str(e) for e in yml.get('expected')]
+
+            actual = nm.parse(txt, morpheme_constraints=pat)
+            lines = actual.split(os.linesep)
+
+            for i,e in enumerate(lines):
+                self.assertTrue(lines[i].endswith(expected[i]))
+
+    # ------------------------------------------------------------------------
+    def test_bcparse_tonodes(self):
+        '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
+        with mecab.MeCab() as nm:
+            # simple node-parsing, no N-Best or output formatting
+            yml1 = self.yaml.get('text1')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
+
+            gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
+            for i,node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.surface, expected[i])
+
+            # slightly more complex pattern
+            yml2 = self.yaml.get('text2')
+            txt2 = self._u2str(yml2.get('text'))
+            pat2 = self._u2str(yml2.get('pattern'))
+            expected = [self._u2str(e) for e in yml2.get('expected')]
+            
+            gen = nm.parse(txt2, morpheme_constraints=pat2, as_nodes=True)
+            for i,node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.surface, expected[i])
+
+        with mecab.MeCab(r'-F%m\s%s') as nm:
+            # with output formatting
+            yml1 = self.yaml.get('text5')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
+   
+            gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
+            for i,node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.feature, expected[i])
+
+        with mecab.MeCab(r'-F%m\s%F\s[0,1]\s%s -N2') as nm:
+            # with N-best and output formatting
+            yml1 = self.yaml.get('text6')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
+   
+            i = 0
+            for node in nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True):
+                if not node.is_eos():
+                    self.assertEqual(node.feature, expected[i])
+                    i += 1
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

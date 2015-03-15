@@ -6,6 +6,12 @@ from subprocess import Popen, PIPE
 __all__ = ['Test23Support']
 
 class Test23Support(object):
+    def _u2str(self, text):
+        if sys.version < '3':
+            return text.encode(self.env.charset)
+        else:
+            return text
+
     def _b2u(self, text):
         return text.decode(self.env.charset)
         

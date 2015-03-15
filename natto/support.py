@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 '''Internal-use functions for string- and byte-conversion for supporting Python
 2 and 3.'''
+import re
 import sys
+
+REGEXTYPE = type(re.compile(''))
 
 def string_support(py3enc):
     '''Create byte-to-string and string-to-byte conversion functions for
@@ -26,28 +29,42 @@ def string_support(py3enc):
             return u.encode(py3enc)
     return (bytes2str, str2bytes)
     
-def unicode_support(py2enc):
+def re_unicode_support(py2enc):
     '''Create byte-to-Unicode and Unicode-to-byte conversion functions for
-    internal use.
+    use in tokenizing text in boundary constraint parsing.
 
     :param py2enc: Encoding used by Python 2 environment.
     :type py2enc: str
     '''
     if sys.version < '3':
-        def bytes2unicode(b):
-            '''Transforms bytes into Unicode.'''
-            return b.decode(py2enc)
-        def unicode2bytes(u):
-            '''Transforms Unicode into string (bytes).'''
-            return u.encode(py2enc)
+        def sentence2unicode(patt, sentence):
+            '''Decodes sentence (str) as Unicode, as needed.'''
+            if REGEXTYPE == type(patt) and (patt.flags & re.U):
+                return sentence.decode(py2enc)
+            else:
+                return sentence
+        def token2str(patt):
+            '''Defines post-processing function as needed.'''
+            if REGEXTYPE == type(patt) and (patt.flags & re.U):
+                def _fn(token):
+                    '''Transforms Unicode token into string (bytes).'''
+                    return token.encode(py2enc)
+            else:
+                def _fn(token):
+                    '''Identity. Returns the str token.'''
+                    return token
+            return _fn
     else:
-        def bytes2unicode(s):
-            '''Identity, returns the argument string.'''
-            return s
-        def unicode2bytes(s):
-            '''Identity, returns the argument string.'''
-            return s
-    return (bytes2unicode, unicode2bytes)
+        def sentence2unicode(patt, sentence):
+            '''Identity, returns the argument sentence.'''
+            return sentence
+        def token2str(patt):
+            '''Defines Identity function.'''
+            def _fn(token):
+                '''Identity. Returns the str token.'''
+                return token
+            return _fn
+    return (sentence2unicode, token2str)
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.
