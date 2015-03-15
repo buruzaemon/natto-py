@@ -28,7 +28,7 @@ def string_support(py3enc):
             '''Transforms Unicode into string (bytes).'''
             return u.encode(py3enc)
     return (bytes2str, str2bytes)
-    
+
 def re_unicode_support(py2enc):
     '''Create byte-to-Unicode and Unicode-to-byte conversion functions for
     use in tokenizing text in boundary constraint parsing.

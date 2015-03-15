@@ -22,17 +22,16 @@ class TestMecab(unittest.TestCase, Test23Support):
         cwd = os.getcwd()
         if sys.platform == 'win32':
             self.textfile = os.path.join(cwd, 'tests', 'test_sjis.txt')
-            self.yamlfile = os.path.join(cwd, 'tests', 'test_sjis.yml')
         else:
             self.textfile = os.path.join(cwd, 'tests', 'test_utf8.txt')
-            self.yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
 
+        self.yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
 
         with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
-        with open(self.yamlfile, 'r') as f:
+        with codecs.open(self.yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f)
 
     def tearDown(self):
@@ -170,7 +169,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt1, morpheme_constraints=pat1)
             lines = actual.split(os.linesep)
 
-            for i,e in enumerate(lines):
+            for i, e in enumerate(lines):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
             # slightly more complex pattern
@@ -182,9 +181,9 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt2, morpheme_constraints=pat2)
             lines = actual.split(os.linesep)
 
-            for i,e in enumerate(lines):
+            for i, e in enumerate(lines):
                 self.assertTrue(lines[i].startswith(expected[i]))
-            
+
             # complex pattern requiring RegExp compiled with re.U flag
             yml3 = self.yaml.get('text3')
             txt3 = self._u2str(yml3.get('text'))
@@ -194,7 +193,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt3, morpheme_constraints=re.compile(pat3, re.U))
             lines = actual.split(os.linesep)
 
-            for i,e in enumerate(lines):
+            for i, e in enumerate(lines):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
         with mecab.MeCab('-N2') as nm:
@@ -205,9 +204,10 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = [self._u2str(e) for e in yml.get('expected')]
 
             actual = nm.parse(txt, morpheme_constraints=pat)
-            lines = actual.split(os.linesep)
-
-            for i,e in enumerate(lines):
+            #lines = actual.split(os.linesep)
+            lines = actual.splitlines()
+            
+            for i, e in enumerate(lines):
                 self.assertTrue(lines[i].endswith(expected[i]))
 
     # ------------------------------------------------------------------------
@@ -221,7 +221,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = [self._u2str(e) for e in yml1.get('expected')]
 
             gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
-            for i,node in enumerate(gen):
+            for i, node in enumerate(gen):
                 if not node.is_eos():
                     self.assertEqual(node.surface, expected[i])
 
@@ -230,9 +230,9 @@ class TestMecab(unittest.TestCase, Test23Support):
             txt2 = self._u2str(yml2.get('text'))
             pat2 = self._u2str(yml2.get('pattern'))
             expected = [self._u2str(e) for e in yml2.get('expected')]
-            
+
             gen = nm.parse(txt2, morpheme_constraints=pat2, as_nodes=True)
-            for i,node in enumerate(gen):
+            for i, node in enumerate(gen):
                 if not node.is_eos():
                     self.assertEqual(node.surface, expected[i])
 
@@ -242,9 +242,9 @@ class TestMecab(unittest.TestCase, Test23Support):
             txt1 = self._u2str(yml1.get('text'))
             pat1 = self._u2str(yml1.get('pattern'))
             expected = [self._u2str(e) for e in yml1.get('expected')]
-   
+
             gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
-            for i,node in enumerate(gen):
+            for i, node in enumerate(gen):
                 if not node.is_eos():
                     self.assertEqual(node.feature, expected[i])
 
@@ -254,7 +254,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             txt1 = self._u2str(yml1.get('text'))
             pat1 = self._u2str(yml1.get('pattern'))
             expected = [self._u2str(e) for e in yml1.get('expected')]
-   
+
             i = 0
             for node in nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True):
                 if not node.is_eos():

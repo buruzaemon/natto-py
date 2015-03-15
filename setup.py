@@ -42,7 +42,7 @@ setup(
         'Natural Language :: Japanese',
 
         'License :: OSI Approved :: BSD License',
-        
+
         'Operating System :: POSIX :: BSD',
         'Operating System :: POSIX :: Linux',
         'Operating System :: MacOS :: MacOS X',

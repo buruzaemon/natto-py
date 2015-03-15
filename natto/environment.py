@@ -41,7 +41,7 @@ class MeCabEnv(object):
 
     def __init__(self, **kwargs):
         '''Initializes the MeCabEnv instance.
-        
+
         Kwargs:
             debug (bool): Flag for outputting debug messages to stderr.
 
@@ -83,7 +83,8 @@ class MeCabEnv(object):
                     if len(t) > 0:
                         cset = t[0].split()[1].lower()
                         if self.debug:
-                            sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
+                            sys.stderr.write(
+                                self._DEBUG_CSET_DEFAULT.format(cset))
                         return cset
                     else:
                         sys.stderr.write('{}\n'.format(self._ERROR_NODIC))

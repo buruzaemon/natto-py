@@ -5,7 +5,7 @@ import sys
 from .support import string_support
 
 class OptionParse(object):
-    '''Helper class for transforming user arguments into input for mecab_new2.'''
+    '''Helper class for transforming arguments into input for mecab_new2.'''
 
     _SUPPORTED_OPTS = {'-d' : 'dicdir',
                        '-u' : 'userdic',
@@ -26,47 +26,48 @@ class OptionParse(object):
                        '-C' : 'allocate_sentence',
                        '-t' : 'theta',
                        '-c' : 'cost_factor'}
-                       
-    _BOOLEAN_OPTIONS = ['all-morphs', 'partial', 'marginal', 'allocate-sentence']      
-    
-    _NBEST_MAX = 512          
-    
-    _ERROR_NVALUE = 'Invalid N value'  
-    _WARN_LATTICE_LEVEL = 'lattice-level is DEPRECATED, please use marginal or nbest'    
-    
-    def __init__(self, envch): 
+
+    _BOOLEAN_OPTIONS = ['all-morphs', 'partial', 'marginal',
+                        'allocate-sentence']
+
+    _NBEST_MAX = 512
+
+    _ERROR_NVALUE = 'Invalid N value'
+    _WARN_LATTICE_LEVEL = 'lattice-level is DEPRECATED, please use marginal or nbest'
+
+    def __init__(self, envch):
         self.__bytes2str, self.__str2bytes = string_support(envch)
-    
+
     def parse_mecab_options(self, options):
         '''Parses the MeCab options, returning them in a dictionary.
-    
+
         Lattice-level option has been deprecated; please use marginal or nbest
         instead.
-    
+
         :options string or dictionary of options to use when instantiating
                 the MeCab instance. May be in short- or long-form, or in a
                 Python dictionary.
-    
+
         Returns:
             A dictionary of the specified MeCab options, where the keys are
             snake-cased names of the long-form of the option names.
-    
+
         Raises:
             MeCabError: An invalid value for N-best was passed in.
         '''
         class MeCabArgumentParser(argparse.ArgumentParser):
             '''MeCab option parser for natto-py.'''
-    
+
             def error(self, message):
                 '''error(message: string)
-    
+
                 Raises ValueError.
                 '''
                 raise ValueError(message)
-    
+
         options = options or {}
         dopts = {}
-    
+
         if type(options) is dict:
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if name in options:
@@ -141,33 +142,33 @@ class OptionParse(object):
             p.add_argument('-c', '--cost-factor',
                            help='set cost factor (default 700)',
                            action='store', dest='cost_factor', type=int)
-    
+
             opts = p.parse_args(options.split())
-    
+
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if hasattr(opts, name):
                     v = getattr(opts, name)
                     if v:
                         dopts[name] = v
-    
+
         # final checks
         if 'nbest' in dopts \
             and (dopts['nbest'] < 1 or dopts['nbest'] > self._NBEST_MAX):
             raise ValueError(self._ERROR_NVALUE)
-    
+
         # warning for lattice-level deprecation
         if 'lattice_level' in dopts:
             sys.stderr.write('WARNING: {}\n'.format(self._WARN_LATTICE_LEVEL))
-    
+
         return dopts
-    
+
     def build_options_str(self, options):
         '''Returns a string concatenation of the MeCab options.
-    
+
         Args:
             options: dictionary of options to use when instantiating the MeCab
                 instance.
-    
+
         Returns:
             A string concatenation of the options used when instantiating the
             MeCab instance, in long-form.
@@ -181,8 +182,8 @@ class OptionParse(object):
                         opts.append('--{}'.format(key))
                 else:
                     opts.append('--{}={}'.format(key, options[name]))
-    
-        return self.__str2bytes(' '.join(opts))    
+
+        return self.__str2bytes(' '.join(opts))
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

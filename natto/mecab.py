@@ -99,7 +99,7 @@ class MeCab(object):
     _FN_TONODE = 'mecab_sparse_tonode'
     _FN_BCNBEST_TOSTR = 'mecab_lattice_nbest_tostr'
     _FN_BCTOSTR = 'mecab_lattice_tostr'
-    
+
     _KW_ASNODES = 'as_nodes'
     _KW_CONSTRAINTS = 'morpheme_constraints'
     _KW_ANYBOUNDARY = 'any_boundary'
@@ -331,7 +331,7 @@ class MeCab(object):
         '''
         sentence = self.__sentence2unicode(pattern, sentence)
         foobar = self.__token2str(pattern)
-        
+
         pos = 0
         for m in re.finditer(pattern, sentence):
             if pos < m.start():
@@ -363,7 +363,7 @@ class MeCab(object):
             '''Boundary constraint parse text and return MeCab result as a string.'''
             try:
                 n = self.options.get('nbest', 1)
-                
+
                 lattice = self.__mecab.mecab_lattice_new()
 
                 req_type = self.MECAB_LATTICE_ONE_BEST
@@ -373,12 +373,11 @@ class MeCab(object):
 
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(lattice, btext)
-                
-                default_mark = self.MECAB_ANY_BOUNDARY 
+
+                default_mark = self.MECAB_ANY_BOUNDARY
 
                 byte_position = 0
-                self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
-                        byte_position, self.MECAB_TOKEN_BOUNDARY)
+                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
 
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
                 for (token, match) in self.__split_sentence(text, patt):
@@ -387,12 +386,11 @@ class MeCab(object):
                         mark = self.MECAB_INSIDE_TOKEN
                     else:
                         mark = default_mark
-                    
-                    for i in range(1, len(self.__str2bytes(token))):
+
+                    for _ in range(1, len(self.__str2bytes(token))):
                         self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, mark)
                         byte_position += 1
-                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
-                            byte_position, self.MECAB_TOKEN_BOUNDARY)
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
 
                 self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 
@@ -408,7 +406,7 @@ class MeCab(object):
                     raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
             except:
                 sys.stderr.write('Unexpected error during {}: {}\n'.format(fn_name, sys.exc_info()[0]))
-                raise MeCabError('Unexpected error during {}'.format(fn_name)) 
+                raise MeCabError('Unexpected error during {}'.format(fn_name))
             finally:
                 if lattice:
                     self.__mecab.mecab_lattice_destroy(lattice)
@@ -431,7 +429,7 @@ class MeCab(object):
             '''Boundary constraint parse text and return MeCab result Generator.'''
             try:
                 n = self.options.get('nbest', 1)
-                
+
                 lattice = self.__mecab.mecab_lattice_new()
 
                 req_type = self.MECAB_LATTICE_ONE_BEST
@@ -441,12 +439,11 @@ class MeCab(object):
 
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(lattice, btext)
-                
-                default_mark = self.MECAB_ANY_BOUNDARY 
+
+                default_mark = self.MECAB_ANY_BOUNDARY
 
                 byte_position = 0
-                self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
-                        byte_position, self.MECAB_TOKEN_BOUNDARY)
+                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
 
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
                 for (token, match) in self.__split_sentence(text, patt):
@@ -455,18 +452,17 @@ class MeCab(object):
                         mark = self.MECAB_INSIDE_TOKEN
                     else:
                         mark = default_mark
-                    
-                    for i in range(1, len(self.__str2bytes(token))):
+
+                    for _ in range(1, len(self.__str2bytes(token))):
                         self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, mark)
                         byte_position += 1
-                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice,
-                            byte_position, self.MECAB_TOKEN_BOUNDARY)
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
 
                 self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 
                 for _ in range(n):
                     check = self.__mecab.mecab_lattice_next(lattice)
-                    if n==1 or check:
+                    if n == 1 or check:
                         nptr = self.__mecab.mecab_lattice_get_bos_node(lattice)
                         while nptr != self.__ffi.NULL:
                             # skip over any BOS nodes, since mecab does
@@ -488,7 +484,7 @@ class MeCab(object):
                             nptr = getattr(nptr, 'next')
             except:
                 sys.stderr.write('Unexpected error during node-parsing: {}\n'.format(sys.exc_info()[0]))
-                raise MeCabError('Unexpected error during node-parsing') 
+                raise MeCabError('Unexpected error during node-parsing')
             finally:
                 if lattice:
                     self.__mecab.mecab_lattice_destroy(lattice)
@@ -518,7 +514,7 @@ class MeCab(object):
         :type morpheme_constraints: str
         :param any_boundary: flag for indicating default boundary token when
             using boundary constraint parsing.
-        :type any_boundary: bool, defaults to True        
+        :type any_boundary: bool, defaults to True
         :return: A single string containing the entire MeCab output;
             or a Generator yielding the MeCabNode instances.
         :raises: MeCabError
