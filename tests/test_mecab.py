@@ -206,7 +206,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt, morpheme_constraints=pat)
             #lines = actual.split(os.linesep)
             lines = actual.splitlines()
-            
+
             for i, e in enumerate(lines):
                 self.assertTrue(lines[i].endswith(expected[i]))
 
