@@ -213,6 +213,57 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 ----
 
+Using boundary constraint parsing, it is possible to pass hints to 
+MeCab on which words it should treat as a single token. 
+
+For example, without any special hints::
+
+    with MeCab() as nm:
+
+        text = 'にわにはにわにわとりがいる。'
+
+        print(nm.parse(text))
+    ...
+    に     助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    わに   名詞,一般,*,*,*,*,わに,ワニ,ワニ
+    はにわ 名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
+    にわとり    名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
+    が     助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    いる   動詞,自立,*,*,一段,基本形,いる,イル,イル
+    。     記号,句点,*,*,*,*,。,。,。
+    EOS
+
+But you can provide ``MeCab`` with a regular expression pattern 
+as a hint on how to determine where a morpheme begins and ends,
+affecting the parsing by specifying morpheme boundary constraints::
+
+    with MeCab() as nm:
+
+        text = 'にわにはにわにわとりがいる。'
+        patt = 'にわとり|はにわ|にわ'
+
+        print(nm.parse(text, morpheme_constraints=patt))
+    ...
+    にわ　  名詞,一般,*,*,*,*,*
+    に　    助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    はにわ  名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
+    にわとり    名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
+    が      助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    いる    動詞,自立,*,*,一段,基本形,いる,イル,イル
+    。      記号,句点,*,*,*,*,。,。,。 
+    EOS
+        
+Note that any such tokens matching the ``morpheme_constraints``
+pattern will be labeled as ``名詞`` with unknown ``stat`` value
+of 1::
+
+    with MeCab(r'%m\t%F[0]\t%s') as nm:
+
+
+
+
+----
+
 Learn More
 ----------
 - Examples and more detailed information about ``natto-py`` can be found on the `project Wiki`_.
