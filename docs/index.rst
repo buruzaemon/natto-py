@@ -26,10 +26,10 @@ Requirements
 
 The following Python versions are supported:
 
-- `Python 2.7.8`_
-- `Python 3.2.5`_
-- `Python 3.3.5`_
-- `Python 3.4.2`_
+- `Python 2.7`_
+- `Python 3.2`_
+- `Python 3.3`_
+- `Python 3.4`_
 
 Installation
 ------------
@@ -256,10 +256,10 @@ Documentation
 .. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
 .. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
-.. _Python 2.7.8: https://www.python.org/download/releases/2.7.8/
-.. _Python 3.2.5: https://www.python.org/download/releases/3.2.5/
-.. _Python 3.3.5: https://www.python.org/download/releases/3.3.5/
-.. _Python 3.4.2: https://www.python.org/downloads/release/python-342/
+.. _Python 2.7: https://docs.python.org/dev/whatsnew/2.7.html 
+.. _Python 3.2: https://docs.python.org/dev/whatsnew/3.2.html
+.. _Python 3.3: https://docs.python.org/dev/whatsnew/3.3.html
+.. _Python 3.4: https://docs.python.org/dev/whatsnew/3.4.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 

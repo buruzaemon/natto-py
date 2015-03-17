@@ -244,22 +244,37 @@ affecting the parsing by specifying morpheme boundary constraints::
 
         print(nm.parse(text, morpheme_constraints=patt))
     ...
-    にわ　  名詞,一般,*,*,*,*,*
-    に　    助詞,格助詞,一般,*,*,*,に,ニ,ニ
-    はにわ  名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
-    にわとり    名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
-    が      助詞,格助詞,一般,*,*,*,が,ガ,ガ
-    いる    動詞,自立,*,*,一段,基本形,いる,イル,イル
-    。      記号,句点,*,*,*,*,。,。,。 
+    にわ	名詞,一般,*,*,*,*,*
+    に	助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    はにわ	名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
+    にわとり	名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
+    が	助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    いる	動詞,自立,*,*,一段,基本形,いる,イル,イル
+    。	記号,句点,*,*,*,*,。,。,。
     EOS
         
 Note that any such tokens matching the ``morpheme_constraints``
-pattern will be labeled as ``名詞`` with unknown ``stat`` value
-of 1::
+pattern that cannot be found in any of the dictionaries used will be labeled
+as ``名詞`` with unknown ``stat`` value of 1. Here we illustrate that
+by using a combination of output formatting, node parsing and boundary
+constraints::
 
-    with MeCab(r'%m\t%F[0]\t%s') as nm:
+    with MeCab(r'%m,\s%f[0],\s%s') as nm:
 
+        text = 'にわにはにわにわとりがいる。'
+        patt = 'にわとり|はにわ|にわ'
 
+        for n in nm.parse(text, morpheme_constraints=patt, as_nodes=True):
+    ...     print(n.feature)
+    ...
+    にわ, 名詞, 1
+    に, 助詞, 0
+    はにわ, 名詞, 0
+    にわとり, 名詞, 0
+    が, 助詞, 0
+    いる, 動詞, 0
+    。, 記号, 0
+    EOS
 
 
 ----
