@@ -4,14 +4,10 @@ import sys
 from os import path
 from setuptools import setup
 
-# c.f. https://packaging.python.org/en/latest/distributing.html#universal-wheels
-#
-# 1. build 
-#    python setup.py bdist_wheel --universal
-#
-# 2. upload to PyPI
-#    twine upload dist/...
-#
+extra = {}
+if sys.version_info >= (3,):
+    extra['use_2to3'] = True
+
 with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
                  encoding='utf-8') as f:
     LONG_DESC = f.read()
@@ -21,8 +17,8 @@ setup(
 
     version='0.3.0',
 
-    description=('A Tasty Python Binding with MeCab'
-                 '(FFI-based, no SWIG or compiler necessary)'),
+    description=' '.join(['A Tasty Python Binding with MeCab',
+                          '(FFI-based, no SWIG or compiler necessary)']),
     long_description=LONG_DESC,
 
     url='https://github.com/buruzaemon/natto-py',
@@ -77,5 +73,8 @@ setup(
 
     zip_safe=False,
 
-    test_suite="tests.test_suite"
+    test_suite="tests.test_suite",
+
+    **extra
 )
+
