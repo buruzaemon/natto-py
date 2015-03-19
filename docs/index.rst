@@ -4,7 +4,7 @@
    contain the root `toctree` directive.
 
 natto-py |version| |travis|
-========
+===========================
 
 What is natto-py?
 -----------------
