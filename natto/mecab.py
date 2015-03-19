@@ -100,7 +100,7 @@ class MeCab(object):
     _FN_BCTOSTR = 'mecab_lattice_tostr'
 
     _KW_ASNODES = 'as_nodes'
-    _KW_CONSTRAINTS = 'morpheme_constraints'
+    _KW_CONSTRAINTS = 'boundary_constraints'
     _KW_ANYBOUNDARY = 'any_boundary'
 
     MECAB_LATTICE_ONE_BEST = 1
@@ -475,10 +475,10 @@ class MeCab(object):
         :param as_nodes: return generator of MeCabNodes if True;
             or string if False.
         :type as_nodes: bool, defaults to False
-        :param morpheme_constraints: regular expression for morpheme boundary
+        :param boundary_constraints: regular expression for morpheme boundary
             splitting; if non-None, then boundary constraint parsing will be
             used.
-        :type morpheme_constraints: str
+        :type boundary_constraints: str
         :param any_boundary: flag for indicating default boundary token when
             using boundary constraint parsing.
         :type any_boundary: bool, defaults to True
@@ -504,7 +504,6 @@ class MeCab(object):
                 return self.__bcparse2str(text, **kwargs)
             else:
                 return self.__parse2str(self.__str2bytes(text))
-
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

@@ -33,7 +33,8 @@ class OptionParse(object):
     _NBEST_MAX = 512
 
     _ERROR_NVALUE = 'Invalid N value'
-    _WARN_LATTICE_LEVEL = 'lattice-level is DEPRECATED, please use marginal or nbest'
+    _WARN_LATTICE_LEVEL = ('lattice-level is DEPRECATED, '
+                           'please use marginal or nbest')
 
     def __init__(self, envch):
         self.__bytes2str, self.__str2bytes = string_support(envch)

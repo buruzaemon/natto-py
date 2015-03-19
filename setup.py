@@ -17,8 +17,8 @@ setup(
 
     version='0.3.0',
 
-    description=' '.join(['A Tasty Python Binding with MeCab',
-                          '(FFI-based, no SWIG or compiler necessary)']),
+    description=('A Tasty Python Binding with MeCab'
+                 '(FFI-based, no SWIG or compiler necessary)'),
     long_description=LONG_DESC,
 
     url='https://github.com/buruzaemon/natto-py',

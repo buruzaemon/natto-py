@@ -36,7 +36,7 @@ def splitter_support(py2enc):
     :type py2enc: str
     '''
     if sys.version < '3':
-        def _fn_sentence(pattern, sentence): 
+        def _fn_sentence(pattern, sentence):
             if REGEXTYPE == type(pattern):
                 if pattern.flags & re.UNICODE:
                     return sentence.decode(py2enc)

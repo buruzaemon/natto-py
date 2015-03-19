@@ -170,7 +170,6 @@ class MeCabNode(object):
                                      self.surface,
                                      self.feature)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

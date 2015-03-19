@@ -8,7 +8,6 @@ import yaml
 import unittest
 import natto.environment as env
 import natto.support as support
-from subprocess import Popen, PIPE
 from tests import Test23Support
 
 class TestSupport(unittest.TestCase, Test23Support):
@@ -63,13 +62,13 @@ class TestSupport(unittest.TestCase, Test23Support):
         ver = sys.version_info.major
         key = "py{}".format(ver)
 
-        yaml = self.yaml.get('text7')
-        text = self._u2str(yaml.get('text'))
-        pat1 = self._u2str(yaml.get('pattern'))
+        yml = self.yaml.get('text7')
+        text = self._u2str(yml.get('text'))
+        pat1 = self._u2str(yml.get('pattern'))
 
-        tokens = [self._u2str(e) for e in yaml.get(key).get('tokens')]
-        matches = [e for e in yaml.get(key).get('matches')]
-        expected = zip(tokens,matches)
+        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
+        matches = [e for e in yml.get(key).get('matches')]
+        expected = zip(tokens, matches)
         actual = list(self.splitter_support(pat1, text))
 
         self.assertEqual(expected, actual)
@@ -83,13 +82,13 @@ class TestSupport(unittest.TestCase, Test23Support):
         ver = sys.version_info.major
         key = "py{}".format(ver)
 
-        yaml = self.yaml.get('text7')
-        text = self._u2str(yaml.get('text'))
-        pat1 = re.compile(yaml.get('pattern'))
+        yml = self.yaml.get('text7')
+        text = self._u2str(yml.get('text'))
+        pat1 = re.compile(yml.get('pattern'))
 
-        tokens = [self._u2str(e) for e in yaml.get(key).get('tokens')]
-        matches = [e for e in yaml.get(key).get('matches')]
-        expected = zip(tokens,matches)
+        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
+        matches = [e for e in yml.get(key).get('matches')]
+        expected = zip(tokens, matches)
         actual = list(self.splitter_support(pat1, text))
 
         self.assertEqual(expected, actual)
@@ -103,17 +102,16 @@ class TestSupport(unittest.TestCase, Test23Support):
         ver = sys.version_info.major
         key = "py{}".format(ver)
 
-        yaml = self.yaml.get('text8')
-        text = self._u2str(yaml.get('text'))
-        pat1 = re.compile(yaml.get('pattern'), re.U)
+        yml = self.yaml.get('text8')
+        text = self._u2str(yml.get('text'))
+        pat1 = re.compile(yml.get('pattern'), re.U)
 
-        tokens = [self._u2str(e) for e in yaml.get(key).get('tokens')]
-        matches = [e for e in yaml.get(key).get('matches')]
-        expected = zip(tokens,matches)
+        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
+        matches = [e for e in yml.get(key).get('matches')]
+        expected = zip(tokens, matches)
         actual = list(self.splitter_support(pat1, text))
 
         self.assertEqual(expected, actual)
-
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

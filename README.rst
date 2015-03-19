@@ -213,8 +213,8 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 ----
 
-Using boundary constraint parsing, it is possible to pass hints to 
-MeCab on which words it should treat as a single token. 
+Using constraint parsing (制約付き解析), it is possible to pass hints to 
+``MeCab`` on　which words it should treat as a single token. 
 
 For example, without any special hints::
 
@@ -233,16 +233,18 @@ For example, without any special hints::
     。     記号,句点,*,*,*,*,。,。,。
     EOS
 
-But you can provide ``MeCab`` with a regular expression pattern 
-as a hint on how to determine where a morpheme begins and ends,
-affecting the parsing by specifying morpheme boundary constraints::
+But you can provide ``MeCab`` with a regular expression pattern as a hint on
+where and how to mark the boundaries of a morpheme when parsing. This is 
+known as boundary constraint parsing. Pass in the regular expression as a
+``str`` or compiled ``regex`` using the ``boundary_constraints`` keyword 
+argument::
 
     with MeCab() as nm:
 
         text = 'にわにはにわにわとりがいる。'
-        patt = 'にわとり|はにわ|にわ'
+        pattern = 'にわとり|はにわ|にわ'
 
-        print(nm.parse(text, morpheme_constraints=patt))
+        print(nm.parse(text, boundary_constraints=pattern))
     ...
     にわ	名詞,一般,*,*,*,*,*
     に	助詞,格助詞,一般,*,*,*,に,ニ,ニ
@@ -253,18 +255,24 @@ affecting the parsing by specifying morpheme boundary constraints::
     。	記号,句点,*,*,*,*,。,。,。
     EOS
         
-Note that any such tokens matching the ``morpheme_constraints``
-pattern that cannot be found in any of the dictionaries used will be labeled
-as ``名詞`` with unknown ``stat`` value of 1. Here we illustrate that
-by using a combination of output formatting, node parsing and boundary
-constraints::
+Note that any such tokens matching the ``boundary_constraints`` pattern that
+cannot be found in any of the dictionaries used will have an unknown ``stat``
+status value of 1. Here we illustrate that by using a combination of output
+formatting, node parsing and boundary constraints::
 
-    with MeCab(r'%m,\s%f[0],\s%s') as nm:
+    # MeCab options used:
+    #
+    # -F    ... short-form of --node-format
+    # %m    ... morpheme surface
+    # %f[0] ... part-of-speech
+    # %s    ... node status (0 is normal, 1 is unknown)
+    #
+    with MeCab(r'-F%m,\s%f[0],\s%s') as nm:
 
         text = 'にわにはにわにわとりがいる。'
-        patt = 'にわとり|はにわ|にわ'
+        pattern = 'にわとり|にわ|はにわ'
 
-        for n in nm.parse(text, morpheme_constraints=patt, as_nodes=True):
+        for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
     ...     print(n.feature)
     ...
     にわ, 名詞, 1
@@ -275,7 +283,6 @@ constraints::
     いる, 動詞, 0
     。, 記号, 0
     EOS
-
 
 ----
 

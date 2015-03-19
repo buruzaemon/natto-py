@@ -1,8 +1,8 @@
 CHANGELOG
 ---------
 
-- 2015/03/?? 0.3.0 release.
-    - Added boundary constraint parsing.
+- 2015/03/19 0.3.0 release.
+    - Added morpheme boundary constraint parsing.
 
 - 2015/02/22 0.2.1 release.
     - Enhancement for Issue 11: Debugging should use a kwarg. 

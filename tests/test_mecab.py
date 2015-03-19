@@ -79,8 +79,8 @@ class TestMecab(unittest.TestCase, Test23Support):
             with self.assertRaises(api.MeCabError) as cm:
                 with mecab.MeCab():
                     self.assertIsNotNone(
-                            re.search('cannot load library /foo/bar',
-                            str(cm.exception)))
+                        re.search('cannot load library /foo/bar',
+                        str(cm.exception)))
         finally:
             os.environ[mecab.MeCab.MECAB_PATH] = orig_env
 
@@ -166,7 +166,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             pat1 = self._u2str(yml1.get('pattern'))
             expected = [self._u2str(e) for e in yml1.get('expected')]
 
-            actual = nm.parse(txt1, morpheme_constraints=pat1)
+            actual = nm.parse(txt1, boundary_constraints=pat1)
             lines = actual.split(os.linesep)
 
             for i, e in enumerate(lines):
@@ -178,88 +178,88 @@ class TestMecab(unittest.TestCase, Test23Support):
             pat2 = self._u2str(yml2.get('pattern'))
             expected = [self._u2str(e) for e in yml2.get('expected')]
 
-            actual = nm.parse(txt2, morpheme_constraints=pat2)
+            actual = nm.parse(txt2, boundary_constraints=pat2)
             lines = actual.split(os.linesep)
 
             for i, e in enumerate(lines):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
-    #        # complex pattern requiring RegExp compiled with re.U flag
-    #        yml3 = self.yaml.get('text3')
-    #        txt3 = self._u2str(yml3.get('text'))
-    #        pat3 = self._u2str(yml3.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml3.get('expected')]
+            # complex pattern requiring RegExp compiled with re.U flag
+            yml3 = self.yaml.get('text3')
+            txt3 = self._u2str(yml3.get('text'))
+            pat3 = self._u2str(yml3.get('pattern'))
+            expected = [self._u2str(e) for e in yml3.get('expected')]
 
-    #        actual = nm.parse(txt3, morpheme_constraints=re.compile(pat3, re.U))
-    #        lines = actual.split(os.linesep)
+            actual = nm.parse(txt3, boundary_constraints=re.compile(pat3, re.U))
+            lines = actual.split(os.linesep)
 
-    #        for i, e in enumerate(lines):
-    #            self.assertTrue(lines[i].startswith(expected[i]))
+            for i, e in enumerate(lines):
+                self.assertTrue(lines[i].startswith(expected[i]))
 
-    #    with mecab.MeCab('-N2') as nm:
-    #        # 2-Best
-    #        yml = self.yaml.get('text4')
-    #        txt = self._u2str(yml.get('text'))
-    #        pat = self._u2str(yml.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml.get('expected')]
+        with mecab.MeCab('-N2') as nm:
+            # 2-Best
+            yml = self.yaml.get('text4')
+            txt = self._u2str(yml.get('text'))
+            pat = self._u2str(yml.get('pattern'))
+            expected = [self._u2str(e) for e in yml.get('expected')]
 
-    #        actual = nm.parse(txt, morpheme_constraints=pat)
-    #        #lines = actual.split(os.linesep)
-    #        lines = actual.splitlines()
+            actual = nm.parse(txt, boundary_constraints=pat)
+            #lines = actual.split(os.linesep)
+            lines = actual.splitlines()
 
-    #        for i, e in enumerate(lines):
-    #            self.assertTrue(lines[i].endswith(expected[i]))
+            for i, e in enumerate(lines):
+                self.assertTrue(lines[i].endswith(expected[i]))
 
     # ------------------------------------------------------------------------
-    #def test_bcparse_tonodes(self):
-    #    '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
-    #    with mecab.MeCab() as nm:
-    #        # simple node-parsing, no N-Best or output formatting
-    #        yml1 = self.yaml.get('text1')
-    #        txt1 = self._u2str(yml1.get('text'))
-    #        pat1 = self._u2str(yml1.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml1.get('expected')]
+    def test_bcparse_tonodes(self):
+        '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
+        with mecab.MeCab() as nm:
+            # simple node-parsing, no N-Best or output formatting
+            yml1 = self.yaml.get('text1')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
 
-    #        gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
-    #        for i, node in enumerate(gen):
-    #            if not node.is_eos():
-    #                self.assertEqual(node.surface, expected[i])
+            gen = nm.parse(txt1, boundary_constraints=pat1, as_nodes=True)
+            for i, node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.surface, expected[i])
 
-    #        # slightly more complex pattern
-    #        yml2 = self.yaml.get('text2')
-    #        txt2 = self._u2str(yml2.get('text'))
-    #        pat2 = self._u2str(yml2.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml2.get('expected')]
+            # slightly more complex pattern
+            yml2 = self.yaml.get('text2')
+            txt2 = self._u2str(yml2.get('text'))
+            pat2 = self._u2str(yml2.get('pattern'))
+            expected = [self._u2str(e) for e in yml2.get('expected')]
 
-    #        gen = nm.parse(txt2, morpheme_constraints=pat2, as_nodes=True)
-    #        for i, node in enumerate(gen):
-    #            if not node.is_eos():
-    #                self.assertEqual(node.surface, expected[i])
+            gen = nm.parse(txt2, boundary_constraints=pat2, as_nodes=True)
+            for i, node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.surface, expected[i])
 
-    #    with mecab.MeCab(r'-F%m\s%s') as nm:
-    #        # with output formatting
-    #        yml1 = self.yaml.get('text5')
-    #        txt1 = self._u2str(yml1.get('text'))
-    #        pat1 = self._u2str(yml1.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml1.get('expected')]
+        with mecab.MeCab(r'-F%m\s%s') as nm:
+            # with output formatting
+            yml1 = self.yaml.get('text5')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
 
-    #        gen = nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True)
-    #        for i, node in enumerate(gen):
-    #            if not node.is_eos():
-    #                self.assertEqual(node.feature, expected[i])
+            gen = nm.parse(txt1, boundary_constraints=pat1, as_nodes=True)
+            for i, node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.feature, expected[i])
 
-    #    with mecab.MeCab(r'-F%m\s%F\s[0,1]\s%s -N2') as nm:
-    #        # with N-best and output formatting
-    #        yml1 = self.yaml.get('text6')
-    #        txt1 = self._u2str(yml1.get('text'))
-    #        pat1 = self._u2str(yml1.get('pattern'))
-    #        expected = [self._u2str(e) for e in yml1.get('expected')]
+        with mecab.MeCab(r'-F%m\s%F\s[0,1]\s%s -N2') as nm:
+            # with N-best and output formatting
+            yml1 = self.yaml.get('text6')
+            txt1 = self._u2str(yml1.get('text'))
+            pat1 = self._u2str(yml1.get('pattern'))
+            expected = [self._u2str(e) for e in yml1.get('expected')]
 
-    #        i = 0
-    #        for node in nm.parse(txt1, morpheme_constraints=pat1, as_nodes=True):
-    #            if not node.is_eos():
-    #                self.assertEqual(node.feature, expected[i])
-    #                i += 1
+            i = 0
+            for node in nm.parse(txt1, boundary_constraints=pat1, as_nodes=True):
+                if not node.is_eos():
+                    self.assertEqual(node.feature, expected[i])
+                    i += 1
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

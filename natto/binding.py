@@ -106,7 +106,6 @@ def _ffi_libmecab():
     ''')
     return ffi
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

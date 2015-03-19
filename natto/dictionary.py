@@ -94,7 +94,6 @@ class DictionaryInfo(object):
                                      self.charset,
                                      self.type)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.

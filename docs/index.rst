@@ -214,6 +214,79 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 ----
 
+Using constraint parsing (制約付き解析), it is possible to pass hints to 
+``MeCab`` on　which words it should treat as a single token. 
+
+For example, without any special hints::
+
+    with MeCab() as nm:
+
+        text = 'にわにはにわにわとりがいる。'
+
+        print(nm.parse(text))
+    ...
+    に     助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    わに   名詞,一般,*,*,*,*,わに,ワニ,ワニ
+    はにわ 名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
+    にわとり    名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
+    が     助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    いる   動詞,自立,*,*,一段,基本形,いる,イル,イル
+    。     記号,句点,*,*,*,*,。,。,。
+    EOS
+
+But you can provide ``MeCab`` with a regular expression pattern as a hint on
+where and how to mark the boundaries of a morpheme when parsing. This is 
+known as boundary constraint parsing. Pass in the regular expression as a
+``str`` or compiled ``regex`` using the ``boundary_constraints`` keyword 
+argument::
+
+    with MeCab() as nm:
+
+        text = 'にわにはにわにわとりがいる。'
+        pattern = 'にわとり|はにわ|にわ'
+
+        print(nm.parse(text, boundary_constraints=pattern))
+    ...
+    にわ	名詞,一般,*,*,*,*,*
+    に	助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    はにわ	名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
+    にわとり	名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
+    が	助詞,格助詞,一般,*,*,*,が,ガ,ガ
+    いる	動詞,自立,*,*,一段,基本形,いる,イル,イル
+    。	記号,句点,*,*,*,*,。,。,。
+    EOS
+        
+Note that any such tokens matching the ``boundary_constraints`` pattern that
+cannot be found in any of the dictionaries used will have an unknown ``stat``
+status value of 1. Here we illustrate that by using a combination of output
+formatting, node parsing and boundary constraints::
+
+    # MeCab options used:
+    #
+    # -F    ... short-form of --node-format
+    # %m    ... morpheme surface
+    # %f[0] ... part-of-speech
+    # %s    ... node status (0 is normal, 1 is unknown)
+    #
+    with MeCab(r'-F%m,\s%f[0],\s%s') as nm:
+
+        text = 'にわにはにわにわとりがいる。'
+        pattern = 'にわとり|にわ|はにわ'
+
+        for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
+    ...     print(n.feature)
+    ...
+    にわ, 名詞, 1
+    に, 助詞, 0
+    はにわ, 名詞, 0
+    にわとり, 名詞, 0
+    が, 助詞, 0
+    いる, 動詞, 0
+    。, 記号, 0
+    EOS
+
+----
+
 Learn More
 ----------
 

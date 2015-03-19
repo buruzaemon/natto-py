@@ -17,7 +17,7 @@ class TestOptionParse(unittest.TestCase, Test23Support):
     def setUp(self):
         self.env = env.MeCabEnv()
         self.op = OptionParse(self.env.charset)
-        
+
     def tearDown(self):
         self.op = None
 
@@ -72,7 +72,7 @@ class TestOptionParse(unittest.TestCase, Test23Support):
             opts = ['-l777',
                     '-l 777',
                     '--lattice-level=777',
-                    {'lattice_level':777} ]
+                    {'lattice_level':777}]
 
             for o in opts:
                 tmp_err = StringIO()
@@ -324,8 +324,8 @@ class TestOptionParse(unittest.TestCase, Test23Support):
         # ValueError with message if cost_factor is not an int
         with self.assertRaises(ValueError) as ctx:
             self.op.parse_mecab_options('-c0.99')
-        self.assertIsNotNone(re.search('--cost-factor', str(ctx.exception)))       
-        
+        self.assertIsNotNone(re.search('--cost-factor', str(ctx.exception)))
+
     def test_build_options_str(self):
         '''Test option-building logic.'''
         opts = self.op.build_options_str(

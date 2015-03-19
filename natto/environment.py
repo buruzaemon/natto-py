@@ -205,7 +205,6 @@ class MeCabEnv(object):
                     return desc[1]
         return _fn(path, name, start_key)
 
-
 '''
 Copyright (c) 2015, Brooke M. Fujita.
 All rights reserved.
