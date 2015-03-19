@@ -3,6 +3,10 @@ CHANGELOG
 
 - 2015/03/19 0.3.0 release.
     - Added morpheme boundary constraint parsing.
+    - Minor corrections to docs/index.rst formatting. 
+
+- 2015/03/19 0.3.0 release.
+    - Pulled.
 
 - 2015/02/22 0.2.1 release.
     - Enhancement for Issue 11: Debugging should use a kwarg. 
