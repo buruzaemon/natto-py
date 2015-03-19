@@ -77,7 +77,5 @@ setup(
 
     zip_safe=False,
 
-    test_suite="tests.test_suite",
-
-    **extra
+    test_suite="tests.test_suite"
 )
