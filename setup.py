@@ -4,10 +4,14 @@ import sys
 from os import path
 from setuptools import setup
 
-extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
-
+# c.f. https://packaging.python.org/en/latest/distributing.html#universal-wheels
+#
+# 1. build 
+#    python setup.py bdist_wheel --universal
+#
+# 2. upload to PyPI
+#    twine upload dist/...
+#
 with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
                  encoding='utf-8') as f:
     LONG_DESC = f.read()
