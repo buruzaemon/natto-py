@@ -21,7 +21,8 @@ class Test23Support(object):
         else:
             return text
 
-    def _2str(self, text):
+    #def _2str(self, text):
+    def _mecab_input(self, text):
         if sys.version < '3':
             return text
         else:
@@ -32,6 +33,9 @@ class Test23Support(object):
             return text
         else:
             return text.decode(self.env.charset)
+
+    def _mecab_output(self, text):
+        return self._2bytes(text)
 
 
 # full path to MeCab library is required for testing...

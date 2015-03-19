@@ -73,3 +73,43 @@ text6:
         - が 助詞 格助詞 0
         - いる 動詞 自立 0
         - 。 記号 句点 0
+text7:
+    text: 123 ABCおよび１２３　ＡＢＣ
+    pattern: '[\d]{3}[\s]+[A-ZＡ-Ｚ]{3}'
+    py2:
+        tokens: 
+            - 123 ABC 
+            - および１２３　ＡＢＣ
+        matches:
+            - True
+            - False
+    py3:
+        tokens: 
+            - 123 ABC 
+            - および
+            - １２３　ＡＢＣ
+        matches:
+            - True
+            - False
+            - True
+text8:
+    text: 123 ABCおよび１２３　ＡＢＣ
+    pattern: '[\d]{3}[\s]+[A-ZＡ-Ｚ]{3}'
+    py2:
+        tokens: 
+            - 123 ABC 
+            - および
+            - １２３　ＡＢＣ
+        matches:
+            - True
+            - False
+            - True
+    py3:
+        tokens: 
+            - 123 ABC 
+            - および
+            - １２３　ＡＢＣ
+        matches:
+            - True
+            - False
+            - True

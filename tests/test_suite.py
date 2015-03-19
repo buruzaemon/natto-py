@@ -6,6 +6,7 @@ from .test_dictionary import TestDictionary
 from .test_environment import TestMeCabEnv
 from .test_mecab import TestMecab
 from .test_option_parse import TestOptionParse
+from .test_support import TestSupport
 
 def test_suite():
     '''Returns suite of tests for natto-py'''
@@ -15,6 +16,7 @@ def test_suite():
     suite.addTest(TestMeCabEnv)
     suite.addTest(TestMecab)
     suite.addTest(TestOptionParse)
+    suite.addTest(TestSupport)
     return suite
 
 '''

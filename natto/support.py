@@ -29,42 +29,57 @@ def string_support(py3enc):
             return u.encode(py3enc)
     return (bytes2str, str2bytes)
 
-def re_unicode_support(py2enc):
-    '''Create byte-to-Unicode and Unicode-to-byte conversion functions for
-    use in tokenizing text in boundary constraint parsing.
+def splitter_support(py2enc):
+    '''Create tokenizer for use in tokenizing text in boundary constraint parsing.
 
     :param py2enc: Encoding used by Python 2 environment.
     :type py2enc: str
     '''
     if sys.version < '3':
-        def sentence2unicode(patt, sentence):
-            '''Decodes sentence (str) as Unicode, as needed.'''
-            if REGEXTYPE == type(patt) and (patt.flags & re.U):
-                return sentence.decode(py2enc)
+        def _fn_sentence(pattern, sentence): 
+            if REGEXTYPE == type(pattern):
+                if pattern.flags & re.UNICODE:
+                    return sentence.decode(py2enc)
+                else:
+                    return sentence
             else:
                 return sentence
-        def token2str(patt):
-            '''Defines post-processing function as needed.'''
-            if REGEXTYPE == type(patt) and (patt.flags & re.U):
-                def _fn(token):
-                    '''Transforms Unicode token into string (bytes).'''
-                    return token.encode(py2enc)
+        def _fn_token2str(pattern):
+            if REGEXTYPE == type(pattern):
+                if pattern.flags & re.UNICODE:
+                    def _fn(token):
+                        return token.encode(py2enc)
+                else:
+                    def _fn(token):
+                        return token
             else:
                 def _fn(token):
-                    '''Identity. Returns the str token.'''
                     return token
             return _fn
     else:
-        def sentence2unicode(patt, sentence):
-            '''Identity, returns the argument sentence.'''
+        def _fn_sentence(pattern, sentence):
             return sentence
-        def token2str(patt):
-            '''Defines Identity function.'''
+        def _fn_token2str(pattern):
             def _fn(token):
-                '''Identity. Returns the str token.'''
                 return token
             return _fn
-    return (sentence2unicode, token2str)
+
+    def _fn_tokenize(pattern, sentence):
+        pos = 0
+        sentence = _fn_sentence(pattern, sentence)
+        postprocess = _fn_token2str(pattern)
+        for m in re.finditer(pattern, sentence):
+            if pos < m.start():
+                token = postprocess(sentence[pos:m.start()])
+                yield (token, False)
+                pos = m.start()
+            token = postprocess(sentence[pos:m.end()])
+            yield (token, True)
+            pos = m.end()
+        if pos < len(sentence):
+            token = postprocess(sentence[pos:])
+            yield (token, False)
+    return _fn_tokenize
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

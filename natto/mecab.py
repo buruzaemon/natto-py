@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 '''The main interface to MeCab via natto-py.'''
 import os
-import re
 import sys
 from .api import MeCabError
 from .binding import _ffi_libmecab
@@ -9,7 +8,7 @@ from .dictionary import DictionaryInfo
 from .environment import MeCabEnv
 from .node import MeCabNode
 from .option_parse import OptionParse
-from .support import string_support, re_unicode_support
+from .support import string_support, splitter_support
 
 class MeCab(object):
     '''The main interface to the MeCab library, wrapping the MeCab Tagger.
@@ -139,8 +138,8 @@ class MeCab(object):
             # Python 2/3 string support
             self.__bytes2str, self.__str2bytes = string_support(env.charset)
 
-            # Python 2/3 re unicode support
-            self.__sentence2unicode, self.__token2str = re_unicode_support(env.charset)
+            # Python 2/3 sentence splitter/tokenizere support
+            self.__split = splitter_support(env.charset)
 
             # Set up dictionary of MeCab options to use
             op = OptionParse(env.charset)
@@ -312,39 +311,6 @@ class MeCab(object):
                 raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
         return _fn
 
-    def __split_sentence(self, sentence, pattern):
-        '''Yields (token, flag) tuples, where token is a chunk of sentence
-        and flag is a bool indicating whether or not pattern produced a match.
-
-        Behavior depends upon whether pattern is str or regex;
-        and if regex, whether the re.UNICODE flag is used.
-
-        Args:
-            sentence: str to be split.
-            pattern: pattern to split sentence on.
-
-        Returns:
-            Generator yielding (token, bool) tuplets,
-            where token is a sentence chunk and bool
-            indicates whether or not the chunk matches
-            the given pattern.
-        '''
-        sentence = self.__sentence2unicode(pattern, sentence)
-        foobar = self.__token2str(pattern)
-
-        pos = 0
-        for m in re.finditer(pattern, sentence):
-            if pos < m.start():
-                token = foobar(sentence[pos:m.start()])
-                yield (token, False)
-                pos = m.start()
-            token = foobar(sentence[pos:m.end()])
-            yield (token, True)
-            pos = m.end()
-        if pos < len(sentence):
-            token = foobar(sentence[pos:])
-            yield (token, False)
-
     def __bcparse_tostr(self, fn_name):
         '''Builds and returns the MeCab function for boundary-constraint
         parsing Unicode text.
@@ -376,21 +342,21 @@ class MeCab(object):
 
                 default_mark = self.MECAB_ANY_BOUNDARY
 
-                byte_position = 0
-                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
+                bpos = 0
+                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
-                for (token, match) in self.__split_sentence(text, patt):
-                    byte_position += 1
+                for (token, match) in self.__split(patt, text):
+                    bpos += 1
                     if match:
                         mark = self.MECAB_INSIDE_TOKEN
                     else:
                         mark = default_mark
 
                     for _ in range(1, len(self.__str2bytes(token))):
-                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, mark)
-                        byte_position += 1
-                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
+                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, mark)
+                        bpos += 1
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 
@@ -442,21 +408,22 @@ class MeCab(object):
 
                 default_mark = self.MECAB_ANY_BOUNDARY
 
-                byte_position = 0
-                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
+                bpos = 0
+                self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
-                for (token, match) in self.__split_sentence(text, patt):
-                    byte_position += 1
+                #for (token, match) in self.__split_sentence(text, patt):
+                for (token, match) in self.__split(patt, text):
+                    bpos += 1
                     if match:
                         mark = self.MECAB_INSIDE_TOKEN
                     else:
                         mark = default_mark
 
                     for _ in range(1, len(self.__str2bytes(token))):
-                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, mark)
-                        byte_position += 1
-                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, byte_position, self.MECAB_TOKEN_BOUNDARY)
+                        self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, mark)
+                        bpos += 1
+                    self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 self.__mecab.mecab_parse_lattice(self.pointer, lattice)
 

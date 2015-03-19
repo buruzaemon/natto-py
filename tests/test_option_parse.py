@@ -175,87 +175,87 @@ class TestOptionParse(unittest.TestCase, Test23Support):
 
     def test_parse_mecab_options_nodeformat(self):
         '''Test option-parsing: node-format.'''
-        dopts = self.op.parse_mecab_options('-F%m\\n')
-        self.assertDictEqual(dopts, {'node_format':'%m\\n'})
+        dopts = self.op.parse_mecab_options(r'-F%m\n')
+        self.assertDictEqual(dopts, {'node_format':r'%m\n'})
 
-        dopts = self.op.parse_mecab_options('-F %m\\n')
-        self.assertDictEqual(dopts, {'node_format':'%m\\n'})
+        dopts = self.op.parse_mecab_options(r'-F %m\n')
+        self.assertDictEqual(dopts, {'node_format':r'%m\n'})
 
-        dopts = self.op.parse_mecab_options('--node-format=%m\\n')
-        self.assertDictEqual(dopts, {'node_format':'%m\\n'})
+        dopts = self.op.parse_mecab_options(r'--node-format=%m\n')
+        self.assertDictEqual(dopts, {'node_format':r'%m\n'})
 
-        dopts = self.op.parse_mecab_options({'node_format':'%m\\n'})
-        self.assertDictEqual(dopts, {'node_format': '%m\\n'})
+        dopts = self.op.parse_mecab_options({'node_format':r'%m\n'})
+        self.assertDictEqual(dopts, {'node_format': r'%m\n'})
 
     def test_parse_mecab_options_unkformat(self):
         '''Test option-parsing: unk-format.'''
-        dopts = self.op.parse_mecab_options('-U???\\n')
-        self.assertDictEqual(dopts, {'unk_format':'???\\n'})
+        dopts = self.op.parse_mecab_options(r'-U???\n')
+        self.assertDictEqual(dopts, {'unk_format':r'???\n'})
 
-        dopts = self.op.parse_mecab_options('-U ???\\n')
-        self.assertDictEqual(dopts, {'unk_format':'???\\n'})
+        dopts = self.op.parse_mecab_options(r'-U ???\n')
+        self.assertDictEqual(dopts, {'unk_format':r'???\n'})
 
-        dopts = self.op.parse_mecab_options('--unk-format=???\\n')
-        self.assertDictEqual(dopts, {'unk_format':'???\\n'})
+        dopts = self.op.parse_mecab_options(r'--unk-format=???\n')
+        self.assertDictEqual(dopts, {'unk_format':r'???\n'})
 
-        dopts = self.op.parse_mecab_options({'unk_format':'???\\n'})
-        self.assertDictEqual(dopts, {'unk_format': '???\\n'})
+        dopts = self.op.parse_mecab_options({'unk_format':r'???\n'})
+        self.assertDictEqual(dopts, {'unk_format': r'???\n'})
 
     def test_parse_mecab_options_bosformat(self):
         '''Test option-parsing: bos-format.'''
-        dopts = self.op.parse_mecab_options('-B>>>\\n')
-        self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
+        dopts = self.op.parse_mecab_options(r'-B>>>\n')
+        self.assertDictEqual(dopts, {'bos_format':r'>>>\n'})
 
-        dopts = self.op.parse_mecab_options('-B >>>\\n')
-        self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
+        dopts = self.op.parse_mecab_options(r'-B >>>\n')
+        self.assertDictEqual(dopts, {'bos_format':r'>>>\n'})
 
-        dopts = self.op.parse_mecab_options('--bos-format=>>>\\n')
-        self.assertDictEqual(dopts, {'bos_format':'>>>\\n'})
+        dopts = self.op.parse_mecab_options(r'--bos-format=>>>\n')
+        self.assertDictEqual(dopts, {'bos_format':r'>>>\n'})
 
-        dopts = self.op.parse_mecab_options({'bos_format':'>>>\\n'})
-        self.assertDictEqual(dopts, {'bos_format': '>>>\\n'})
+        dopts = self.op.parse_mecab_options({'bos_format':r'>>>\n'})
+        self.assertDictEqual(dopts, {'bos_format': r'>>>\n'})
 
     def test_parse_mecab_options_eosformat(self):
         '''Test option-parsing: eos-format.'''
-        dopts = self.op.parse_mecab_options('-E<<<\\n')
-        self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
+        dopts = self.op.parse_mecab_options(r'-E<<<\n')
+        self.assertDictEqual(dopts, {'eos_format':r'<<<\n'})
 
-        dopts = self.op.parse_mecab_options('-E <<<\\n')
-        self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
+        dopts = self.op.parse_mecab_options(r'-E <<<\n')
+        self.assertDictEqual(dopts, {'eos_format':r'<<<\n'})
 
-        dopts = self.op.parse_mecab_options('--eos-format=<<<\\n')
-        self.assertDictEqual(dopts, {'eos_format':'<<<\\n'})
+        dopts = self.op.parse_mecab_options(r'--eos-format=<<<\n')
+        self.assertDictEqual(dopts, {'eos_format':r'<<<\n'})
 
-        dopts = self.op.parse_mecab_options({'eos_format':'<<<\\n'})
-        self.assertDictEqual(dopts, {'eos_format': '<<<\\n'})
+        dopts = self.op.parse_mecab_options({'eos_format':r'<<<\n'})
+        self.assertDictEqual(dopts, {'eos_format': r'<<<\n'})
 
     def test_parse_mecab_options_eonformat(self):
         '''Test option-parsing: eon-format.'''
-        dopts = self.op.parse_mecab_options('-S___\\n')
-        self.assertDictEqual(dopts, {'eon_format':'___\\n'})
+        dopts = self.op.parse_mecab_options(r'-S___\n')
+        self.assertDictEqual(dopts, {'eon_format':r'___\n'})
 
-        dopts = self.op.parse_mecab_options('-S ___\\n')
-        self.assertDictEqual(dopts, {'eon_format':'___\\n'})
+        dopts = self.op.parse_mecab_options(r'-S ___\n')
+        self.assertDictEqual(dopts, {'eon_format':r'___\n'})
 
-        dopts = self.op.parse_mecab_options('--eon-format=___\\n')
-        self.assertDictEqual(dopts, {'eon_format':'___\\n'})
+        dopts = self.op.parse_mecab_options(r'--eon-format=___\n')
+        self.assertDictEqual(dopts, {'eon_format':r'___\n'})
 
-        dopts = self.op.parse_mecab_options({'eon_format':'___\\n'})
-        self.assertDictEqual(dopts, {'eon_format': '___\\n'})
+        dopts = self.op.parse_mecab_options({'eon_format':r'___\n'})
+        self.assertDictEqual(dopts, {'eon_format': r'___\n'})
 
     def test_parse_mecab_options_unkfeature(self):
         '''Test option-parsing: unk-feature.'''
-        dopts = self.op.parse_mecab_options('-x!!!\\n')
-        self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
+        dopts = self.op.parse_mecab_options(r'-x!!!\n')
+        self.assertDictEqual(dopts, {'unk_feature':r'!!!\n'})
 
-        dopts = self.op.parse_mecab_options('-x !!!\\n')
-        self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
+        dopts = self.op.parse_mecab_options(r'-x !!!\n')
+        self.assertDictEqual(dopts, {'unk_feature':r'!!!\n'})
 
-        dopts = self.op.parse_mecab_options('--unk-feature=!!!\\n')
-        self.assertDictEqual(dopts, {'unk_feature':'!!!\\n'})
+        dopts = self.op.parse_mecab_options(r'--unk-feature=!!!\n')
+        self.assertDictEqual(dopts, {'unk_feature':r'!!!\n'})
 
-        dopts = self.op.parse_mecab_options({'unk_feature':'!!!\\n'})
-        self.assertDictEqual(dopts, {'unk_feature': '!!!\\n'})
+        dopts = self.op.parse_mecab_options({'unk_feature':r'!!!\n'})
+        self.assertDictEqual(dopts, {'unk_feature': r'!!!\n'})
 
     def test_parse_mecab_options_inputbuffersize(self):
         '''Test option-parsing: input-buffer-size.'''
@@ -338,12 +338,12 @@ class TestOptionParse(unittest.TestCase, Test23Support):
                                       'partial': True,
                                       'marginal': True,
                                       'max_grouping_size': 666,
-                                      'node_format': 'node\\n',
-                                      'unk_format': 'unk\\n',
-                                      'bos_format': 'bos\\n',
-                                      'eos_format': 'eos\\n',
-                                      'eon_format': 'eon\\n',
-                                      'unk_feature': 'unkf\\n',
+                                      'node_format': r'node\n',
+                                      'unk_format': r'unk\n',
+                                      'bos_format': r'bos\n',
+                                      'eos_format': r'eos\n',
+                                      'eon_format': r'eon\n',
+                                      'unk_feature':r'unkf\n',
                                       'input_buffer_size': 777,
                                       'allocate_sentence': True,
                                       'theta': 0.999,
@@ -360,12 +360,12 @@ class TestOptionParse(unittest.TestCase, Test23Support):
                   '--partial',
                   '--marginal',
                   '--max-grouping-size=666',
-                  '--node-format=node\\\\n',
-                  '--unk-format=unk\\\\n',
-                  '--bos-format=bos\\\\n',
-                  '--eos-format=eos\\\\n',
-                  '--eon-format=eon\\\\n',
-                  '--unk-feature=unkf\\\\n',
+                  r'--node-format=node\\n',
+                  r'--unk-format=unk\\n',
+                  r'--bos-format=bos\\n',
+                  r'--eos-format=eos\\n',
+                  r'--eon-format=eon\\n',
+                  r'--unk-feature=unkf\\n',
                   '--input-buffer-size=777',
                   '--allocate-sentence',
                   '--theta=0.999',

@@ -1,13 +1,13 @@
 # -*- coding: utf-8 -*-
 __all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError',
-           'OptionParse', 'string_support', 're_unicode_support']
+           'OptionParse', 'string_support', 'splitter_support']
 
 from .api import MeCabError
 from .dictionary import DictionaryInfo
 from .mecab import MeCab
 from .node import MeCabNode
 from .option_parse import OptionParse
-from .support import string_support, re_unicode_support
+from .support import string_support, splitter_support
 
 __version__ = '0.3.0'
 __version_info__ = (0, 3, 0)
