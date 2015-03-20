@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-natto-py |version| |travis|
-===========================
+natto-py
+========
 
 What is natto-py?
 -----------------
@@ -14,7 +14,7 @@ morphological analyzer for the Japanese language. No compiler is necessary, as
 it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 \*nix.
 
-You can learn more about `natto-py at GitHub`_.
+You can learn more about `natto-py at GitHub`_. |version| |travis|
 
 Requirements
 -------------

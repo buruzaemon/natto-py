@@ -91,12 +91,9 @@ def _ffi_libmecab():
         mecab_node_t    *mecab_lattice_get_bos_node(mecab_lattice_t *lattice);
         const char      *mecab_lattice_get_sentence(mecab_lattice_t *lattice);
         void             mecab_lattice_set_sentence(mecab_lattice_t *lattice, const char *sentence);
-        void             mecab_lattice_set_sentence2(mecab_lattice_t *lattice, const char *sentence, size_t len);
         void             mecab_lattice_set_z(mecab_lattice_t *lattice, double Z);
         void             mecab_lattice_set_theta(mecab_lattice_t *lattice, double theta);
         int              mecab_lattice_next(mecab_lattice_t *lattice);
-        void             mecab_lattice_add_request_type(mecab_lattice_t *lattice, int request_type);
-        int              mecab_lattice_get_request_type(mecab_lattice_t *lattice);
         void             mecab_lattice_set_request_type(mecab_lattice_t *lattice, int request_type);
         const char      *mecab_lattice_tostr(mecab_lattice_t *lattice);
         const char      *mecab_lattice_nbest_tostr(mecab_lattice_t *lattice, size_t N);
