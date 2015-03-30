@@ -302,11 +302,11 @@ Copyright |copy| 2015, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
 .. _Python: http://www.python.org/
-.. _MeCab: http://mecab.googlecode.com/svn/trunk/mecab/doc/index.html
-.. _mecab-ipadic: https://mecab.googlecode.com/files/mecab-ipadic-2.7.0-20070801.tar.gz
-.. _mecab-jumandic: https://mecab.googlecode.com/files/mecab-jumandic-5.1-20070304.tar.gz
+.. _MeCab: http://taku910.github.io/mecab/
+.. _mecab-ipadic: http://taku910.github.io/mecab/#download
+.. _mecab-jumandic: http://taku910.github.io/mecab/#download
 .. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
-.. _MeCab 0.996: http://code.google.com/p/mecab/downloads/list
+.. _MeCab 0.996: http://taku910.github.io/mecab/#download
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
 .. _Python 2.7: https://docs.python.org/dev/whatsnew/2.7.html 
 .. _Python 3.2: https://docs.python.org/dev/whatsnew/3.2.html
@@ -314,7 +314,7 @@ the ``LICENSE`` file for further details.
 .. _Python 3.4: https://docs.python.org/dev/whatsnew/3.4.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
-.. _constraint parsing: https://mecab.googlecode.com/svn/trunk/mecab/doc/partial.html
+.. _constraint parsing: http://taku910.github.io/mecab/partial.html
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
 .. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
 .. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/master/

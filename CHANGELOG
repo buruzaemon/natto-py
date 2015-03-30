@@ -1,6 +1,9 @@
 CHANGELOG
 ---------
 
+- 2015/03/31 0.4.0 release.
+    - Minor updated to docs/index.rst for new MeCab home at github. 
+
 - 2015/03/19 0.3.0 release.
     - Added morpheme boundary constraint parsing.
     - Minor corrections to docs/index.rst formatting. 
