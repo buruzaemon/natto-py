@@ -221,6 +221,21 @@ class TestMecab(unittest.TestCase, Test23Support):
             for i, e in enumerate(lines):
                 self.assertTrue(lines[i].endswith(expected[i]))
 
+        # with theta option
+        for t in [ 0.5, 0.75, 0.99 ]:
+            with mecab.MeCab("-t {}".format(t)) as nm:
+                # simple pattern
+                yml1 = self.yaml.get('text1')
+                txt1 = self._u2str(yml1.get('text'))
+                pat1 = self._u2str(yml1.get('pattern'))
+                expected = [self._u2str(e) for e in yml1.get('expected')]
+
+                actual = nm.parse(txt1, boundary_constraints=pat1)
+                lines = actual.split(os.linesep)
+
+                for i, e in enumerate(lines):
+                    self.assertTrue(lines[i].startswith(expected[i]))
+
     # ------------------------------------------------------------------------
     def test_bcparse_tonodes(self):
         '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
@@ -282,6 +297,22 @@ class TestMecab(unittest.TestCase, Test23Support):
                 if not node.is_eos():
                     self.assertEqual(node.feature, expected[i])
                     i += 1
+
+        # with theta option
+        for t in [ 0.5, 0.75, 0.99 ]:
+            with mecab.MeCab("-t {}".format(t)) as nm:
+                # simple node-parsing, no N-Best or output formatting
+                yml1 = self.yaml.get('text1')
+                txt1 = self._u2str(yml1.get('text'))
+                pat1 = self._u2str(yml1.get('pattern'))
+                expected = [self._u2str(e) for e in yml1.get('expected')]
+
+                gen = nm.parse(txt1, boundary_constraints=pat1, as_nodes=True)
+                for i, node in enumerate(gen):
+                    if not node.is_eos():
+                        self.assertEqual(node.surface, expected[i])
+
+
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.

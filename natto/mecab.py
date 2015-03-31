@@ -337,6 +337,9 @@ class MeCab(object):
                     req_type = self.MECAB_LATTICE_NBEST
                 self.__mecab.mecab_lattice_set_request_type(lattice, req_type)
 
+                if 'theta' in self.options:
+                    self.__mecab.mecab_lattice_set_theta(lattice, self.options['theta'])
+
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
                 tokens = list(self.__split(patt, text))
                 text = ''.join([t[0] for t in tokens])
@@ -405,6 +408,8 @@ class MeCab(object):
                     req_type = self.MECAB_LATTICE_NBEST
                 self.__mecab.mecab_lattice_set_request_type(lattice, req_type)
 
+                if 'theta' in self.options:
+                    self.__mecab.mecab_lattice_set_theta(lattice, self.options['theta'])
                 patt = kwargs.get(self._KW_CONSTRAINTS, '.')
                 tokens = list(self.__split(patt, text))
                 text = ''.join([t[0] for t in tokens])
