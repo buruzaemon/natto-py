@@ -196,6 +196,18 @@ class TestMecab(unittest.TestCase, Test23Support):
             for i, e in enumerate(lines):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
+            # text includes trailing whitespace char in token
+            yml9 = self.yaml.get('text9')
+            txt9 = self._u2str(yml9.get('text'))
+            pat9 = self._u2str(yml9.get('pattern'))
+            expected = [self._u2str(e) for e in yml9.get('expected')]
+
+            actual = nm.parse(txt9, boundary_constraints=pat9)
+            lines = actual.split(os.linesep)
+
+            for i, e in enumerate(lines):
+                self.assertTrue(lines[i].startswith(expected[i]))
+
         with mecab.MeCab('-N2') as nm:
             # 2-Best
             yml = self.yaml.get('text4')
@@ -204,7 +216,6 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = [self._u2str(e) for e in yml.get('expected')]
 
             actual = nm.parse(txt, boundary_constraints=pat)
-            #lines = actual.split(os.linesep)
             lines = actual.splitlines()
 
             for i, e in enumerate(lines):
@@ -232,6 +243,17 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = [self._u2str(e) for e in yml2.get('expected')]
 
             gen = nm.parse(txt2, boundary_constraints=pat2, as_nodes=True)
+            for i, node in enumerate(gen):
+                if not node.is_eos():
+                    self.assertEqual(node.surface, expected[i])
+
+            # text includes trailing whitespace char in token
+            yml9 = self.yaml.get('text9')
+            txt9 = self._u2str(yml9.get('text'))
+            pat9 = self._u2str(yml9.get('pattern'))
+            expected = [self._u2str(e) for e in yml9.get('expected')]
+
+            gen = nm.parse(txt9, boundary_constraints=pat9, as_nodes=True)
             for i, node in enumerate(gen):
                 if not node.is_eos():
                     self.assertEqual(node.surface, expected[i])

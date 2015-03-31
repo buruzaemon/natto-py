@@ -71,14 +71,14 @@ def splitter_support(py2enc):
         for m in re.finditer(pattern, sentence):
             if pos < m.start():
                 token = postprocess(sentence[pos:m.start()])
-                yield (token, False)
+                yield (token.strip(), False)
                 pos = m.start()
             token = postprocess(sentence[pos:m.end()])
-            yield (token, True)
+            yield (token.strip(), True)
             pos = m.end()
         if pos < len(sentence):
             token = postprocess(sentence[pos:])
-            yield (token, False)
+            yield (token.strip(), False)
     return _fn_tokenize
 
 '''

@@ -337,6 +337,9 @@ class MeCab(object):
                     req_type = self.MECAB_LATTICE_NBEST
                 self.__mecab.mecab_lattice_set_request_type(lattice, req_type)
 
+                patt = kwargs.get(self._KW_CONSTRAINTS, '.')
+                tokens = list(self.__split(patt, text))
+                text = ''.join([t[0] for t in tokens])
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(lattice, btext)
 
@@ -345,8 +348,7 @@ class MeCab(object):
                 bpos = 0
                 self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
-                patt = kwargs.get(self._KW_CONSTRAINTS, '.')
-                for (token, match) in self.__split(patt, text):
+                for (token, match) in tokens:
                     bpos += 1
                     if match:
                         mark = self.MECAB_INSIDE_TOKEN
@@ -403,6 +405,9 @@ class MeCab(object):
                     req_type = self.MECAB_LATTICE_NBEST
                 self.__mecab.mecab_lattice_set_request_type(lattice, req_type)
 
+                patt = kwargs.get(self._KW_CONSTRAINTS, '.')
+                tokens = list(self.__split(patt, text))
+                text = ''.join([t[0] for t in tokens])
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(lattice, btext)
 
@@ -411,9 +416,7 @@ class MeCab(object):
                 bpos = 0
                 self.__mecab.mecab_lattice_set_boundary_constraint(lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
-                patt = kwargs.get(self._KW_CONSTRAINTS, '.')
-                #for (token, match) in self.__split_sentence(text, patt):
-                for (token, match) in self.__split(patt, text):
+                for (token, match) in tokens:
                     bpos += 1
                     if match:
                         mark = self.MECAB_INSIDE_TOKEN
