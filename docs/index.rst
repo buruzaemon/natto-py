@@ -216,10 +216,10 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 `Partial parsing`_ (制約付き解析), allows you to pass hints to MeCab on
 how to tokenize morphemes when parsing. With boundary constraint parsing,
-you can specify either a compiled regular expression object or a string
-to tell MeCab where the boundaries of a morpheme should be. Use the new
-`boundary_constraints` keyword. For hints on tokenization, please see
-`Regular expression operations`_.
+you can specify either a compiled ``re`` regular expression object or a
+string to tell MeCab where the boundaries of a morpheme should be. Use the new
+``boundary_constraints`` keyword. For hints on tokenization, please see
+`Regular expression operations`_ and `re.finditer`_ in particular.
 
 In the example below, we again use the ``-F`` short form of the
 ``--node-format`` option to capture the following in the node's ``feature``:
@@ -307,6 +307,7 @@ Documentation
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
 .. _Partial parsing: http://taku910.github.io/mecab/partial.html
 .. _Regular expression operations: https://docs.python.org/3/library/re.html
+.. _re.finditer: https://docs.python.org/3/library/re.html#re.finditer
 .. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
 .. _git: http://git-scm.com/downloads
 .. _check out the latest code at GitHub: https://github.com/buruzaemon/natto-py
