@@ -213,62 +213,47 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 ----
 
-Using `constraint parsing`_ (制約付き解析), it is possible to pass hints
-to ``MeCab`` on　which words it should treat as a single token. 
+`Partial parsing`_ (制約付き解析), allows you to pass hints to MeCab on
+how to tokenize morphemes when parsing. With boundary constraint parsing,
+you can specify either regular expression object or a string to tell MeCab
+where the boundaries of a morpheme should be. Use the new
+`boundary_constraints` keyword. For hints on tokenization, please see
+`Regular expression operations`_.
 
-For example, without any special hints::
+In the example below, we again use the ``-F`` short form of the
+``--node-format`` option to capture the following in the node's ``feature``:
 
-    with MeCab() as nm:
+- morpheme surface
+- node part-of-speech
+- node status value
 
-        text = 'にわにはにわにわとりがいる。'
+Note that any such morphemes captured will have node ``stat`` status of 1 (unknown)::
 
-        print(nm.parse(text))
-    ...
-    に     助詞,格助詞,一般,*,*,*,に,ニ,ニ
-    わに   名詞,一般,*,*,*,*,わに,ワニ,ワニ
-    はにわ 名詞,一般,*,*,*,*,はにわ,ハニワ,ハニワ
-    にわとり    名詞,一般,*,*,*,*,にわとり,ニワトリ,ニワトリ
-    が     助詞,格助詞,一般,*,*,*,が,ガ,ガ
-    いる   動詞,自立,*,*,一段,基本形,いる,イル,イル
-    。     記号,句点,*,*,*,*,。,。,。
-    EOS
+    with MeCab('-F%m,\s%f[0],\s%s') as nm:
 
-But you can provide ``MeCab`` with a regular expression pattern as a hint on
-where and how to mark the boundaries of a morpheme when parsing. This is 
-known as boundary constraint parsing. Pass in the regular expression as a
-``str`` or compiled ``regex`` using the ``boundary_constraints`` keyword 
-argument.
-
-Note that any such tokens matching the ``boundary_constraints`` pattern that
-cannot be found in any of the dictionaries used will have an unknown ``stat``
-status value of 1. Here we illustrate that by using a combination of output
-formatting, node parsing and boundary constraints::
-
-    # MeCab options used:
-    #
-    # -F    ... short-form of --node-format
-    # %m    ... morpheme surface
-    # %f[0] ... part-of-speech
-    # %s    ... node status (0 is normal, 1 is unknown)
-    #
-    with MeCab(r'-F%m,\s%f[0],\s%s') as nm:
-
-        text = 'にわにはにわにわとりがいる。'
-        pattern = 'にわとり|にわ|はにわ'
+        text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
+        pattern = 'ヒーロー見参'
 
         for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
     ...     print(n.feature)
     ...
-    にわ, 名詞, 1
-    に, 助詞, 0
-    はにわ, 名詞, 0
-    にわとり, 名詞, 0
-    が, 助詞, 0
-    いる, 動詞, 0
-    。, 記号, 0
+    心, 名詞, 0
+    の, 助詞, 0
+    中, 名詞, 0
+    で, 助詞, 0
+    3, 名詞, 1
+    回, 名詞, 0
+    唱え, 動詞, 0
+    、, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
     EOS
 
-----
+ ----
 
 Learn More
 ----------
@@ -314,7 +299,8 @@ the ``LICENSE`` file for further details.
 .. _Python 3.4: https://docs.python.org/dev/whatsnew/3.4.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
-.. _constraint parsing: http://taku910.github.io/mecab/partial.html
+.. _Partial parsing: http://taku910.github.io/mecab/partial.html
+.. _Regular expression operations: https://docs.python.org/3/library/re.html
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
 .. _project's notebooks directory: https://github.com/buruzaemon/natto-py/tree/master/notebooks
 .. _API documentation on Read the Docs: http://natto-py.readthedocs.org/en/master/
