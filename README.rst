@@ -215,8 +215,8 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 
 `Partial parsing`_ (制約付き解析), allows you to pass hints to MeCab on
 how to tokenize morphemes when parsing. With boundary constraint parsing,
-you can specify either regular expression object or a string to tell MeCab
-where the boundaries of a morpheme should be. Use the new
+you can specify either a compiled regular expression object or a string
+to tell MeCab where the boundaries of a morpheme should be. Use the new
 `boundary_constraints` keyword. For hints on tokenization, please see
 `Regular expression operations`_.
 
