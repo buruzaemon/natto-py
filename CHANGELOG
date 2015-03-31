@@ -2,7 +2,10 @@ CHANGELOG
 ---------
 
 - 2015/03/31 0.4.0 release.
-    - Minor updated to docs/index.rst for new MeCab home at github. 
+    - Issue 21: Cleaned up Lattice-related API call.
+    - Issue 23: Implemented support for theta option on Lattice.
+    - Issue 25: Enhanced tokenization to remove whitespace for partial parse.
+    - Issue 26: Updated to docs/index.rst for new MeCab home at github. 
 
 - 2015/03/19 0.3.0 release.
     - Added morpheme boundary constraint parsing.
