@@ -288,7 +288,7 @@ Documentation
 -------------
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
-    :target: http://badge.fury.io/py/natto-py
+    :target: https://pypi.python.org/pypi/natto-py
 .. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
 .. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
