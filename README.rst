@@ -1,13 +1,13 @@
-natto-py |version| |travis|
+natto-py |version| |travis| |pypi| |license|
 ===========================
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
-    :target: http://badge.fury.io/py/natto-py
+    :target: https://pypi.python.org/pypi/natto-py
 .. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
 .. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
-    :target: 
+    :target: _
 
 What is natto-py?
 -----------------
