@@ -4,6 +4,10 @@ natto-py |version| |travis|
     :target: http://badge.fury.io/py/natto-py
 .. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
+.. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
+    :target: https://pypi.python.org/pypi/natto-py
+.. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
+    :target: 
 
 What is natto-py?
 -----------------
