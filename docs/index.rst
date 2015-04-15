@@ -14,7 +14,8 @@ morphological analyzer for the Japanese language. No compiler is necessary, as
 it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 \*nix.
 
-You can learn more about `natto-py at GitHub`_. |version| |travis| |pypi| |license|
+You can learn more about `natto-py at GitHub`_.
+|version| |travis| |pypi| |license|
 
 Requirements
 -------------
@@ -174,8 +175,8 @@ for using ``natto-py`` in a production environment::
 
 MeCab output formatting is extremely flexible and is highly recommended for
 any serious natural language processing task. Rather than parsing the MeCab
-output as a single, large string, use MeCab's ``--node-format`` option to 
-customize the node's ``feature`` attribute.
+output as a single, large string, use MeCab's ``--node-format`` option
+(short form ``-F``) to customize the node's ``feature`` attribute.
 
 This example formats the node ``feature`` to capture the following as a
 comma-separated value:
@@ -185,7 +186,6 @@ comma-separated value:
 - part-of-speech ID
 - pronunciation
 
-The ``-F`` short form of the ``--node-format`` option is used here::
 
     # MeCab options used:
     #
@@ -215,11 +215,14 @@ The ``-F`` short form of the ``--node-format`` option is used here::
 ----
 
 `Partial parsing`_ (制約付き解析), allows you to pass hints to MeCab on
-how to tokenize morphemes when parsing. With boundary constraint parsing,
-you can specify either a compiled ``re`` regular expression object or a
-string to tell MeCab where the boundaries of a morpheme should be. Use the new
-``boundary_constraints`` keyword. For hints on tokenization, please see
-`Regular expression operations`_ and `re.finditer`_ in particular.
+how to tokenize morphemes when parsing. Most useful are boundary constraint
+parsing and feature constraint parsing.
+
+With boundary constraint parsing, you can specify either a compiled ``re``
+regular expression object or a string to tell MeCab where the boundaries of
+a morpheme should be. Use the ``boundary_constraints`` keyword. For hints on
+tokenization, please see `Regular expression operations`_ and `re.finditer`_
+in particular.
 
 In the example below, we again use the ``-F`` short form of the
 ``--node-format`` option to capture the following in the node's ``feature``:
