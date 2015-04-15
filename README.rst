@@ -180,15 +180,14 @@ any serious natural language processing task. Rather than parsing the MeCab
 output as a single, large string, use MeCab's ``--node-format`` option
 (short form ``-F``) to customize the node's ``feature`` attribute.
 
-This example formats the node ``feature`` to capture the following as a
-comma-separated value:
-
 - morpheme surface
 - part-of-speech
 - part-of-speech ID
 - pronunciation
 
-
+This example formats the node ``feature`` to capture the items above as a
+comma-separated value::
+  
     # MeCab options used:
     #
     # -F    ... short-form of --node-format
