@@ -1,6 +1,9 @@
 CHANGELOG
 ---------
 
+- 2015/04/18 0.5.0 release.
+    - Issue 48: Object destructor for MeCab dumps core in 0.5.0
+
 - 2015/04/17 0.5.0 release.
     - Issue 35: Use new Model- and Lattice-based C APIs internally
     - Issue 36: Make refs to MeCab and Tagger consistent in docs
