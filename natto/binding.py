@@ -61,48 +61,43 @@ def _ffi_libmecab():
         typedef struct   mecab_node_t            mecab_node_t;
         typedef struct   mecab_path_t            mecab_path_t;
 
-        mecab_t*         mecab_new2(const char *arg);
+        // Model interface
+        mecab_model_t   *mecab_model_new2(const char *arg);
+        void             mecab_model_destroy(mecab_model_t *model);
+        mecab_t         *mecab_model_new_tagger(mecab_model_t *model);
+        mecab_lattice_t *mecab_model_new_lattice(mecab_model_t *model);
+        const mecab_dictionary_info_t* mecab_model_dictionary_info(mecab_model_t *model);
 
+        // old Tagger interface
+        void             mecab_destroy(mecab_t *mecab);
         const char*      mecab_version();
         const char*      mecab_strerror(mecab_t *mecab);
-        void             mecab_destroy(mecab_t *mecab);
+        const char*      mecab_format_node(mecab_t *mecab, const mecab_node_t *node);
 
-        void             mecab_set_partial(mecab_t *mecab, int partial);
-        void             mecab_set_theta(mecab_t *mecab, float theta);
-        void             mecab_set_lattice_level(mecab_t *mecab, int level);
-        void             mecab_set_all_morphs(mecab_t *mecab, int all_morphs);
-
-        const char*      mecab_sparse_tostr(mecab_t *mecab, const char *str);
-        const mecab_node_t* mecab_sparse_tonode(mecab_t *mecab, const char*);
-        int              mecab_nbest_init(mecab_t *mecab, const char *str);
-        const char*      mecab_nbest_sparse_tostr(mecab_t *mecab, size_t N,
-                                               const char *str);
-        const mecab_node_t* mecab_nbest_next_tonode(mecab_t *mecab);
-        const char*      mecab_format_node(mecab_t *mecab,
-                                        const mecab_node_t *node);
-
-        const mecab_dictionary_info_t* mecab_dictionary_info(mecab_t *mecab);
-
-        mecab_lattice_t *mecab_lattice_new();
+        // Lattice interface
         void             mecab_lattice_destroy(mecab_lattice_t *lattice);
         void             mecab_lattice_clear(mecab_lattice_t *lattice);
         int              mecab_lattice_is_available(mecab_lattice_t *lattice);
-        size_t           mecab_lattice_get_size(mecab_lattice_t *lattice);
-        mecab_node_t    *mecab_lattice_get_bos_node(mecab_lattice_t *lattice);
+        const char      *mecab_lattice_strerror(mecab_lattice_t *lattice);
+
         const char      *mecab_lattice_get_sentence(mecab_lattice_t *lattice);
         void             mecab_lattice_set_sentence(mecab_lattice_t *lattice, const char *sentence);
-        void             mecab_lattice_set_z(mecab_lattice_t *lattice, double Z);
+        size_t           mecab_lattice_get_size(mecab_lattice_t *lattice);
         void             mecab_lattice_set_theta(mecab_lattice_t *lattice, double theta);
-        int              mecab_lattice_next(mecab_lattice_t *lattice);
+        void             mecab_lattice_set_z(mecab_lattice_t *lattice, double Z);
         int              mecab_lattice_get_request_type(mecab_lattice_t *lattice);
-        void             mecab_lattice_set_request_type(mecab_lattice_t *lattice, int request_type);
         void             mecab_lattice_add_request_type(mecab_lattice_t *lattice, int request_type);
-        const char      *mecab_lattice_tostr(mecab_lattice_t *lattice);
-        const char      *mecab_lattice_nbest_tostr(mecab_lattice_t *lattice, size_t N);
+        void             mecab_lattice_set_request_type(mecab_lattice_t *lattice, int request_type);
         int              mecab_lattice_get_boundary_constraint(mecab_lattice_t *lattice, size_t pos);
         void             mecab_lattice_set_boundary_constraint(mecab_lattice_t *lattice, size_t pos, int boundary_type);
+        const char      *mecab_lattice_get_feature_constraint(mecab_lattice_t *lattice, size_t pos);
+        void             mecab_lattice_set_feature_constraint(mecab_lattice_t *lattice, size_t begin_pos, size_t end_pos, const char *feature);
+
         int              mecab_parse_lattice(mecab_t *mecab, mecab_lattice_t *lattice);
-        const char      *mecab_lattice_strerror(mecab_lattice_t *lattice);
+        int              mecab_lattice_next(mecab_lattice_t *lattice);
+        const char      *mecab_lattice_tostr(mecab_lattice_t *lattice);
+        const char      *mecab_lattice_nbest_tostr(mecab_lattice_t *lattice, size_t N);
+        mecab_node_t    *mecab_lattice_get_bos_node(mecab_lattice_t *lattice);
     ''')
     return ffi
 
