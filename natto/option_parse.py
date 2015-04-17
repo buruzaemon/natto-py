@@ -27,7 +27,9 @@ class OptionParse(object):
                        '-t' : 'theta',
                        '-c' : 'cost_factor'}
 
-    _BOOLEAN_OPTIONS = ['all-morphs', 'partial', 'marginal',
+    _BOOLEAN_OPTIONS = ['all-morphs',
+                        'partial',
+                        'marginal',
                         'allocate-sentence']
 
     _NBEST_MAX = 512

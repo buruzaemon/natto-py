@@ -30,7 +30,7 @@ def string_support(py3enc):
     return (bytes2str, str2bytes)
 
 def splitter_support(py2enc):
-    '''Create tokenizer for use in tokenizing text in boundary constraint parsing.
+    '''Create tokenizer for use in boundary constraint parsing.
 
     :param py2enc: Encoding used by Python 2 environment.
     :type py2enc: str
