@@ -15,6 +15,7 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 \*nix.
 
 You can learn more about `natto-py at GitHub`_.
+
 |version| |travis| |pypi| |license|
 
 Requirements
@@ -186,8 +187,7 @@ output as a single, large string, use MeCab's ``--node-format`` option
 - pronunciation
 
 This example formats the node ``feature`` to capture the items above as a
-comma-separated value:
-
+comma-separated value::
 
     # MeCab options used:
     #
