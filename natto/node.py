@@ -84,7 +84,7 @@ class MeCabNode(object):
         。,。,記号,7
 
     '''
-    _REPR_FMT = '<{}.{} pointer={}, stat={}, surface="{}", feature="{}">'
+    _REPR_FMT = '<{}.{} node={}, stat={}, surface="{}", feature="{}">'
 
     # Normal MeCab node defined in the dictionary.
     NOR_NODE = 0

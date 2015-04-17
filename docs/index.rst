@@ -96,11 +96,13 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
     # displays details about the MeCab instance
     <natto.mecab.MeCab
-     pointer=<cdata 'mecab_t *' 0x000000000037AB40>,
+     model=<cdata 'mecab_model_t *' 0x801c16300>,
+     tagger=<cdata 'mecab_t *' 0x801c17470>,
+     lattice=<cdata 'mecab_lattice_t *' 0x801c196c0>,
      libpath="/usr/local/lib/libmecab.so",
      options={},
      dicts=[<natto.dictionary.DictionaryInfo
-             pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>,
+             dictionary='mecab_dictionary_info_t *' 0x801c19540>,
              filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
              charset=utf8,
              type=0],
@@ -115,7 +117,7 @@ Display details about the ``mecab`` system dictionary used::
 
     # displays the MeCab system dictionary info
     <natto.dictionary.DictionaryInfo
-     pointer=<cdata 'mecab_dictionary_info_t *' 0x00000000003AC530>,
+     dictionary='mecab_dictionary_info_t *' 0x801c19540>,
      filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
      charset=utf8,
      type=0>
