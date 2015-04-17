@@ -2,7 +2,6 @@
 '''The main interface to MeCab via natto-py.'''
 import os
 import re
-import sys
 from .api import MeCabError
 from .binding import _ffi_libmecab
 from .dictionary import DictionaryInfo
@@ -154,7 +153,7 @@ class MeCab(object):
             self.model = self.__mecab.mecab_model_new2(ostr)
             if self.model == self.__ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR.format('Model'))
-            
+
             self.tagger = self.__mecab.mecab_model_new_tagger(self.model)
             if self.tagger == self.__ffi.NULL:
                 raise MeCabError(self._ERROR_NULLPTR.format('Tagger'))
@@ -171,23 +170,21 @@ class MeCab(object):
             self.__mecab.mecab_lattice_set_request_type(self.lattice, req_type)
 
             if 'partial' in self.options:
-                self.__mecab.mecab_lattice_add_request_type(self.lattice,
-                                                            self.MECAB_LATTICE_PARTIAL)
+                self.__mecab.mecab_lattice_add_request_type(
+                    self.lattice, self.MECAB_LATTICE_PARTIAL)
 
-            if 'marginal' in self.options: 
-                self.__mecab.mecab_lattice_add_request_type(self.lattice,
-                                                            self.MECAB_LATTICE_MARGINAL_PROB)
+            if 'marginal' in self.options:
+                self.__mecab.mecab_lattice_add_request_type(
+                    self.lattice, self.MECAB_LATTICE_MARGINAL_PROB)
 
             if 'all_morphs' in self.options:
                 # required when node parsing
-                self.__mecab.mecab_lattice_add_request_type(self.lattice,
-                                                            self.MECAB_LATTICE_ALL_MORPHS)
+                self.__mecab.mecab_lattice_add_request_type(
+                    self.lattice, self.MECAB_LATTICE_ALL_MORPHS)
 
             if 'allocate_sentence' in self.options:
-                self.mecab_lattice_add_request_type(self.lattice, 
-                                                    self.MECAB_LATTICE_ALLOCATE_SENTENCE)
-
-            format_feature = True if 'output_format_type' in self.options or 'node_format' in self.options else False
+                self.__mecab.mecab_lattice_add_request_type(
+                    self.lattice, self.MECAB_LATTICE_ALLOCATE_SENTENCE)
 
             # Prepare copy for list of MeCab dictionaries
             self.dicts = []
@@ -203,21 +200,31 @@ class MeCab(object):
             self.__enc = self.dicts[0].charset
 
             # Set MeCab version string
-            self.version = self.__bytes2str(self.__ffi.string(self.__mecab.mecab_version()))
+            self.version = self.__bytes2str(
+                self.__ffi.string(self.__mecab.mecab_version()))
         except EnvironmentError as err:
             raise MeCabError(err)
         except ValueError as verr:
             raise MeCabError(self._ERROR_INIT.format(str(verr)))
 
     def __del__(self):
-        if hasattr(self, '_MeCab__lattice') and hasattr(self, '_MeCab__mecab') and hasattr(self, '_MeCab__ffi'):
-            if self.lattice != self.__ffi.NULL and self.__mecab != self.__ffi.NULL:
+        if hasattr(self, '_MeCab__lattice') and \
+           hasattr(self, '_MeCab__mecab')   and \
+           hasattr(self, '_MeCab__ffi'):
+            if self.lattice != self.__ffi.NULL and \
+               self.__mecab != self.__ffi.NULL:
                 self.__mecab.mecab_lattice_destroy(self.lattice)
-        if hasattr(self, '_MeCab__pointer') and hasattr(self, '_MeCab__mecab') and hasattr(self, '_MeCab__ffi'):
-            if self.pointer != self.__ffi.NULL and self.__mecab != self.__ffi.NULL:
-                self.__mecab.mecab_destroy(self.pointer)
-        if hasattr(self, '_MeCab__model') and hasattr(self, '_MeCab__mecab') and hasattr(self, '_MeCab__ffi'):
-            if self.model != self.__ffi.NULL and self.__mecab != self.__ffi.NULL:
+        if hasattr(self, '_MeCab__tagger') and \
+           hasattr(self, '_MeCab__mecab')  and \
+           hasattr(self, '_MeCab__ffi'):
+            if self.tagger != self.__ffi.NULL and \
+               self.__mecab != self.__ffi.NULL:
+                self.__mecab.mecab_destroy(self.tagger)
+        if hasattr(self, '_MeCab__model') and \
+           hasattr(self, '_MeCab__mecab') and \
+           hasattr(self, '_MeCab__ffi'):
+            if self.model != self.__ffi.NULL and \
+               self.__mecab != self.__ffi.NULL:
                 self.__mecab.mecab_model_destroy(self.model)
         if hasattr(self, '_MeCab__mecab'):
             del self.__mecab
@@ -254,9 +261,8 @@ class MeCab(object):
             self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
 
             bpos = 0
-            self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                               bpos,
-                                                               self.MECAB_TOKEN_BOUNDARY)
+            self.__mecab.mecab_lattice_set_boundary_constraint(
+                self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
             for (token, match) in tokens:
                 bpos += 1
@@ -266,13 +272,11 @@ class MeCab(object):
                     mark = self.MECAB_ANY_BOUNDARY
 
                 for _ in range(1, len(self.__str2bytes(token))):
-                    self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                                       bpos,
-                                                                       mark)
+                    self.__mecab.mecab_lattice_set_boundary_constraint(
+                        self.lattice, bpos, mark)
                     bpos += 1
-                self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                                   bpos,
-                                                                   self.MECAB_TOKEN_BOUNDARY)
+                self.__mecab.mecab_lattice_set_boundary_constraint(
+                    self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
         else:
             btext = self.__str2bytes(text)
             self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
@@ -316,9 +320,8 @@ class MeCab(object):
                 self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
 
                 bpos = 0
-                self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                                   bpos,
-                                                                   self.MECAB_TOKEN_BOUNDARY)
+                self.__mecab.mecab_lattice_set_boundary_constraint(
+                    self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 for (token, match) in tokens:
                     bpos += 1
@@ -328,13 +331,11 @@ class MeCab(object):
                         mark = self.MECAB_ANY_BOUNDARY
 
                     for _ in range(1, len(self.__str2bytes(token))):
-                        self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                                           bpos,
-                                                                           mark)
+                        self.__mecab.mecab_lattice_set_boundary_constraint(
+                            self.lattice, bpos, mark)
                         bpos += 1
-                    self.__mecab.mecab_lattice_set_boundary_constraint(self.lattice,
-                                                                       bpos,
-                                                                       self.MECAB_TOKEN_BOUNDARY)
+                    self.__mecab.mecab_lattice_set_boundary_constraint(
+                        self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
             else:
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
@@ -348,11 +349,14 @@ class MeCab(object):
                     while nptr != self.__ffi.NULL:
                         # skip over any BOS nodes, since mecab does
                         if nptr.stat != MeCabNode.BOS_NODE:
-                            raws = self.__ffi.string(nptr.surface[0:nptr.length])
+                            raws = self.__ffi.string(
+                                nptr.surface[0:nptr.length])
                             surf = self.__bytes2str(raws).strip()
 
-                            if 'output_format_type' in self.options or 'node_format' in self.options:
-                                sp = self.__mecab.mecab_format_node(self.tagger, nptr)
+                            if 'output_format_type' in self.options or \
+                               'node_format' in self.options:
+                                sp = self.__mecab.mecab_format_node(
+                                    self.tagger, nptr)
                                 rawf = self.__ffi.string(sp)
                             else:
                                 rawf = self.__ffi.string(nptr.feature)
@@ -363,7 +367,6 @@ class MeCab(object):
                         nptr = getattr(nptr, 'next')
         except:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
-            #err = self.__mecab.mecab_strerror((self.tagger)
             raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
 
     def __repr__(self):
@@ -408,7 +411,7 @@ class MeCab(object):
                 raise MeCabError('boundary_constraints must be re or str')
         elif self._KW_FEATURE in kwargs:
             t = type(self._KW_FEATURE)
-            if not (t == dict):
+            if t != dict:
                 raise MeCabError('feature_constraints must be dict')
 
         as_nodes = kwargs.get(self._KW_ASNODES, False)

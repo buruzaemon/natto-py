@@ -1,6 +1,12 @@
 CHANGELOG
 ---------
 
+- 2015/04/17 0.5.0 release.
+    - Issue 35: Use new Model- and Lattice-based C APIs internally
+    - Issue 36: Make refs to MeCab and Tagger consistent in docs
+    - Issue 37: Partial parsing and handling of tokens
+    - Issue 38: Downloads and license badges for README.md & API docs
+
 - 2015/03/31 0.4.0 release.
     - Issue 21: Cleaned up Lattice-related API call.
     - Issue 23: Implemented support for theta option on Lattice.
