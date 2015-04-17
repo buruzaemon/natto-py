@@ -41,7 +41,7 @@ class DictionaryInfo(object):
             ...
             True
     '''
-    _REPR_FMT = '<{}.{} pointer={}, filepath="{}", charset={}, type={}>'
+    _REPR_FMT = '<{}.{} dictionary={}, filepath="{}", charset={}, type={}>'
 
     # System dictionary
     SYS_DIC = 0
