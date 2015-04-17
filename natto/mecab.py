@@ -140,7 +140,7 @@ class MeCab(object):
             # Python 2/3 string support
             self.__bytes2str, self.__str2bytes = string_support(env.charset)
 
-            # Python 2/3 sentence splitter/tokenizere support
+            # Python 2/3 sentence splitter/tokenizer support
             self.__split = splitter_support(env.charset)
 
             # Set up dictionary of MeCab options to use
@@ -208,23 +208,14 @@ class MeCab(object):
             raise MeCabError(self._ERROR_INIT.format(str(verr)))
 
     def __del__(self):
-        if hasattr(self, '_MeCab__lattice') and \
-           hasattr(self, '_MeCab__mecab')   and \
-           hasattr(self, '_MeCab__ffi'):
-            if self.lattice != self.__ffi.NULL and \
-               self.__mecab != self.__ffi.NULL:
+        if hasattr(self, 'lattice') and hasattr(self, '_MeCab__ffi'):
+            if self.lattice != self.__ffi.NULL:
                 self.__mecab.mecab_lattice_destroy(self.lattice)
-        if hasattr(self, '_MeCab__tagger') and \
-           hasattr(self, '_MeCab__mecab')  and \
-           hasattr(self, '_MeCab__ffi'):
-            if self.tagger != self.__ffi.NULL and \
-               self.__mecab != self.__ffi.NULL:
+        if hasattr(self, 'tagger') and hasattr(self, '_MeCab__ffi'):
+            if self.tagger != self.__ffi.NULL:
                 self.__mecab.mecab_destroy(self.tagger)
-        if hasattr(self, '_MeCab__model') and \
-           hasattr(self, '_MeCab__mecab') and \
-           hasattr(self, '_MeCab__ffi'):
-            if self.model != self.__ffi.NULL and \
-               self.__mecab != self.__ffi.NULL:
+        if hasattr(self, 'model') and hasattr(self, '_MeCab__ffi'):
+            if self.model != self.__ffi.NULL:
                 self.__mecab.mecab_model_destroy(self.model)
         if hasattr(self, '_MeCab__mecab'):
             del self.__mecab
@@ -393,9 +384,6 @@ class MeCab(object):
             splitting; if non-None, then boundary constraint parsing will be
             used.
         :type boundary_constraints: str
-        :param any_boundary: flag for indicating default boundary token when
-            using boundary constraint parsing.
-        :type any_boundary: bool, defaults to True
         :return: A single string containing the entire MeCab output;
             or a Generator yielding the MeCabNode instances.
         :raises: MeCabError
@@ -406,13 +394,13 @@ class MeCab(object):
             raise MeCabError(self._ERROR_NOTSTR)
 
         if self._KW_BOUNDARY in kwargs:
-            t = type(self._KW_BOUNDARY)
-            if not (t == self._REGEXTYPE or t == str):
+            val = kwargs[self._KW_BOUNDARY]
+            if not isinstance(val, self._REGEXTYPE) and not isinstance(val, str):
                 raise MeCabError('boundary_constraints must be re or str')
         elif self._KW_FEATURE in kwargs:
-            t = type(self._KW_FEATURE)
-            if t != dict:
-                raise MeCabError('feature_constraints must be dict')
+            val = kwargs[self._KW_FEATURE]
+            if not isinstance(val, list):
+                raise MeCabError('feature_constraints must be list')
 
         as_nodes = kwargs.get(self._KW_ASNODES, False)
 

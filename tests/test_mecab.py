@@ -63,43 +63,40 @@ class TestMecab(unittest.TestCase, Test23Support):
 
 
     # ------------------------------------------------------------------------
+    def test_init_unknownoption(self):
+        '''Test instantiation of MeCab with unrecognized option.'''
+        with self.assertRaises(api.MeCabError) as ctx:
+            with mecab.MeCab('--unknown'):
+                self.assertIsNotNone(re.search('--unknown', str(ctx.exception)))
 
-#    def test_init_unknownoption(self):
-#        '''Test instantiation of MeCab with unrecognized option.'''
-#        with self.assertRaises(api.MeCabError) as ctx:
-#            with mecab.MeCab('--unknown'):
-#                self.assertIsNotNone(re.search('--unknown', str(ctx.exception)))
-#
-#    def test_init_libunset(self):
-#        '''Test for load error when MeCab lib is not found.'''
-#        try:
-#            orig_env = os.getenv(mecab.MeCab.MECAB_PATH)
-#            os.environ[mecab.MeCab.MECAB_PATH] = '/foo/bar'
-#
-#            with self.assertRaises(api.MeCabError) as cm:
-#                with mecab.MeCab():
-#                    self.assertIsNotNone(
-#                        re.search('cannot load library /foo/bar',
-#                        str(cm.exception)))
-#        finally:
-#            os.environ[mecab.MeCab.MECAB_PATH] = orig_env
+    def test_init_libunset(self):
+        '''Test for load error when MeCab lib is not found.'''
+        try:
+            orig_env = os.getenv(mecab.MeCab.MECAB_PATH)
+            os.environ[mecab.MeCab.MECAB_PATH] = '/foo/bar'
 
-    # ------------------------------------------------------------------------
-#    def test_version(self):
-#        '''Test mecab_version.'''
-#        with mecab.MeCab() as nm:
-#            res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
-#            expected = self._b2u(res[0])
-#            self.assertIsNotNone(re.search(nm.version, expected))
+            with self.assertRaises(api.MeCabError) as cm:
+                with mecab.MeCab():
+                    self.assertIsNotNone(
+                        re.search('cannot load library /foo/bar',
+                        str(cm.exception)))
+        finally:
+            os.environ[mecab.MeCab.MECAB_PATH] = orig_env
 
     # ------------------------------------------------------------------------
-#    def test_parse_args(self):
-#        '''Test invocation of parse with bad arguments.'''
-#        with mecab.MeCab() as nm:
-#            with self.assertRaises(api.MeCabError):
-#                #nm.parse('foo', boundary_constraints=99.99)
-#                nm.parse('foo')
-#
+    def test_version(self):
+        '''Test mecab_version.'''
+        with mecab.MeCab() as nm:
+            res = Popen(['mecab', '-v'], stdout=PIPE).communicate()
+            expected = self._b2u(res[0])
+            self.assertIsNotNone(re.search(nm.version, expected))
+
+    # ------------------------------------------------------------------------
+    def test_parse_args(self):
+        '''Test invocation of parse with bad arguments.'''
+        with mecab.MeCab() as nm:
+            with self.assertRaises(api.MeCabError):
+                nm.parse('foo', boundary_constraints=99.99)
 
     def test_parse_unicodeRstr(self):
         '''Test parse: unicode input (Python 2) and bytes input (Python 3).'''
