@@ -1,7 +1,7 @@
 CHANGELOG
 ---------
 
-- 2015/04/18 0.5.0 release.
+- 2015/04/18 0.5.1 release.
     - Issue 48: Object destructor for MeCab dumps core in 0.5.0
 
 - 2015/04/17 0.5.0 release.
