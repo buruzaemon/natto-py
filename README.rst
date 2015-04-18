@@ -1,13 +1,5 @@
-natto-py |version| |travis| |pypi| |license|
+natto-py
 ===========================
-.. |version| image:: https://badge.fury.io/py/natto-py.svg
-    :target: https://pypi.python.org/pypi/natto-py
-.. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
-    :target: https://travis-ci.org/buruzaemon/natto-py
-.. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
-    :target: https://pypi.python.org/pypi/natto-py
-.. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
-    :target: _
 
 What is natto-py?
 -----------------
@@ -18,6 +10,8 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 \*nix.
 
 You can learn more about `natto-py at GitHub`_.
+
+|version| |travis| |pypi| |license|
 
 Requirements
 -------------
@@ -295,6 +289,14 @@ Copyright
 Copyright |copy| 2015, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
+.. |version| image:: https://badge.fury.io/py/natto-py.svg
+    :target: https://pypi.python.org/pypi/natto-py
+.. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
+    :target: https://travis-ci.org/buruzaemon/natto-py
+.. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
+    :target: https://pypi.python.org/pypi/natto-py
+.. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
+    :target: _
 .. _Python: http://www.python.org/
 .. _MeCab: http://taku910.github.io/mecab/
 .. _mecab-ipadic: http://taku910.github.io/mecab/#download
