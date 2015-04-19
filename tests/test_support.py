@@ -18,7 +18,7 @@ class TestSupport(unittest.TestCase, Test23Support):
         enc = self.env.charset
 
         self.bytes2str, self.str2bytes = support.string_support(enc)
-        self.splitter_support = support.splitter_support(enc)
+        self.split_pattern, self.split_features = support.splitter_support(enc)
 
         cwd = os.getcwd()
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
@@ -69,7 +69,7 @@ class TestSupport(unittest.TestCase, Test23Support):
         tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
         matches = [e for e in yml.get(key).get('matches')]
         expected = zip(tokens, matches)
-        actual = list(self.splitter_support(pat1, text))
+        actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 
@@ -89,7 +89,7 @@ class TestSupport(unittest.TestCase, Test23Support):
         tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
         matches = [e for e in yml.get(key).get('matches')]
         expected = zip(tokens, matches)
-        actual = list(self.splitter_support(pat1, text))
+        actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 
@@ -109,7 +109,7 @@ class TestSupport(unittest.TestCase, Test23Support):
         tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
         matches = [e for e in yml.get(key).get('matches')]
         expected = zip(tokens, matches)
-        actual = list(self.splitter_support(pat1, text))
+        actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 

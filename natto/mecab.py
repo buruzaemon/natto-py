@@ -141,7 +141,7 @@ class MeCab(object):
             self.__bytes2str, self.__str2bytes = string_support(env.charset)
 
             # Python 2/3 sentence splitter/tokenizer support
-            self.__split = splitter_support(env.charset)
+            self.__split_pattern, self.__split_features = splitter_support(env.charset)
 
             # Set up dictionary of MeCab options to use
             op = OptionParse(env.charset)
@@ -245,7 +245,7 @@ class MeCab(object):
 
         if self._KW_BOUNDARY in kwargs:
             patt = kwargs.get(self._KW_BOUNDARY, '.')
-            tokens = list(self.__split(patt, text))
+            tokens = list(self.__split_pattern(text, patt))
             text = ''.join([t[0] for t in tokens])
 
             btext = self.__str2bytes(text)
@@ -268,6 +268,23 @@ class MeCab(object):
                     bpos += 1
                 self.__mecab.mecab_lattice_set_boundary_constraint(
                     self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
+        elif self._KW_FEATURE in kwargs:
+            features = kwargs.get(self._KW_FEATURE, [])
+            fdict = dict(features)
+            tokens = self.__split_features(text, [e[0] for e in features])
+            text = ''.join([t[0] for t in tokens])
+
+            btext = self.__str2bytes(text)
+            self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
+  
+            bpos = 0
+            for (chunk, match) in tokens:
+                c = len(self.__str2bytes(chunk))
+                if match:
+                    btext = self.__str2bytes(fdict[chunk])
+                    self.__mecab.mecab_lattice_set_feature_constraint(
+                            self.lattice, bpos, bpos+c, btext)
+                bpos += c
         else:
             btext = self.__str2bytes(text)
             self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
@@ -304,7 +321,7 @@ class MeCab(object):
         try:
             if self._KW_BOUNDARY in kwargs:
                 patt = kwargs.get(self._KW_BOUNDARY, '.')
-                tokens = list(self.__split(patt, text))
+                tokens = list(self.__split_pattern(text, patt))
                 text = ''.join([t[0] for t in tokens])
 
                 btext = self.__str2bytes(text)
@@ -327,6 +344,23 @@ class MeCab(object):
                         bpos += 1
                     self.__mecab.mecab_lattice_set_boundary_constraint(
                         self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
+            elif self._KW_FEATURE in kwargs:
+                features = kwargs.get(self._KW_FEATURE, [])
+                fdict = dict(features)
+                tokens = self.__split_features(text, [e[0] for e in features])
+                text = ''.join([t[0] for t in tokens])
+
+                btext = self.__str2bytes(text)
+                self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
+  
+                bpos = 0
+                for (chunk, match) in tokens:
+                    c = len(self.__str2bytes(chunk))
+                    if match:
+                        btext = self.__str2bytes(fdict[chunk])
+                        self.__mecab.mecab_lattice_set_feature_constraint(
+                                self.lattice, bpos, bpos+c, btext)
+                    bpos += c
             else:
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
@@ -392,6 +426,8 @@ class MeCab(object):
             raise MeCabError(self._ERROR_EMPTY_STR)
         elif not isinstance(text, str):
             raise MeCabError(self._ERROR_NOTSTR)
+        elif 'partial' in self.options and not text.endswith("\n"):
+            raise MeCabError('partial parsing requires new-line char at end of text')
 
         if self._KW_BOUNDARY in kwargs:
             val = kwargs[self._KW_BOUNDARY]

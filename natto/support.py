@@ -64,9 +64,9 @@ def splitter_support(py2enc):
                 return token
             return _fn
 
-    def _fn_tokenize(pattern, sentence):
+    def _fn_tokenize_pattern(text, pattern):
         pos = 0
-        sentence = _fn_sentence(pattern, sentence)
+        sentence = _fn_sentence(pattern, text)
         postprocess = _fn_token2str(pattern)
         for m in re.finditer(pattern, sentence):
             if pos < m.start():
@@ -79,7 +79,21 @@ def splitter_support(py2enc):
         if pos < len(sentence):
             token = postprocess(sentence[pos:])
             yield (token.strip(), False)
-    return _fn_tokenize
+
+    def _fn_tokenize_features(text, features):
+        acc = []
+        acc.append((text.strip(), False))
+
+        for feat in features:
+            for i,e in enumerate(acc):
+                if e[1]==False:
+                    tmp = list(_fn_tokenize_pattern(e[0], feat))
+                    if len(tmp) > 0:
+                        acc.pop(i)
+                        acc[i:i] = tmp
+        return acc
+                        
+    return _fn_tokenize_pattern, _fn_tokenize_features
 
 '''
 Copyright (c) 2015, Brooke M. Fujita.
