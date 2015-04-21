@@ -435,8 +435,8 @@ class MeCab(object):
                 raise MeCabError('boundary_constraints must be re or str')
         elif self._KW_FEATURE in kwargs:
             val = kwargs[self._KW_FEATURE]
-            if not isinstance(val, list):
-                raise MeCabError('feature_constraints must be list')
+            if not isinstance(val, tuple):
+                raise MeCabError('feature_constraints must be tuple')
 
         as_nodes = kwargs.get(self._KW_ASNODES, False)
 

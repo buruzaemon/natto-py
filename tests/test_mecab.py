@@ -97,6 +97,11 @@ class TestMecab(unittest.TestCase, Test23Support):
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
                 nm.parse('foo', boundary_constraints=99.99)
+                
+        with mecab.MeCab() as nm:
+            with self.assertRaises(api.MeCabError):
+                nm.parse('foo', feature_constraints=[])
+
 
     def test_parse_unicodeRstr(self):
         '''Test parse: unicode input (Python 2) and bytes input (Python 3).'''
