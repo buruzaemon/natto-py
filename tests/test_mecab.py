@@ -94,13 +94,30 @@ class TestMecab(unittest.TestCase, Test23Support):
     # ------------------------------------------------------------------------
     def test_parse_args(self):
         '''Test invocation of parse with bad arguments.'''
+        # None text
+        with mecab.MeCab() as nm:
+            with self.assertRaises(api.MeCabError):
+                nm.parse(None)
+
+        # text must be str
+        with mecab.MeCab() as nm:
+            with self.assertRaises(api.MeCabError):
+                nm.parse(99)
+
+        # boundary_constraints must be re or str
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
                 nm.parse('foo', boundary_constraints=99.99)
                 
+        # feature_constraints must be tuple
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
                 nm.parse('foo', feature_constraints=[])
+
+        # -p / --partial, text must end with \n
+        with mecab.MeCab('--partial') as nm:
+            with self.assertRaises(api.MeCabError):
+                nm.parse('foo')
 
 
     def test_parse_unicodeRstr(self):
@@ -114,12 +131,6 @@ class TestMecab(unittest.TestCase, Test23Support):
 
             with self.assertRaises(api.MeCabError):
                 nm.parse(b)
-
-    def test_null_text_error(self):
-        '''Test invocation of parse with null argument.'''
-        with mecab.MeCab() as nm:
-            with self.assertRaises(api.MeCabError):
-                nm.parse(None)
 
     # ------------------------------------------------------------------------
     def test_parse_tostr_default(self):
