@@ -109,7 +109,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
                 nm.parse('foo', boundary_constraints=99.99)
-                
+
         # feature_constraints must be tuple
         with mecab.MeCab() as nm:
             with self.assertRaises(api.MeCabError):
@@ -173,7 +173,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 actual = self._2bytes(self._mecab_parse(argf))
                 actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
-                for i, e in enumerate(actual):
+                for i in range(len(actual)):
                     s, f = actual[i].split()
                     self.assertEqual(expected[i].surface, s)
                     self.assertEqual(expected[i].feature, f)
@@ -186,8 +186,8 @@ class TestMecab(unittest.TestCase, Test23Support):
             txt = self._u2str(yml.get('text'))
             actual = nm.parse(txt).split('\n')
             expected = [self._u2str(e) for e in yml.get('expected').get('str').split(',')]
-            
-            for i, e in enumerate(actual):
+
+            for i in range(len(actual)):
                 self.assertTrue(actual[i].startswith(expected[i]))
 
    # ------------------------------------------------------------------------
@@ -203,7 +203,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt1, boundary_constraints=pat1)
             lines = actual.split(os.linesep)
 
-            for i, e in enumerate(lines):
+            for i in range(len(lines)):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
             # slightly more complex pattern
@@ -215,7 +215,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt2, boundary_constraints=pat2)
             lines = actual.split(os.linesep)
 
-            for i, e in enumerate(lines):
+            for i in range(len(lines)):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
             # complex pattern requiring RegExp compiled with re.U flag
@@ -227,7 +227,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt3, boundary_constraints=re.compile(pat3, re.U))
             lines = actual.split(os.linesep)
 
-            for i, e in enumerate(lines):
+            for i in range(len(lines)):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
             # text includes trailing whitespace char in token
@@ -235,11 +235,12 @@ class TestMecab(unittest.TestCase, Test23Support):
             txt9 = self._u2str(yml9.get('text'))
             pat9 = self._u2str(yml9.get('pattern'))
             expected = [self._u2str(e) for e in yml9.get('expected')]
+            print("??? '{}'".format(type(pat9)))
 
             actual = nm.parse(txt9, boundary_constraints=pat9)
             lines = actual.split(os.linesep)
 
-            for i, e in enumerate(lines):
+            for i in range(len(lines)):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
         with mecab.MeCab('-N2') as nm:
@@ -252,7 +253,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             actual = nm.parse(txt, boundary_constraints=pat)
             lines = actual.splitlines()
 
-            for i, e in enumerate(lines):
+            for i in range(len(lines)):
                 self.assertTrue(lines[i].endswith(expected[i]))
 
         # with theta option
@@ -267,7 +268,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 actual = nm.parse(txt1, boundary_constraints=pat1)
                 lines = actual.split(os.linesep)
 
-                for i, e in enumerate(lines):
+                for i in range(len(lines)):
                     self.assertTrue(lines[i].startswith(expected[i]))
 
    # ------------------------------------------------------------------------
@@ -357,7 +358,7 @@ class TestMecab(unittest.TestCase, Test23Support):
 
             actual = nm.parse(txt, feature_constraints=feat).split('\n')
 
-            for i, e in enumerate(actual):
+            for i in range(len(actual)):
                 self.assertEqual(actual[i], expected[i])
 
 

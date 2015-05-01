@@ -271,19 +271,19 @@ class MeCab(object):
         elif self._KW_FEATURE in kwargs:
             features = kwargs.get(self._KW_FEATURE, ())
             fd = {morph: self.__str2bytes(feat) for morph, feat in features}
-            
+
             tokens = self.__split_features(text, [e[0] for e in features])
             text = ''.join([t[0] for t in tokens])
 
             btext = self.__str2bytes(text)
             self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
-  
+
             bpos = 0
             for chunk, match in tokens:
                 c = len(self.__str2bytes(chunk))
                 if match == True:
                     self.__mecab.mecab_lattice_set_feature_constraint(
-                            self.lattice, bpos, bpos+c, fd[chunk])
+                        self.lattice, bpos, bpos+c, fd[chunk])
                 bpos += c
         else:
             btext = self.__str2bytes(text)
@@ -347,19 +347,19 @@ class MeCab(object):
             elif self._KW_FEATURE in kwargs:
                 features = kwargs.get(self._KW_FEATURE, [])
                 fd = {morph: self.__str2bytes(feat) for morph, feat in features}
-               
+
                 tokens = self.__split_features(text, [e[0] for e in features])
                 text = ''.join([t[0] for t in tokens])
 
                 btext = self.__str2bytes(text)
                 self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
-  
+
                 bpos = 0
                 for chunk, match in tokens:
                     c = len(self.__str2bytes(chunk))
                     if match:
                         self.__mecab.mecab_lattice_set_feature_constraint(
-                                self.lattice, bpos, bpos+c, fd[chunk])
+                            self.lattice, bpos, bpos+c, fd[chunk])
                     bpos += c
             else:
                 btext = self.__str2bytes(text)
