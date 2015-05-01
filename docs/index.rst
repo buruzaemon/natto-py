@@ -226,12 +226,12 @@ a morpheme should be. Use the ``boundary_constraints`` keyword. For hints on
 tokenization, please see `Regular expression operations`_ and `re.finditer`_
 in particular.
 
-In the example below, we again use the ``-F`` short form of the
-``--node-format`` option to capture the following in the node's ``feature``:
+This example uses the ``-F`` node-format option to customize the resulting
+``MeCabNode`` feature attribute to extract:
 
-- morpheme surface
-- node part-of-speech
-- node status value
+- ``%m`` - morpheme surface
+- ``%f[0]`` - node part-of-speech
+- ``%s`` - node ``stat`` status value, 1 is ``unknown``
 
 Note that any such morphemes captured will have node ``stat`` status of 1 (unknown)::
 
@@ -256,6 +256,37 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
     ヒーロー見参, 名詞, 1
     ！, 記号, 0
     ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    EOS
+
+
+With feature constraint parsing, you can provide instructions to MeCab
+on what feature to use for a matching morpheme. Use the 
+``feature_constraints`` keyword to pass in a ``tuple`` containing elements
+that themselves are ``tuple`` instances with a specific morpheme (str) 
+and a corresponding feature (str), in order of constraint precedence::
+
+    with MeCab('-F%m,\s%f[0],\s%s') as nm:
+
+        text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
+        features = (('ヒーロー見参', '感動詞'),)
+
+        for n in nm.parse(text, feature_constraints=features, as_nodes=True):
+    ...     print(n.feature)
+    ...
+    心, 名詞, 0
+    の, 助詞, 0
+    中, 名詞, 0
+    で, 助詞, 0
+    3, 名詞, 1
+    回, 名詞, 0
+    唱え, 動詞, 0
+    、, 記号, 0
+    ヒーロー見参, 感動詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 感動詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 感動詞, 1
     ！, 記号, 0
     EOS
 
