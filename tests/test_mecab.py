@@ -22,10 +22,8 @@ class TestMecab(unittest.TestCase, Test23Support):
         cwd = os.getcwd()
         if sys.platform == 'win32':
             self.textfile = os.path.join(cwd, 'tests', 'test_sjis.txt')
-            partialfile = os.path.join(cwd, 'tests', 'test_sjis_partial')
         else:
             self.textfile = os.path.join(cwd, 'tests', 'test_utf8.txt')
-            partialfile = os.path.join(cwd, 'tests', 'test_utf8_partial')
 
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
@@ -36,11 +34,6 @@ class TestMecab(unittest.TestCase, Test23Support):
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f)
 
-        with codecs.open(partialfile, 'r') as f:
-            lines = f.readlines()
-            self.partial_text = ''.join(lines[0:3])
-            self.partial_tostr = lines[4].strip().split(',')
-            self.partial_tonodes = lines[5].strip().split('|')
 
     def tearDown(self):
         self.textfile = None
