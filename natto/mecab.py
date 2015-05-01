@@ -345,7 +345,7 @@ class MeCab(object):
                     self.__mecab.mecab_lattice_set_boundary_constraint(
                         self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
             elif self._KW_FEATURE in kwargs:
-                features = kwargs.get(self._KW_FEATURE, [])
+                features = kwargs.get(self._KW_FEATURE, ())
                 fd = {morph: self.__str2bytes(feat) for morph, feat in features}
 
                 tokens = self.__split_features(text, [e[0] for e in features])
