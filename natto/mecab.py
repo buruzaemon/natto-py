@@ -415,9 +415,14 @@ class MeCab(object):
             or string if False.
         :type as_nodes: bool, defaults to False
         :param boundary_constraints: regular expression for morpheme boundary
-            splitting; if non-None, then boundary constraint parsing will be
-            used.
-        :type boundary_constraints: str
+            splitting; if non-None and feature_constraints is None, then
+            boundary constraint parsing will be used.
+        :type boundary_constraints: str or re
+        :param feature_constraints: tuple containing tuple instances of
+            target morpheme and corresponding feature string in order
+            of precedence; if non-None and boundary_constraints is None,
+            then feature constraint parsing will be used.
+        :type feature_constraints: tuple
         :return: A single string containing the entire MeCab output;
             or a Generator yielding the MeCabNode instances.
         :raises: MeCabError
