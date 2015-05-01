@@ -22,17 +22,25 @@ class TestMecab(unittest.TestCase, Test23Support):
         cwd = os.getcwd()
         if sys.platform == 'win32':
             self.textfile = os.path.join(cwd, 'tests', 'test_sjis.txt')
+            partialfile = os.path.join(cwd, 'tests', 'test_sjis_partial')
         else:
             self.textfile = os.path.join(cwd, 'tests', 'test_utf8.txt')
+            partialfile = os.path.join(cwd, 'tests', 'test_utf8_partial')
 
-        self.yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
+        yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
 
         with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
-        with codecs.open(self.yamlfile, 'r', encoding='utf-8') as f:
+        with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f)
+
+        with codecs.open(partialfile, 'r') as f:
+            lines = f.readlines()
+            self.partial_text = ''.join(lines[0:3])
+            self.partial_tostr = lines[4].strip().split(',')
+            self.partial_tonodes = lines[5].strip().split('|')
 
     def tearDown(self):
         self.textfile = None
@@ -178,7 +186,19 @@ class TestMecab(unittest.TestCase, Test23Support):
                     self.assertEqual(expected[i].feature, f)
 
    # ------------------------------------------------------------------------
-    def test_bcparse_tostr(self):
+    def test_parse_tostr_partial(self):
+        '''Test -p / --partial parsing to string.'''
+        with mecab.MeCab('-p') as nm:
+            yml = self.yaml.get('text10')
+            txt = self._u2str(yml.get('text'))
+            actual = nm.parse(txt).split('\n')
+            expected = [self._u2str(e) for e in yml.get('expected').get('str').split(',')]
+            
+            for i, e in enumerate(actual):
+                self.assertTrue(actual[i].startswith(expected[i]))
+
+   # ------------------------------------------------------------------------
+    def test_parse_tostr_boundary(self):
         '''Test boundary constraint parsing to string (output format does NOT apply).'''
         with mecab.MeCab() as nm:
             # simple pattern
@@ -258,7 +278,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                     self.assertTrue(lines[i].startswith(expected[i]))
 
    # ------------------------------------------------------------------------
-    def test_bcparse_tonodes(self):
+    def test_parse_tonodes_boundary(self):
         '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
         with mecab.MeCab() as nm:
             # simple node-parsing, no N-Best or output formatting
@@ -333,6 +353,19 @@ class TestMecab(unittest.TestCase, Test23Support):
                     if not node.is_eos():
                         self.assertEqual(node.surface, expected[i])
 
+    # ------------------------------------------------------------------------
+    def test_parse_tostr_feature(self):
+        '''Test feature constraint parsing to string (output format does NOT apply).'''
+        with mecab.MeCab("-F%m,%f[0],%s\\n") as nm:
+            yml = self.yaml.get('text11')
+            txt = self._u2str(yml.get('text'))
+            feat = (tuple(self._u2str(yml.get('feature')).split(',')) ,)
+            expected = [self._u2str(e) for e in yml.get('expected')]
+
+            actual = nm.parse(txt, feature_constraints=feat).split('\n')
+
+            for i, e in enumerate(actual):
+                self.assertEqual(actual[i], expected[i])
 
 
 '''

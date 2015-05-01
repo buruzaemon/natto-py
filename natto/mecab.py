@@ -269,8 +269,9 @@ class MeCab(object):
                 self.__mecab.mecab_lattice_set_boundary_constraint(
                     self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
         elif self._KW_FEATURE in kwargs:
-            features = kwargs.get(self._KW_FEATURE, [])
-            fdict = dict(features)
+            features = kwargs.get(self._KW_FEATURE, ())
+            fd = {morph: self.__str2bytes(feat) for morph, feat in features}
+            
             tokens = self.__split_features(text, [e[0] for e in features])
             text = ''.join([t[0] for t in tokens])
 
@@ -278,12 +279,11 @@ class MeCab(object):
             self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
   
             bpos = 0
-            for (chunk, match) in tokens:
+            for chunk, match in tokens:
                 c = len(self.__str2bytes(chunk))
-                if match:
-                    btext = self.__str2bytes(fdict[chunk])
+                if match == True:
                     self.__mecab.mecab_lattice_set_feature_constraint(
-                            self.lattice, bpos, bpos+c, btext)
+                            self.lattice, bpos, bpos+c, fd[chunk])
                 bpos += c
         else:
             btext = self.__str2bytes(text)
@@ -346,7 +346,8 @@ class MeCab(object):
                         self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
             elif self._KW_FEATURE in kwargs:
                 features = kwargs.get(self._KW_FEATURE, [])
-                fdict = dict(features)
+                fd = {morph: self.__str2bytes(feat) for morph, feat in features}
+               
                 tokens = self.__split_features(text, [e[0] for e in features])
                 text = ''.join([t[0] for t in tokens])
 
@@ -354,12 +355,11 @@ class MeCab(object):
                 self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
   
                 bpos = 0
-                for (chunk, match) in tokens:
+                for chunk, match in tokens:
                     c = len(self.__str2bytes(chunk))
                     if match:
-                        btext = self.__str2bytes(fdict[chunk])
                         self.__mecab.mecab_lattice_set_feature_constraint(
-                                self.lattice, bpos, bpos+c, btext)
+                                self.lattice, bpos, bpos+c, fd[chunk])
                     bpos += c
             else:
                 btext = self.__str2bytes(text)
