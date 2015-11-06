@@ -177,6 +177,45 @@ for using ``natto-py`` in a production environment::
 
 ----
 
+MeCab output formatting is extremely flexible and is highly recommended for
+any serious natural language processing task. Rather than parsing the MeCab
+output as a single, large string, use MeCab's ``--node-format`` option
+(short form ``-F``) to customize the node's ``feature`` attribute.
+
+- morpheme surface
+- part-of-speech
+- part-of-speech ID
+- pronunciation
+
+This example formats the node ``feature`` to capture the items above as a
+comma-separated value::
+
+    # MeCab options used:
+    #
+    # -F    ... short-form of --node-format
+    # %m    ... morpheme surface
+    # %f[0] ... part-of-speech
+    # %h    ... part-of-speech id (ipadic)
+    # %f[8] ... pronunciation
+    #
+    with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
+        for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
+    ...     # only normal nodes, ignore any end-of-sentence and unknown nodes
+    ...     if n.is_nor():
+    ...         print(n.feature)
+    ...
+    ピンチ,名詞,38,ピンチ
+    の,助詞,24,ノ
+    時,名詞,66,トキ
+    に,助詞,13,ニ
+    は,助詞,16,ワ
+    必ず,副詞,35,カナラズ
+    ヒーロー,名詞,38,ヒーロー
+    が,助詞,13,ガ
+    現れる,動詞,31,アラワレル
+    。,記号,7,。
+
+----
 
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
