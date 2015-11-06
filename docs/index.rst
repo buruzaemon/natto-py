@@ -112,6 +112,22 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
 ----
 
+Display details about the ``mecab`` system dictionary used::
+
+    sysdic = nm.dicts[0]
+    print(sysdic)
+
+    # displays the MeCab system dictionary info
+    <natto.dictionary.DictionaryInfo
+     dictionary='mecab_dictionary_info_t *' 0x801c19540>,
+     filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
+     charset=utf8,
+     type=0>
+
+----
+
+
+
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
