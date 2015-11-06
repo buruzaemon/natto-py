@@ -261,6 +261,37 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
     EOS
 
 
+ With feature constraint parsing, you can provide instructions to MeCab
+on what feature to use for a matching morpheme. Use the 
+``feature_constraints`` keyword to pass in a ``tuple`` containing elements
+that themselves are ``tuple`` instances with a specific morpheme (str) 
+and a corresponding feature (str), in order of constraint precedence::
+
+    with MeCab('-F%m,\s%f[0],\s%s') as nm:
+
+        text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
+        features = (('ヒーロー見参', '感動詞'),)
+
+        for n in nm.parse(text, feature_constraints=features, as_nodes=True):
+    ...     print(n.feature)
+    ...
+    心, 名詞, 0
+    の, 助詞, 0
+    中, 名詞, 0
+    で, 助詞, 0
+    3, 名詞, 1
+    回, 名詞, 0
+    唱え, 動詞, 0
+    、, 記号, 0
+    ヒーロー見参, 感動詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 感動詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 感動詞, 1
+    ！, 記号, 0
+    EOS
+
+----
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
