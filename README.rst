@@ -11,7 +11,7 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 
 You can learn more about `natto-py at GitHub`_.
 
-|license| |travis| |version| |pypi| |readthedocs|
+|license| |travis| |version| |readthedocs| |pypi| 
 
 Requirements
 -------------
