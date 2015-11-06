@@ -2,7 +2,7 @@
 __all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError',
            'OptionParse', 'string_support', 'splitter_support']
 
-import .version
+#import .version
 from .api import MeCabError
 from .dictionary import DictionaryInfo
 from .mecab import MeCab
