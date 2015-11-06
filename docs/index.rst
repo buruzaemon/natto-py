@@ -85,6 +85,32 @@ e.g., from within a Python program::
     os.environ['MECAB_PATH']='/usr/local/lib/libmecab.so'
     os.environ['MECAB_CHARSET']='utf-16'
 
+Usage
+-----
+Here's a very quick guide to using ``natto-py``.
+
+Instantiate a reference to the ``mecab`` library, and display some details::
+
+    from natto import MeCab
+
+    nm = MeCab()
+    print(nm)
+
+    # displays details about the MeCab instance
+    <natto.mecab.MeCab
+     model=<cdata 'mecab_model_t *' 0x801c16300>,
+     tagger=<cdata 'mecab_t *' 0x801c17470>,
+     lattice=<cdata 'mecab_lattice_t *' 0x801c196c0>,
+     libpath="/usr/local/lib/libmecab.so",
+     options={},
+     dicts=[<natto.dictionary.DictionaryInfo
+             dictionary='mecab_dictionary_info_t *' 0x801c19540>,
+             filepath="/usr/local/lib/mecab/dic/ipadic/sys.dic",
+             charset=utf8,
+             type=0],
+     version=0.996>
+
+----
 
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
