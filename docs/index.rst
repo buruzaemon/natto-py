@@ -261,7 +261,7 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
     EOS
 
 
- With feature constraint parsing, you can provide instructions to MeCab
+With feature constraint parsing, you can provide instructions to MeCab
 on what feature to use for a matching morpheme. Use the 
 ``feature_constraints`` keyword to pass in a ``tuple`` containing elements
 that themselves are ``tuple`` instances with a specific morpheme (str) 
