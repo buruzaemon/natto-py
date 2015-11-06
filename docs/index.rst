@@ -18,6 +18,23 @@ You can learn more about `natto-py at GitHub`_.
 
 |license| |travis| |version| |pypi|
 
+Requirements
+-------------
+``natto-py`` requires the following:
+
+- An existing installation of `MeCab 0.996`_
+- A system dictionary, like `mecab-ipadic`_ or `mecab-jumandic`_
+- `cffi 0.8.6`_ or greater
+
+The following Python versions are supported:
+
+- `Python 2.7`_
+- `Python 3.2`_
+- `Python 3.3`_
+- `Python 3.4`_
+- `Python 3.5`_
+
+
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
