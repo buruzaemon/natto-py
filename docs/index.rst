@@ -34,6 +34,15 @@ The following Python versions are supported:
 - `Python 3.4`_
 - `Python 3.5`_
 
+Installation
+------------
+Install ``natto-py`` as you would any other Python package::
+
+    $ pip install natto-py
+
+This will automatically install the ``cffi`` package, which ``natto-py`` uses
+to bind to the ``mecab`` library.
+
 
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
