@@ -11,7 +11,7 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 
 You can learn more about `natto-py at GitHub`_.
 
-|license| |travis| |version| |pypi|
+|license| |travis| |version| |pypi| |readthedocs|
 
 Requirements
 -------------
@@ -334,6 +334,9 @@ the ``LICENSE`` file for further details.
     :target: https://pypi.python.org/pypi/natto-py
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: _
+.. |readthedocs|: image:: https://readthedocs.org/projects/natto-py/badge/?version=master
+    :target: http://natto-py.readthedocs.org/en/master/?badge=master
+    :alt: Documentation Status
 .. _Python: http://www.python.org/
 .. _MeCab: http://taku910.github.io/mecab/
 .. _mecab-ipadic: http://taku910.github.io/mecab/#download
