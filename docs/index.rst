@@ -32,6 +32,7 @@ The following Python versions are supported:
 - `Python 3.2`_
 - `Python 3.3`_
 - `Python 3.4`_
+- `Python 3.5`_
 
 Installation
 ------------
@@ -310,11 +311,16 @@ Contributing to natto-py
 - Start a feature/bugfix branch.
 - Commit and push until you are happy with your contribution.
 - Make sure to add tests for it. This is important so I don't break it in a
-  future version unintentionally. I use unittest_ as it is very natural
-  and easy-to-use.
+  future version unintentionally.
 - Please try not to mess with the ``setup.py``, ``CHANGELOG``, or version
   files. If you must have your own version, that is fine, but please isolate
   to its own commit so I can cherry-pick around it.
+- This project uses the following packages for development:
+
+  - Sphinx_ for document generation
+  - twine_ for secure uploads during release
+  - unittest_ for unit tests, as it is very natural and easy-to-use
+  - PyYAML_ for data loading during tests
 
 Changelog
 ---------
@@ -342,6 +348,7 @@ Documentation
 .. _Python 3.2: https://docs.python.org/dev/whatsnew/3.2.html
 .. _Python 3.3: https://docs.python.org/dev/whatsnew/3.3.html
 .. _Python 3.4: https://docs.python.org/dev/whatsnew/3.4.html 
+.. _Python 3.5: https://docs.python.org/dev/whatsnew/3.5.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
@@ -352,7 +359,10 @@ Documentation
 .. _git: http://git-scm.com/downloads
 .. _check out the latest code at GitHub: https://github.com/buruzaemon/natto-py
 .. _Browse the issue tracker: https://github.com/buruzaemon/natto-py/issues
+.. _Sphinx: http://sphinx-doc.org/
+.. _twine: https://github.com/pypa/twine
 .. _unittest: http://pythontesting.net/framework/unittest/unittest-introduction/
+.. _PyYAML: http://pyyaml.org/wiki/PyYAMLDocumentation
 .. |copy| unicode:: 0xA9 .. copyright sign
 
 
