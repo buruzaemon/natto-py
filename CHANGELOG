@@ -1,6 +1,11 @@
 CHANGELOG
 ---------
 
+- 2015/11/07 0.7.0 release.
+    - Issue 67: Confirm behavior with Python 3.5
+    - Issue 68: Update README with dependencies for dev & testing
+    - Issue 69: Read in version string from file
+
 - 2015/05/02 0.6.0 release.
     - Issue 34: Add support for feature constraint parsing 
 
