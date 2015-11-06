@@ -317,10 +317,6 @@ Contributing to natto-py
   to its own commit so I can cherry-pick around it.
 - This project uses the following packages for development:
 
-  - Sphinx_ for document generation
-  - twine_ for secure uploads during release
-  - unittest_ for unit tests, as it is very natural and easy-to-use
-  - PyYAML_ for data loading during tests
 
 Changelog
 ---------
