@@ -1,14 +1,8 @@
 # -*- coding: utf-8 -*-
-__all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError',
-           'OptionParse', 'string_support', 'splitter_support']
+'''Version and version info for the natto-py package.'''
 
-from .api import MeCabError
-from .dictionary import DictionaryInfo
-from .mecab import MeCab
-from .node import MeCabNode
-from .option_parse import OptionParse
-from .support import string_support, splitter_support
-from .version import __version__, __version_info__
+__version__ = '0.7.0'
+__version_info__ = (0, 7, 0)
 
 
 '''
