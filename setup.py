@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import codecs
+import os
 import sys
 from os import path
 from setuptools import setup
@@ -8,17 +9,20 @@ extra = {}
 if sys.version_info >= (3,):
     extra['use_2to3'] = True
 
-with codecs.open(path.join(path.abspath(path.dirname(__file__)), 'README.rst'),
+info = path.join(path.abspath(os.getcwd()), 'natto', 'version.py')
+exec(open(info).read())
+
+with codecs.open(path.join(os.getcwd(), 'README.rst'),
                  encoding='utf-8') as f:
     LONG_DESC = f.read()
 
 setup(
     name='natto-py',
 
-    version='0.6.0',
+    version=__version__,
 
-    description=' '.join(['A Tasty Python Binding with MeCab',
-                          '(FFI-based, no SWIG or compiler necessary)']),
+    description=('A Tasty Python Binding with MeCab'
+                 '(FFI-based, no SWIG or compiler necessary)'),
     long_description=LONG_DESC,
 
     url='https://github.com/buruzaemon/natto-py',
