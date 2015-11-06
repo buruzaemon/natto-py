@@ -217,6 +217,50 @@ comma-separated value::
 
 ----
 
+`Partial parsing`_ (制約付き解析), allows you to pass hints to MeCab on
+how to tokenize morphemes when parsing. Most useful are boundary constraint
+parsing and feature constraint parsing.
+
+With boundary constraint parsing, you can specify either a compiled ``re``
+regular expression object or a string to tell MeCab where the boundaries of
+a morpheme should be. Use the ``boundary_constraints`` keyword. For hints on
+tokenization, please see `Regular expression operations`_ and `re.finditer`_
+in particular.
+
+This example uses the ``-F`` node-format option to customize the resulting
+``MeCabNode`` feature attribute to extract:
+
+- ``%m`` - morpheme surface
+- ``%f[0]`` - node part-of-speech
+- ``%s`` - node ``stat`` status value, 1 is ``unknown``
+
+Note that any such morphemes captured will have node ``stat`` status of 1 (unknown)::
+
+    with MeCab('-F%m,\s%f[0],\s%s') as nm:
+
+        text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
+        pattern = 'ヒーロー見参'
+
+        for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
+    ...     print(n.feature)
+    ...
+    心, 名詞, 0
+    の, 助詞, 0
+    中, 名詞, 0
+    で, 助詞, 0
+    3, 名詞, 1
+    回, 名詞, 0
+    唱え, 動詞, 0
+    、, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    ヒーロー見参, 名詞, 1
+    ！, 記号, 0
+    EOS
+
+
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
