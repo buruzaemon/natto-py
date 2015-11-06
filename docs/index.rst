@@ -144,6 +144,38 @@ Parse Japanese text and send the MeCab result as a single string to
     。      記号,句点,*,*,*,*,。,。,。
     EOS
 
+----
+
+Next, try parsing the text with MeCab node parsing. A generator yielding the
+MeCabNode instances lets you efficiently iterate over the output without first
+materializing each and every resulting MeCabNode instance. The MeCabNode 
+instances yielded allow access to more detailed information about each
+morpheme.
+
+Here we use a `Python with-statement`_ to automatically clean up after we 
+finish node parsing with the MeCab tagger. This is the recommended approach
+for using ``natto-py`` in a production environment::
+
+    # Use a Python with-statement to ensure mecab_destroy is invoked
+    #
+    with MeCab() as nm:
+        for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
+    ...     # ignore any end-of-sentence nodes
+    ...     if not n.is_eos():
+    ...         print('{}\t{}'.format(n.surface, n.cost))
+    ...
+    ピンチ    3348
+    の        3722
+    時        5176
+    に        5083
+    は        5305
+    必ず    7525
+    ヒーロー   11363
+    が       10508
+    現れる   10841
+    。        7127
+
+----
 
 
 
