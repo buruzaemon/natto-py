@@ -334,7 +334,7 @@ the ``LICENSE`` file for further details.
     :target: https://pypi.python.org/pypi/natto-py
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: _
-.. |readthedocs|: image:: https://readthedocs.org/projects/natto-py/badge/?version=master
+.. |readthedocs| image:: https://readthedocs.org/projects/natto-py/badge/?version=master
     :target: http://natto-py.readthedocs.org/en/master/?badge=master
     :alt: Documentation Status
 .. _Python: http://www.python.org/
