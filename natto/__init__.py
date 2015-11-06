@@ -2,15 +2,13 @@
 __all__ = ['MeCab', 'DictionaryInfo', 'MeCabNode', 'MeCabError',
            'OptionParse', 'string_support', 'splitter_support']
 
+import .version
 from .api import MeCabError
 from .dictionary import DictionaryInfo
 from .mecab import MeCab
 from .node import MeCabNode
 from .option_parse import OptionParse
 from .support import string_support, splitter_support
-
-__version__ = '0.6.0'
-__version_info__ = (0, 6, 0)
 
 
 '''
