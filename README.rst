@@ -292,7 +292,7 @@ and a corresponding feature (str), in order of constraint precedence::
 Learn More
 ----------
 - Examples and more detailed information about ``natto-py`` can be found on the `project Wiki`_.
-- Working code in IPython notebook form can be found under this `project's notebooks directory`_.
+- Working code in Jupyter notebook form can be found under this `project's notebooks directory`_.
 - `API documentation on Read the Docs`_.
 
 Contributing to natto-py
