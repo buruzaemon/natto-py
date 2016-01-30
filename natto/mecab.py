@@ -390,6 +390,8 @@ class MeCab(object):
                             mnode = MeCabNode(nptr, surf, feat)
                             yield mnode
                         nptr = getattr(nptr, 'next')
+        except GeneratorExit:
+            pass
         except:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
             raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
