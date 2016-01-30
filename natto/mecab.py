@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 '''The main interface to MeCab via natto-py.'''
+import logging
 import os
 import re
 from .api import MeCabError
@@ -9,6 +10,8 @@ from .environment import MeCabEnv
 from .node import MeCabNode
 from .option_parse import OptionParse
 from .support import string_support, splitter_support
+
+logger = logging.getLogger('natto.mecab')
 
 class MeCab(object):
     '''The main interface to the MeCab library, wrapping the MeCab Tagger.
@@ -88,6 +91,9 @@ class MeCab(object):
     _ERROR_INIT = 'Could not initialize MeCab: {}'
     _ERROR_NOTSTR = 'Text should be of type str'
     _ERROR_NULLPTR = 'Could not initialize MeCab {}'
+    _ERROR_MISSING_NL = 'Partial-parsing requires new-line char at end of text'
+    _ERROR_BOUNDARY = 'boundary_constraints must be re or str'
+    _ERROR_FEATURE = 'feature_constraints must be tuple'
 
     _REPR_FMT = ('<{}.{} model={}, tagger={}, lattice={},'
                  ' libpath="{}", options={}, dicts={}, version={}>')
@@ -152,14 +158,17 @@ class MeCab(object):
 
             self.model = self.__mecab.mecab_model_new2(ostr)
             if self.model == self.__ffi.NULL:
+                logger.error(self._ERROR_NULLPTR.format('Model'))
                 raise MeCabError(self._ERROR_NULLPTR.format('Model'))
 
             self.tagger = self.__mecab.mecab_model_new_tagger(self.model)
             if self.tagger == self.__ffi.NULL:
+                logger.error(self._ERROR_NULLPTR.format('Tagger'))
                 raise MeCabError(self._ERROR_NULLPTR.format('Tagger'))
 
             self.lattice = self.__mecab.mecab_model_new_lattice(self.model)
             if self.lattice == self.__ffi.NULL:
+                logger.error(self._ERROR_NULLPTR.format('Lattice'))
                 raise MeCabError(self._ERROR_NULLPTR.format('Lattice'))
 
             n = self.options.get('nbest', 1)
@@ -203,8 +212,10 @@ class MeCab(object):
             self.version = self.__bytes2str(
                 self.__ffi.string(self.__mecab.mecab_version()))
         except EnvironmentError as err:
+            logger.error(self._ERROR_INIT.format(str(err)))
             raise MeCabError(err)
         except ValueError as verr:
+            logger.error(self._ERROR_INIT.format(str(verr)))
             raise MeCabError(self._ERROR_INIT.format(str(verr)))
 
     def __del__(self):
@@ -301,6 +312,7 @@ class MeCab(object):
             return self.__bytes2str(raw).strip()
         else:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
+            logger.error(self.__bytes2str(self.__ffi.string(err)))
             raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
 
     def __parse_tonodes(self, text, **kwargs):
@@ -391,9 +403,10 @@ class MeCab(object):
                             yield mnode
                         nptr = getattr(nptr, 'next')
         except GeneratorExit:
-            pass
+            logger.debug('close invoked on generator')
         except:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
+            logger.error(self.__bytes2str(self.__ffi.string(err)))
             raise MeCabError(self.__bytes2str(self.__ffi.string(err)))
 
     def __repr__(self):
@@ -430,20 +443,25 @@ class MeCab(object):
         :raises: MeCabError
         '''
         if text is None:
+            logger.error(self._ERROR_EMPTY_STR)
             raise MeCabError(self._ERROR_EMPTY_STR)
         elif not isinstance(text, str):
+            logger.error(self._ERROR_NOTSTR)
             raise MeCabError(self._ERROR_NOTSTR)
         elif 'partial' in self.options and not text.endswith("\n"):
-            raise MeCabError('partial parsing requires new-line char at end of text')
+            logger.error(self._ERROR_MISSING_NL)
+            raise MeCabError(self._ERROR_MISSING_NL)
 
         if self._KW_BOUNDARY in kwargs:
             val = kwargs[self._KW_BOUNDARY]
             if not isinstance(val, self._REGEXTYPE) and not isinstance(val, str):
-                raise MeCabError('boundary_constraints must be re or str')
+                logger.error(self._ERROR_BOUNDARY)
+                raise MeCabError(self._ERROR_BOUNDARY)
         elif self._KW_FEATURE in kwargs:
             val = kwargs[self._KW_FEATURE]
             if not isinstance(val, tuple):
-                raise MeCabError('feature_constraints must be tuple')
+                logger.error(self._ERROR_FEATURE)
+                raise MeCabError(self._ERROR_FEATURE)
 
         as_nodes = kwargs.get(self._KW_ASNODES, False)
 

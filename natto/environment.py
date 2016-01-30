@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 '''Convenience API to obtain information on MeCab environment.'''
+import logging
 import os
 import sys
 
 from subprocess import Popen, PIPE
+
+logger = logging.getLogger('natto.environment')
 
 class MeCabEnv(object):
     '''Convenience class of object to obtain information on MeCab environment.
@@ -19,8 +22,6 @@ class MeCabEnv(object):
 
     Will defer to the user-provided values in environment variables
     MECAB_PATH and MECAB_CHARSET.
-
-    The debug keyword argument outputs debugging messages to stderr.
     '''
     MECAB_PATH = 'MECAB_PATH'
     MECAB_CHARSET = 'MECAB_CHARSET'
@@ -32,26 +33,22 @@ class MeCabEnv(object):
     _WINHKEY = r'HKEY_CURRENT_USER\Software\MeCab'
     _WINVALUE = 'mecabrc'
 
-    _DEBUG_CSET_DEFAULT = 'DEBUG: defaulting MeCab charset to {}\n'
-    _ERROR_NODIC = 'ERROR: MeCab dictionary charset not found'
-    _ERROR_NOCMD = 'ERROR: mecab -D command not recognized'
-    _ERROR_NOLIB = 'ERROR: {} could not be found, please use MECAB_PATH'
-    _ERROR_WINREG = 'ERROR: No value {} in Windows Registry at {}'
-    _ERROR_MECABCONFIG = 'ERROR: mecab-config could not locate {}'
+    _DEBUG_CSET_DEFAULT = 'defaulting MeCab charset to {}\n'
+    _ERROR_NODIC = 'MeCab dictionary charset not found'
+    _ERROR_NOCMD = 'mecab -D command not recognized'
+    _ERROR_NOLIB = '{} could not be found, please use MECAB_PATH'
+    _ERROR_WINREG = 'No value {} in Windows Registry at {}'
+    _ERROR_MECABCONFIG = 'mecab-config could not locate {}'
 
     def __init__(self, **kwargs):
         '''Initializes the MeCabEnv instance.
 
         Kwargs:
-            debug (bool): Flag for outputting debug messages to stderr.
 
         Raises:
             EnvironmentError: A problem in obtaining the system dictionary info
                 was encountered.
         '''
-        self.debug = False
-        if 'debug' in kwargs.keys():
-            self.debug = kwargs['debug']
         self.charset = self.__get_charset()
         self.libpath = self.__get_libpath()
 
@@ -70,8 +67,7 @@ class MeCabEnv(object):
         '''
         cset = os.getenv(self.MECAB_CHARSET)
         if cset:
-            if self.debug:
-                sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
+            logger.debug(self._DEBUG_CSET_DEFAULT.format(cset))
             return cset
         else:
             try:
@@ -82,15 +78,13 @@ class MeCabEnv(object):
                     t = [t for t in dicinfo if t.startswith('charset')]
                     if len(t) > 0:
                         cset = t[0].split()[1].lower()
-                        if self.debug:
-                            sys.stderr.write(
-                                self._DEBUG_CSET_DEFAULT.format(cset))
+                        logger.debug(self._DEBUG_CSET_DEFAULT.format(cset))
                         return cset
                     else:
-                        sys.stderr.write('{}\n'.format(self._ERROR_NODIC))
+                        logger.error('{}\n'.format(self._ERROR_NODIC))
                         raise EnvironmentError(self._ERROR_NODIC)
                 else:
-                    sys.stderr.write('{}\n'.format(self._ERROR_NOCMD))
+                    logger.error('{}\n'.format(self._ERROR_NOCMD))
                     raise EnvironmentError(self._ERROR_NOCMD)
             except OSError:
                 cset = 'euc-jp'
@@ -98,8 +92,7 @@ class MeCabEnv(object):
                     cset = 'shift-jis'
                 elif sys.platform == 'darwin':
                     cset = 'utf8'
-                if self.debug:
-                    sys.stderr.write(self._DEBUG_CSET_DEFAULT.format(cset))
+                logger.debug(self._DEBUG_CSET_DEFAULT.format(cset))
                 return cset
 
     def __get_libpath(self):
@@ -134,8 +127,8 @@ class MeCabEnv(object):
                     ldir = v.split('etc')[0]
                     libp = os.path.join(ldir, 'bin', lib)
                 except EnvironmentError as err:
-                    sys.stderr.write('{}\n'.format(err))
-                    sys.stderr.write('{}\n'.format(sys.exc_info()[0]))
+                    logger.error('{}\n'.format(err))
+                    logger.error('{}\n'.format(sys.exc_info()[0]))
                     raise EnvironmentError(
                         self._ERROR_WINREG.format(self._WINVALUE,
                                                   self._WINHKEY))
@@ -157,8 +150,8 @@ class MeCabEnv(object):
                         raise EnvironmentError(
                             self._ERROR_MECABCONFIG.format(lib))
                 except EnvironmentError as err:
-                    sys.stderr.write('{}\n'.format(err))
-                    sys.stderr.write('{}\n'.format(sys.exc_info()[0]))
+                    logger.error('{}\n'.format(err))
+                    logger.error('{}\n'.format(sys.exc_info()[0]))
                     raise EnvironmentError(self._ERROR_NOLIB.format(lib))
 
             if libp and os.path.exists(libp):
