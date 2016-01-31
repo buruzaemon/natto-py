@@ -237,6 +237,8 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
     with MeCab('-F%m,\s%f[0],\s%s') as nm:
 
         text = '俺は努力したよっ？ お前の10倍、いや100倍1000倍したよっ！'
+        
+        # capture 10倍, 100倍 and 1000倍 as single parts-of-speech
         pattern = re.compile('10+倍') 
 
         for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
