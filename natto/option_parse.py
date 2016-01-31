@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 '''Helper class for parsing MeCab options.'''
 import argparse
-import sys
+import logging
 from .support import string_support
+
+logger = logging.getLogger('natto.option_parse')
 
 class OptionParse(object):
     '''Helper class for transforming arguments into input for mecab_new2.'''
@@ -157,11 +159,12 @@ class OptionParse(object):
         # final checks
         if 'nbest' in dopts \
             and (dopts['nbest'] < 1 or dopts['nbest'] > self._NBEST_MAX):
+            logger.error(self._ERROR_NVALUE)
             raise ValueError(self._ERROR_NVALUE)
 
         # warning for lattice-level deprecation
         if 'lattice_level' in dopts:
-            sys.stderr.write('WARNING: {}\n'.format(self._WARN_LATTICE_LEVEL))
+            logger.warn('WARNING: {}\n'.format(self._WARN_LATTICE_LEVEL))
 
         return dopts
 
@@ -189,7 +192,7 @@ class OptionParse(object):
         return self.__str2bytes(' '.join(opts))
 
 '''
-Copyright (c) 2015, Brooke M. Fujita.
+Copyright (c) 2016, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
