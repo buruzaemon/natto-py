@@ -236,27 +236,33 @@ This example uses the ``-F`` node-format option to customize the resulting
 
 Note that any such morphemes captured will have node ``stat`` status of 1 (unknown)::
 
+    import re
+
     with MeCab('-F%m,\s%f[0],\s%s') as nm:
 
-        text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
-        pattern = 'ヒーロー見参'
+        text = '俺は努力したよっ？ お前の10倍、いや100倍1000倍したよっ！'
+
+        # capture 10倍, 100倍 and 1000倍 as single parts-of-speech
+        pattern = re.compile('10+倍') 
 
         for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
     ...     print(n.feature)
     ...
-    心, 名詞, 0
+    俺, 名詞, 0
+    は, 助詞, 0
+    努力, 名詞, 0
+    し, 動詞, 0
+    たよっ, 動詞, 0
+    ？, 記号, 0
+    お前, 名詞, 0
     の, 助詞, 0
-    中, 名詞, 0
-    で, 助詞, 0
-    3, 名詞, 1
-    回, 名詞, 0
-    唱え, 動詞, 0
+    10倍, 名詞, 1
     、, 記号, 0
-    ヒーロー見参, 名詞, 1
-    ！, 記号, 0
-    ヒーロー見参, 名詞, 1
-    ！, 記号, 0
-    ヒーロー見参, 名詞, 1
+    いや, 接続詞, 0
+    100倍, 名詞, 1
+    1000倍, 名詞, 1
+    し, 動詞, 0
+    たよっ, 動詞, 0
     ！, 記号, 0
     EOS
 
@@ -270,6 +276,8 @@ and a corresponding feature (str), in order of constraint precedence::
     with MeCab('-F%m,\s%f[0],\s%s') as nm:
 
         text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
+
+        # capture ヒーロー見参 as 感動詞 part-of-speech
         features = (('ヒーロー見参', '感動詞'),)
 
         for n in nm.parse(text, feature_constraints=features, as_nodes=True):
