@@ -1,6 +1,13 @@
 CHANGELOG
 ---------
 
+- 2016/01/31 0.8.0 release.
+    - Issue 72: Revamp IPython notebooks for use with Jupyter
+    - Issue 73: Better examples for 制約付き解析
+    - Issue 78: Dynamically set version and version info for docs as well
+    - Issue 83: natto.api.MeCabError: MECAB_NBEST request type is not set
+    - Issue 84: Start leveraging the logging library
+
 - 2015/11/07 0.7.0 release.
     - Issue 67: Confirm behavior with Python 3.5
     - Issue 68: Update README with dependencies for dev & testing

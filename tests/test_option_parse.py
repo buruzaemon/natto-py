@@ -64,29 +64,6 @@ class TestOptionParse(unittest.TestCase, Test23Support):
         dopts = self.op.parse_mecab_options({'userdic':'/baz/qux.dic'})
         self.assertDictEqual(dopts, {'userdic': '/baz/qux.dic'})
 
-    def test_parse_mecab_options_latticelevel(self):
-        '''Test option-parsing: lattice-level warning.'''
-        # setting lattice-level issues warning on stderr
-        orig_err = sys.stderr
-        try:
-            opts = ['-l777',
-                    '-l 777',
-                    '--lattice-level=777',
-                    {'lattice_level':777}]
-
-            for o in opts:
-                tmp_err = StringIO()
-                sys.stderr = tmp_err
-
-                dopts = self.op.parse_mecab_options(o)
-                self.assertDictEqual(dopts, {'lattice_level':777})
-
-                res = re.search(self.op._WARN_LATTICE_LEVEL,
-                                tmp_err.getvalue().strip())
-                self.assertIsNotNone(res)
-        finally:
-            sys.stderr = orig_err
-
     def test_parse_mecab_options_outputformattype(self):
         '''Test option-parsing: output-format-type.'''
         dopts = self.op.parse_mecab_options('-Owakati')
@@ -375,7 +352,7 @@ class TestOptionParse(unittest.TestCase, Test23Support):
         self.assertIsNone(re.search('--unknown', expected))
 
 '''
-Copyright (c) 2015, Brooke M. Fujita.
+Copyright (c) 2016, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -21,8 +21,11 @@ class MeCab(object):
     surface and related features, or for iterating over MeCabNode instances
     which contain detailed information about the morphemes encompassed.
 
-    Use the debug keyword argument when instantiating MeCab to output
-    debugging messages to stderr.
+    Configure logging before instantiating MeCab to see debug messages:
+    
+        import logging
+        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
+                            level=logging.DEBUG)
 
     Example usage::
 
@@ -471,7 +474,7 @@ class MeCab(object):
             return self.__parse_tostr(text, **kwargs)
 
 '''
-Copyright (c) 2015, Brooke M. Fujita.
+Copyright (c) 2016, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
