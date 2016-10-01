@@ -1,0 +1,1273 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>natto package &mdash; natto-py 0.8.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="natto-py 0.8.0 documentation" href="../index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="natto-package">
+<h1>natto package<a class="headerlink" href="#natto-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-natto.api">
+<span id="natto-api-module"></span><h2>natto.api module<a class="headerlink" href="#module-natto.api" title="Permalink to this headline">¶</a></h2>
+<p>API module for general classes used throughout the natto-py package.</p>
+<dl class="exception">
+<dt id="natto.api.MeCabError">
+<em class="property">exception </em><code class="descclassname">natto.api.</code><code class="descname">MeCabError</code><a class="headerlink" href="#natto.api.MeCabError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>MeCabError is a general error class for the natto-py package.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.binding">
+<span id="natto-binding-module"></span><h2>natto.binding module<a class="headerlink" href="#module-natto.binding" title="Permalink to this headline">¶</a></h2>
+<p>Binding via CFFI to the MeCab library.</p>
+</div>
+<div class="section" id="module-natto.dictionary">
+<span id="natto-dictionary-module"></span><h2>natto.dictionary module<a class="headerlink" href="#module-natto.dictionary" title="Permalink to this headline">¶</a></h2>
+<p>Wrapper for MeCab dictionary information.</p>
+<dl class="class">
+<dt id="natto.dictionary.DictionaryInfo">
+<em class="property">class </em><code class="descclassname">natto.dictionary.</code><code class="descname">DictionaryInfo</code><span class="sig-paren">(</span><em>dptr</em>, <em>filepath</em>, <em>charset</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.dictionary.DictionaryInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Representation of a MeCab DictionaryInfo struct.</p>
+<p>A list of dictionaries used by MeCab is returned by the dicts attribute of
+MeCab. Each dictionary information includes the attributes listed below.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ptr</strong> &#8211; FFI pointer to the mecab_dictionary_info_t.</li>
+<li><strong>filepath</strong> &#8211; Full path to the dictionary file.</li>
+<li><strong>charset</strong> &#8211; Dictionary character set, e.g., SHIFT-JIS, UTF-8.</li>
+<li><strong>size</strong> &#8211; Number of words registered in this dictionary.</li>
+<li><strong>type</strong> &#8211; Dictionary type; 0 (SYS_DIC), 1 (USR_DIC), 2 (UNK_DIC)</li>
+<li><strong>lsize</strong> &#8211; Left attributes size.</li>
+<li><strong>rsize</strong> &#8211; Right attributes size.</li>
+<li><a class="reference internal" href="#module-natto.version" title="natto.version"><strong>version</strong></a> &#8211; Dictionary version.</li>
+<li><strong>next</strong> &#8211; Pointer to next dictionary information struct.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+with MeCab() as nm:
+
+    # first dictionary info is MeCab&#39;s system dictionary
+    sysdic = nm.dicts[0]
+
+    # print absolute path to system dictionary
+    print(sysdic.filepath)
+    ...
+    /usr/local/lib/mecab/dic/ipadic/sys.dic
+
+    # print system dictionary character encoding
+    print(sysdic.charset)
+    ...
+    utf8
+
+    # is this really the system dictionary?
+    print(sysdic.is_sysdic())
+    ...
+    True
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.dictionary.DictionaryInfo.SYS_DIC">
+<code class="descname">SYS_DIC</code><em class="property"> = 0</em><a class="headerlink" href="#natto.dictionary.DictionaryInfo.SYS_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.dictionary.DictionaryInfo.UNK_DIC">
+<code class="descname">UNK_DIC</code><em class="property"> = 2</em><a class="headerlink" href="#natto.dictionary.DictionaryInfo.UNK_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.dictionary.DictionaryInfo.USR_DIC">
+<code class="descname">USR_DIC</code><em class="property"> = 1</em><a class="headerlink" href="#natto.dictionary.DictionaryInfo.USR_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.dictionary.DictionaryInfo.is_sysdic">
+<code class="descname">is_sysdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.dictionary.DictionaryInfo.is_sysdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a system dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if system dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.dictionary.DictionaryInfo.is_unkdic">
+<code class="descname">is_unkdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.dictionary.DictionaryInfo.is_unkdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an unknown dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if unknown dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.dictionary.DictionaryInfo.is_usrdic">
+<code class="descname">is_usrdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.dictionary.DictionaryInfo.is_usrdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a user-defined dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if user-defined dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.environment">
+<span id="natto-environment-module"></span><h2>natto.environment module<a class="headerlink" href="#module-natto.environment" title="Permalink to this headline">¶</a></h2>
+<p>Convenience API to obtain information on MeCab environment.</p>
+<dl class="class">
+<dt id="natto.environment.MeCabEnv">
+<em class="property">class </em><code class="descclassname">natto.environment.</code><code class="descname">MeCabEnv</code><span class="sig-paren">(</span><em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.environment.MeCabEnv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Convenience class of object to obtain information on MeCab environment.</p>
+<p>This will attempt to obtain the character encoding (charset) of MeCab&#8217;s
+system dictionary, which will determine the encoding used when passing
+strings in and obtaining string results from MeCab.</p>
+<p>Also attempts to locate and obtain the absolute path to the MeCab library.</p>
+<p>This makes invocations to the mecab and mecab-config (not available on
+Windows) executables.</p>
+<p>Will defer to the user-provided values in environment variables
+MECAB_PATH and MECAB_CHARSET.</p>
+<dl class="attribute">
+<dt id="natto.environment.MeCabEnv.MECAB_CHARSET">
+<code class="descname">MECAB_CHARSET</code><em class="property"> = 'MECAB_CHARSET'</em><a class="headerlink" href="#natto.environment.MeCabEnv.MECAB_CHARSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.environment.MeCabEnv.MECAB_PATH">
+<code class="descname">MECAB_PATH</code><em class="property"> = 'MECAB_PATH'</em><a class="headerlink" href="#natto.environment.MeCabEnv.MECAB_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.mecab">
+<span id="natto-mecab-module"></span><h2>natto.mecab module<a class="headerlink" href="#module-natto.mecab" title="Permalink to this headline">¶</a></h2>
+<p>The main interface to MeCab via natto-py.</p>
+<dl class="class">
+<dt id="natto.mecab.MeCab">
+<em class="property">class </em><code class="descclassname">natto.mecab.</code><code class="descname">MeCab</code><span class="sig-paren">(</span><em>options=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.mecab.MeCab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The main interface to the MeCab library, wrapping the MeCab Tagger.</p>
+<p>Instantiate this once, per any MeCab options you wish to use.
+This interface allows for parsing Japanese into simple strings of morpheme
+surface and related features, or for iterating over MeCabNode instances
+which contain detailed information about the morphemes encompassed.</p>
+<p>Configure logging before instantiating MeCab to see debug messages:</p>
+<blockquote>
+<div><p>import logging
+logging.basicConfig(format=&#8217;%(asctime)s : %(levelname)s : %(message)s&#8217;,</p>
+<blockquote>
+<div>level=logging.DEBUG)</div></blockquote>
+</div></blockquote>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+# Use a Python with-statement to ensure mecab_destroy is invoked
+#
+with MeCab() as nm:
+
+    # print MeCab version
+    print(nm.version)
+    ...
+    0.996
+
+    # print absolute path to MeCab library
+    print(nm.libpath)
+    ...
+    /usr/local/lib/libmecab.so
+
+    # parse text and print result
+    print(nm.parse(&#39;この星の一等賞になりたいの卓球で俺は、そんだけ！&#39;))
+    ...
+    この    連体詞,*,*,*,*,*,この,コノ,コノ
+    星      名詞,一般,*,*,*,*,星,ホシ,ホシ
+    の      助詞,連体化,*,*,*,*,の,ノ,ノ
+    一等    名詞,一般,*,*,*,*,一等,イットウ,イットー
+    賞      名詞,接尾,一般,*,*,*,賞,ショウ,ショー
+    に      助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    なり    動詞,自立,*,*,五段・ラ行,連用形,なる,ナリ,ナリ
+    たい    助動詞,*,*,*,特殊・タイ,基本形,たい,タイ,タイ
+    の      助詞,連体化,*,*,*,*,の,ノ,ノ
+    卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+    で      助詞,格助詞,一般,*,*,*,で,デ,デ
+    俺      名詞,代名詞,一般,*,*,*,俺,オレ,オレ
+    は      助詞,係助詞,*,*,*,*,は,ハ,ワ
+    、      記号,読点,*,*,*,*,、,、,、
+    そん    名詞,一般,*,*,*,*,そん,ソン,ソン
+    だけ    助詞,副助詞,*,*,*,*,だけ,ダケ,ダケ
+    ！      記号,一般,*,*,*,*,！,！,！
+    EOS
+
+    # parse text into Python Generator yielding MeCabNode instances,
+    # and display much more detailed information about each morpheme
+    for n in nm.parse(&#39;飛べねえ鳥もいるってこった。&#39;, as_nodes=True):
+        if n.is_nor():
+    ...     # morpheme surface
+    ...     # part-of-speech ID (IPADIC)
+    ...     # word cost
+    ...     print(&quot;{}\t{}\t{}&quot;.format(n.surface, n.posid, n.wcost))
+    ...
+    飛べ    31      7175
+    ねえ    25      6661
+    鳥      38      4905
+    も      16      4669
+    いる    31      9109
+    って    15      6984
+    こっ    31      9587
+    た      25      5500
+    。      7       215
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_ANY_BOUNDARY">
+<code class="descname">MECAB_ANY_BOUNDARY</code><em class="property"> = 0</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_ANY_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_CHARSET">
+<code class="descname">MECAB_CHARSET</code><em class="property"> = 'MECAB_CHARSET'</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_CHARSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_INSIDE_TOKEN">
+<code class="descname">MECAB_INSIDE_TOKEN</code><em class="property"> = 2</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_INSIDE_TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_ALLOCATE_SENTENCE">
+<code class="descname">MECAB_LATTICE_ALLOCATE_SENTENCE</code><em class="property"> = 64</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_ALLOCATE_SENTENCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_ALL_MORPHS">
+<code class="descname">MECAB_LATTICE_ALL_MORPHS</code><em class="property"> = 32</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_ALL_MORPHS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_ALTERNATIVE">
+<code class="descname">MECAB_LATTICE_ALTERNATIVE</code><em class="property"> = 16</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_ALTERNATIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_MARGINAL_PROB">
+<code class="descname">MECAB_LATTICE_MARGINAL_PROB</code><em class="property"> = 8</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_MARGINAL_PROB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_NBEST">
+<code class="descname">MECAB_LATTICE_NBEST</code><em class="property"> = 2</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_NBEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_ONE_BEST">
+<code class="descname">MECAB_LATTICE_ONE_BEST</code><em class="property"> = 1</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_ONE_BEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_LATTICE_PARTIAL">
+<code class="descname">MECAB_LATTICE_PARTIAL</code><em class="property"> = 4</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_LATTICE_PARTIAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_PATH">
+<code class="descname">MECAB_PATH</code><em class="property"> = 'MECAB_PATH'</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.mecab.MeCab.MECAB_TOKEN_BOUNDARY">
+<code class="descname">MECAB_TOKEN_BOUNDARY</code><em class="property"> = 1</em><a class="headerlink" href="#natto.mecab.MeCab.MECAB_TOKEN_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.mecab.MeCab.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.mecab.MeCab.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the given text and return result from MeCab.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>str</em>) &#8211; the text to parse.</li>
+<li><strong>as_nodes</strong> (<em>bool, defaults to False</em>) &#8211; return generator of MeCabNodes if True;
+or string if False.</li>
+<li><strong>boundary_constraints</strong> (<em>str or re</em>) &#8211; regular expression for morpheme boundary
+splitting; if non-None and feature_constraints is None, then
+boundary constraint parsing will be used.</li>
+<li><strong>feature_constraints</strong> (<em>tuple</em>) &#8211; tuple containing tuple instances of
+target morpheme and corresponding feature string in order
+of precedence; if non-None and boundary_constraints is None,
+then feature constraint parsing will be used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A single string containing the entire MeCab output;
+or a Generator yielding the MeCabNode instances.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">MeCabError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.node">
+<span id="natto-node-module"></span><h2>natto.node module<a class="headerlink" href="#module-natto.node" title="Permalink to this headline">¶</a></h2>
+<p>Wrapper for MeCab node.</p>
+<dl class="class">
+<dt id="natto.node.MeCabNode">
+<em class="property">class </em><code class="descclassname">natto.node.</code><code class="descname">MeCabNode</code><span class="sig-paren">(</span><em>nptr</em>, <em>surface</em>, <em>feature</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Representation of a MeCab Node struct.</p>
+<p>A list of MeCab nodes is returned when parsing a string of Japanese with
+as_nodes=True. Each node will contain detailed information about the
+morpheme encompassed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ptr</strong> &#8211; This node&#8217;s pointer.</li>
+<li><strong>prev</strong> &#8211; Pointer to previous node.</li>
+<li><strong>next</strong> &#8211; Pointer to next node.</li>
+<li><strong>enext</strong> &#8211; Pointer to the node which ends at the same position.</li>
+<li><strong>bnext</strong> &#8211; Pointer to the node which starts at the same position.</li>
+<li><strong>rpath</strong> &#8211; Pointer to the right path; None if MECAB_ONE_BEST mode.</li>
+<li><strong>lpath</strong> &#8211; Pointer to the right path; None if MECAB_ONE_BEST mode.</li>
+<li><strong>surface</strong> &#8211; Surface string, Unicode.</li>
+<li><strong>feature</strong> &#8211; Feature string, Unicode.</li>
+<li><strong>nodeid</strong> &#8211; Unique node id.</li>
+<li><strong>length</strong> &#8211; Length of surface form.</li>
+<li><strong>rlength</strong> &#8211; Length of the surface form including leading white space.</li>
+<li><strong>rcattr</strong> &#8211; Right attribute id.</li>
+<li><strong>lcattr</strong> &#8211; Left attribute id.</li>
+<li><strong>posid</strong> &#8211; Part-of-speech id.</li>
+<li><strong>char_type</strong> &#8211; Character type.</li>
+<li><strong>stat</strong> &#8211; Node status; 0 (NOR), 1 (UNK), 2 (BOS), 3 (EOS), 4 (EON).</li>
+<li><strong>isbest</strong> &#8211; 1 if this node is best node.</li>
+<li><strong>alpha</strong> &#8211; Forward accumulative log summation (with marginal probability).</li>
+<li><strong>beta</strong> &#8211; Backward accumulative log summation (with marginal probability).</li>
+<li><strong>prob</strong> &#8211; Marginal probability, only with marginal probability flag.</li>
+<li><strong>wcost</strong> &#8211; Word cost.</li>
+<li><strong>cost</strong> &#8211; Best accumulative cost from bos node to this node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+text = &#39;卓球なんて死ぬまでの暇つぶしだよ。&#39;
+
+# Ex. basic node parsing
+#
+with MeCab() as nm:
+    for n in nm.parse(text, as_nodes=True):
+...     # ignore the end-of-sentence nodes
+...     if not n.is_eos():
+...         # output the morpheme surface and default ChaSen feature
+...         print(&#39;{}\t{}&#39;.format(n.surface, n.feature))
+...
+卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+なんて  助詞,副助詞,*,*,*,*,なんて,ナンテ,ナンテ
+死ぬ    動詞,自立,*,*,五段・ナ行,基本形,死ぬ,シヌ,シヌ
+まで    助詞,副助詞,*,*,*,*,まで,マデ,マデ
+の      助詞,連体化,*,*,*,*,の,ノ,ノ
+暇つぶし        名詞,一般,*,*,*,*,暇つぶし,ヒマツブシ,ヒマツブシ
+だ      助動詞,*,*,*,特殊・ダ,基本形,だ,ダ,ダ
+よ      助詞,終助詞,*,*,*,*,よ,ヨ,ヨ
+。      記号,句点,*,*,*,*,。,。,。
+
+# Ex. custom node format
+#
+# -F         ... short-form of --node-format
+# %F,[6,7,0] ... extract these elements from ChaSen feature as CSV
+#                - morpheme root-form (6th index)
+#                - reading (7th index)
+#                - part-of-speech (0th index)
+# %h         ... part-of-speech ID (IPADIC)
+#
+with MeCab(&#39;-F%F,[6,8,0],%h&#39;) as nm:
+    for n in nm.parse(text, as_nodes=True):
+...     # ignore the end-of-sentence nodes
+...     if not n.is_eos():
+...         # output custom-formatted node feature
+...         print(n.feature)
+...
+卓球,タッキュウ,名詞,36
+なんて,ナンテ,助詞,21
+死ぬ,シヌ,動詞,31
+まで,マデ,助詞,21
+の,ノ,助詞,24
+暇つぶし,ヒマツブシ,名詞,38
+だ,ダ,助動詞,25
+よ,ヨ,助詞,17
+。,。,記号,7
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.node.MeCabNode.BOS_NODE">
+<code class="descname">BOS_NODE</code><em class="property"> = 2</em><a class="headerlink" href="#natto.node.MeCabNode.BOS_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.node.MeCabNode.EON_NODE">
+<code class="descname">EON_NODE</code><em class="property"> = 4</em><a class="headerlink" href="#natto.node.MeCabNode.EON_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.node.MeCabNode.EOS_NODE">
+<code class="descname">EOS_NODE</code><em class="property"> = 3</em><a class="headerlink" href="#natto.node.MeCabNode.EOS_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.node.MeCabNode.NOR_NODE">
+<code class="descname">NOR_NODE</code><em class="property"> = 0</em><a class="headerlink" href="#natto.node.MeCabNode.NOR_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.node.MeCabNode.UNK_NODE">
+<code class="descname">UNK_NODE</code><em class="property"> = 1</em><a class="headerlink" href="#natto.node.MeCabNode.UNK_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.node.MeCabNode.is_bos">
+<code class="descname">is_bos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode.is_bos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a beginning-of-sentence node?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if beginning-of-sentence node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.node.MeCabNode.is_eon">
+<code class="descname">is_eon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode.is_eon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an end of an N-best node list?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if end of an N-best node list, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.node.MeCabNode.is_eos">
+<code class="descname">is_eos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode.is_eos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an end-of-sentence node?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if end-of-sentence node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.node.MeCabNode.is_nor">
+<code class="descname">is_nor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode.is_nor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a normal node, defined in a dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if normal node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.node.MeCabNode.is_unk">
+<code class="descname">is_unk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.node.MeCabNode.is_unk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an unknown node, not defined in any dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if unknown node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.option_parse">
+<span id="natto-option-parse-module"></span><h2>natto.option_parse module<a class="headerlink" href="#module-natto.option_parse" title="Permalink to this headline">¶</a></h2>
+<p>Helper class for parsing MeCab options.</p>
+<dl class="class">
+<dt id="natto.option_parse.OptionParse">
+<em class="property">class </em><code class="descclassname">natto.option_parse.</code><code class="descname">OptionParse</code><span class="sig-paren">(</span><em>envch</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.option_parse.OptionParse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Helper class for transforming arguments into input for mecab_new2.</p>
+<dl class="method">
+<dt id="natto.option_parse.OptionParse.build_options_str">
+<code class="descname">build_options_str</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.option_parse.OptionParse.build_options_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string concatenation of the MeCab options.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>options: dictionary of options to use when instantiating the MeCab</dt>
+<dd>instance.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A string concatenation of the options used when instantiating the
+MeCab instance, in long-form.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.option_parse.OptionParse.parse_mecab_options">
+<code class="descname">parse_mecab_options</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.option_parse.OptionParse.parse_mecab_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the MeCab options, returning them in a dictionary.</p>
+<p>Lattice-level option has been deprecated; please use marginal or nbest
+instead.</p>
+<dl class="docutils">
+<dt>:options string or dictionary of options to use when instantiating</dt>
+<dd>the MeCab instance. May be in short- or long-form, or in a
+Python dictionary.</dd>
+<dt>Returns:</dt>
+<dd>A dictionary of the specified MeCab options, where the keys are
+snake-cased names of the long-form of the option names.</dd>
+<dt>Raises:</dt>
+<dd>MeCabError: An invalid value for N-best was passed in.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.support">
+<span id="natto-support-module"></span><h2>natto.support module<a class="headerlink" href="#module-natto.support" title="Permalink to this headline">¶</a></h2>
+<p>Internal-use functions for string- and byte-conversion for supporting Python
+2 and 3.</p>
+<dl class="function">
+<dt id="natto.support.splitter_support">
+<code class="descclassname">natto.support.</code><code class="descname">splitter_support</code><span class="sig-paren">(</span><em>py2enc</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.support.splitter_support" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tokenizer for use in boundary constraint parsing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>py2enc</strong> (<em>str</em>) &#8211; Encoding used by Python 2 environment.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="natto.support.string_support">
+<code class="descclassname">natto.support.</code><code class="descname">string_support</code><span class="sig-paren">(</span><em>py3enc</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.support.string_support" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create byte-to-string and string-to-byte conversion functions for
+internal use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>py3enc</strong> (<em>str</em>) &#8211; Encoding used by Python 3 environment.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-natto.version">
+<span id="natto-version-module"></span><h2>natto.version module<a class="headerlink" href="#module-natto.version" title="Permalink to this headline">¶</a></h2>
+<p>Version and version info for the natto-py package.</p>
+</div>
+<div class="section" id="module-natto">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-natto" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="natto.MeCab">
+<em class="property">class </em><code class="descclassname">natto.</code><code class="descname">MeCab</code><span class="sig-paren">(</span><em>options=None</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>The main interface to the MeCab library, wrapping the MeCab Tagger.</p>
+<p>Instantiate this once, per any MeCab options you wish to use.
+This interface allows for parsing Japanese into simple strings of morpheme
+surface and related features, or for iterating over MeCabNode instances
+which contain detailed information about the morphemes encompassed.</p>
+<p>Configure logging before instantiating MeCab to see debug messages:</p>
+<blockquote>
+<div><p>import logging
+logging.basicConfig(format=&#8217;%(asctime)s : %(levelname)s : %(message)s&#8217;,</p>
+<blockquote>
+<div>level=logging.DEBUG)</div></blockquote>
+</div></blockquote>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+# Use a Python with-statement to ensure mecab_destroy is invoked
+#
+with MeCab() as nm:
+
+    # print MeCab version
+    print(nm.version)
+    ...
+    0.996
+
+    # print absolute path to MeCab library
+    print(nm.libpath)
+    ...
+    /usr/local/lib/libmecab.so
+
+    # parse text and print result
+    print(nm.parse(&#39;この星の一等賞になりたいの卓球で俺は、そんだけ！&#39;))
+    ...
+    この    連体詞,*,*,*,*,*,この,コノ,コノ
+    星      名詞,一般,*,*,*,*,星,ホシ,ホシ
+    の      助詞,連体化,*,*,*,*,の,ノ,ノ
+    一等    名詞,一般,*,*,*,*,一等,イットウ,イットー
+    賞      名詞,接尾,一般,*,*,*,賞,ショウ,ショー
+    に      助詞,格助詞,一般,*,*,*,に,ニ,ニ
+    なり    動詞,自立,*,*,五段・ラ行,連用形,なる,ナリ,ナリ
+    たい    助動詞,*,*,*,特殊・タイ,基本形,たい,タイ,タイ
+    の      助詞,連体化,*,*,*,*,の,ノ,ノ
+    卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+    で      助詞,格助詞,一般,*,*,*,で,デ,デ
+    俺      名詞,代名詞,一般,*,*,*,俺,オレ,オレ
+    は      助詞,係助詞,*,*,*,*,は,ハ,ワ
+    、      記号,読点,*,*,*,*,、,、,、
+    そん    名詞,一般,*,*,*,*,そん,ソン,ソン
+    だけ    助詞,副助詞,*,*,*,*,だけ,ダケ,ダケ
+    ！      記号,一般,*,*,*,*,！,！,！
+    EOS
+
+    # parse text into Python Generator yielding MeCabNode instances,
+    # and display much more detailed information about each morpheme
+    for n in nm.parse(&#39;飛べねえ鳥もいるってこった。&#39;, as_nodes=True):
+        if n.is_nor():
+    ...     # morpheme surface
+    ...     # part-of-speech ID (IPADIC)
+    ...     # word cost
+    ...     print(&quot;{}\t{}\t{}&quot;.format(n.surface, n.posid, n.wcost))
+    ...
+    飛べ    31      7175
+    ねえ    25      6661
+    鳥      38      4905
+    も      16      4669
+    いる    31      9109
+    って    15      6984
+    こっ    31      9587
+    た      25      5500
+    。      7       215
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_ANY_BOUNDARY">
+<code class="descname">MECAB_ANY_BOUNDARY</code><em class="property"> = 0</em><a class="headerlink" href="#natto.MeCab.MECAB_ANY_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_CHARSET">
+<code class="descname">MECAB_CHARSET</code><em class="property"> = 'MECAB_CHARSET'</em><a class="headerlink" href="#natto.MeCab.MECAB_CHARSET" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_INSIDE_TOKEN">
+<code class="descname">MECAB_INSIDE_TOKEN</code><em class="property"> = 2</em><a class="headerlink" href="#natto.MeCab.MECAB_INSIDE_TOKEN" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_ALLOCATE_SENTENCE">
+<code class="descname">MECAB_LATTICE_ALLOCATE_SENTENCE</code><em class="property"> = 64</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_ALLOCATE_SENTENCE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_ALL_MORPHS">
+<code class="descname">MECAB_LATTICE_ALL_MORPHS</code><em class="property"> = 32</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_ALL_MORPHS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_ALTERNATIVE">
+<code class="descname">MECAB_LATTICE_ALTERNATIVE</code><em class="property"> = 16</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_ALTERNATIVE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_MARGINAL_PROB">
+<code class="descname">MECAB_LATTICE_MARGINAL_PROB</code><em class="property"> = 8</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_MARGINAL_PROB" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_NBEST">
+<code class="descname">MECAB_LATTICE_NBEST</code><em class="property"> = 2</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_NBEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_ONE_BEST">
+<code class="descname">MECAB_LATTICE_ONE_BEST</code><em class="property"> = 1</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_ONE_BEST" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_LATTICE_PARTIAL">
+<code class="descname">MECAB_LATTICE_PARTIAL</code><em class="property"> = 4</em><a class="headerlink" href="#natto.MeCab.MECAB_LATTICE_PARTIAL" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_PATH">
+<code class="descname">MECAB_PATH</code><em class="property"> = 'MECAB_PATH'</em><a class="headerlink" href="#natto.MeCab.MECAB_PATH" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCab.MECAB_TOKEN_BOUNDARY">
+<code class="descname">MECAB_TOKEN_BOUNDARY</code><em class="property"> = 1</em><a class="headerlink" href="#natto.MeCab.MECAB_TOKEN_BOUNDARY" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCab.parse">
+<code class="descname">parse</code><span class="sig-paren">(</span><em>text</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCab.parse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parse the given text and return result from MeCab.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>text</strong> (<em>str</em>) &#8211; the text to parse.</li>
+<li><strong>as_nodes</strong> (<em>bool, defaults to False</em>) &#8211; return generator of MeCabNodes if True;
+or string if False.</li>
+<li><strong>boundary_constraints</strong> (<em>str or re</em>) &#8211; regular expression for morpheme boundary
+splitting; if non-None and feature_constraints is None, then
+boundary constraint parsing will be used.</li>
+<li><strong>feature_constraints</strong> (<em>tuple</em>) &#8211; tuple containing tuple instances of
+target morpheme and corresponding feature string in order
+of precedence; if non-None and boundary_constraints is None,
+then feature constraint parsing will be used.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">A single string containing the entire MeCab output;
+or a Generator yielding the MeCabNode instances.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last">MeCabError</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="natto.DictionaryInfo">
+<em class="property">class </em><code class="descclassname">natto.</code><code class="descname">DictionaryInfo</code><span class="sig-paren">(</span><em>dptr</em>, <em>filepath</em>, <em>charset</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.DictionaryInfo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Representation of a MeCab DictionaryInfo struct.</p>
+<p>A list of dictionaries used by MeCab is returned by the dicts attribute of
+MeCab. Each dictionary information includes the attributes listed below.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ptr</strong> &#8211; FFI pointer to the mecab_dictionary_info_t.</li>
+<li><strong>filepath</strong> &#8211; Full path to the dictionary file.</li>
+<li><strong>charset</strong> &#8211; Dictionary character set, e.g., SHIFT-JIS, UTF-8.</li>
+<li><strong>size</strong> &#8211; Number of words registered in this dictionary.</li>
+<li><strong>type</strong> &#8211; Dictionary type; 0 (SYS_DIC), 1 (USR_DIC), 2 (UNK_DIC)</li>
+<li><strong>lsize</strong> &#8211; Left attributes size.</li>
+<li><strong>rsize</strong> &#8211; Right attributes size.</li>
+<li><a class="reference internal" href="#module-natto.version" title="natto.version"><strong>version</strong></a> &#8211; Dictionary version.</li>
+<li><strong>next</strong> &#8211; Pointer to next dictionary information struct.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+with MeCab() as nm:
+
+    # first dictionary info is MeCab&#39;s system dictionary
+    sysdic = nm.dicts[0]
+
+    # print absolute path to system dictionary
+    print(sysdic.filepath)
+    ...
+    /usr/local/lib/mecab/dic/ipadic/sys.dic
+
+    # print system dictionary character encoding
+    print(sysdic.charset)
+    ...
+    utf8
+
+    # is this really the system dictionary?
+    print(sysdic.is_sysdic())
+    ...
+    True
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.DictionaryInfo.SYS_DIC">
+<code class="descname">SYS_DIC</code><em class="property"> = 0</em><a class="headerlink" href="#natto.DictionaryInfo.SYS_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.DictionaryInfo.UNK_DIC">
+<code class="descname">UNK_DIC</code><em class="property"> = 2</em><a class="headerlink" href="#natto.DictionaryInfo.UNK_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.DictionaryInfo.USR_DIC">
+<code class="descname">USR_DIC</code><em class="property"> = 1</em><a class="headerlink" href="#natto.DictionaryInfo.USR_DIC" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.DictionaryInfo.is_sysdic">
+<code class="descname">is_sysdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.DictionaryInfo.is_sysdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a system dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if system dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.DictionaryInfo.is_unkdic">
+<code class="descname">is_unkdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.DictionaryInfo.is_unkdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an unknown dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if unknown dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.DictionaryInfo.is_usrdic">
+<code class="descname">is_usrdic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.DictionaryInfo.is_usrdic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a user-defined dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if user-defined dictionary, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="natto.MeCabNode">
+<em class="property">class </em><code class="descclassname">natto.</code><code class="descname">MeCabNode</code><span class="sig-paren">(</span><em>nptr</em>, <em>surface</em>, <em>feature</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Representation of a MeCab Node struct.</p>
+<p>A list of MeCab nodes is returned when parsing a string of Japanese with
+as_nodes=True. Each node will contain detailed information about the
+morpheme encompassed.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Variables:</th><td class="field-body"><ul class="first last simple">
+<li><strong>ptr</strong> &#8211; This node&#8217;s pointer.</li>
+<li><strong>prev</strong> &#8211; Pointer to previous node.</li>
+<li><strong>next</strong> &#8211; Pointer to next node.</li>
+<li><strong>enext</strong> &#8211; Pointer to the node which ends at the same position.</li>
+<li><strong>bnext</strong> &#8211; Pointer to the node which starts at the same position.</li>
+<li><strong>rpath</strong> &#8211; Pointer to the right path; None if MECAB_ONE_BEST mode.</li>
+<li><strong>lpath</strong> &#8211; Pointer to the right path; None if MECAB_ONE_BEST mode.</li>
+<li><strong>surface</strong> &#8211; Surface string, Unicode.</li>
+<li><strong>feature</strong> &#8211; Feature string, Unicode.</li>
+<li><strong>nodeid</strong> &#8211; Unique node id.</li>
+<li><strong>length</strong> &#8211; Length of surface form.</li>
+<li><strong>rlength</strong> &#8211; Length of the surface form including leading white space.</li>
+<li><strong>rcattr</strong> &#8211; Right attribute id.</li>
+<li><strong>lcattr</strong> &#8211; Left attribute id.</li>
+<li><strong>posid</strong> &#8211; Part-of-speech id.</li>
+<li><strong>char_type</strong> &#8211; Character type.</li>
+<li><strong>stat</strong> &#8211; Node status; 0 (NOR), 1 (UNK), 2 (BOS), 3 (EOS), 4 (EON).</li>
+<li><strong>isbest</strong> &#8211; 1 if this node is best node.</li>
+<li><strong>alpha</strong> &#8211; Forward accumulative log summation (with marginal probability).</li>
+<li><strong>beta</strong> &#8211; Backward accumulative log summation (with marginal probability).</li>
+<li><strong>prob</strong> &#8211; Marginal probability, only with marginal probability flag.</li>
+<li><strong>wcost</strong> &#8211; Word cost.</li>
+<li><strong>cost</strong> &#8211; Best accumulative cost from bos node to this node.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Example usage:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+text = &#39;卓球なんて死ぬまでの暇つぶしだよ。&#39;
+
+# Ex. basic node parsing
+#
+with MeCab() as nm:
+    for n in nm.parse(text, as_nodes=True):
+...     # ignore the end-of-sentence nodes
+...     if not n.is_eos():
+...         # output the morpheme surface and default ChaSen feature
+...         print(&#39;{}\t{}&#39;.format(n.surface, n.feature))
+...
+卓球    名詞,サ変接続,*,*,*,*,卓球,タッキュウ,タッキュー
+なんて  助詞,副助詞,*,*,*,*,なんて,ナンテ,ナンテ
+死ぬ    動詞,自立,*,*,五段・ナ行,基本形,死ぬ,シヌ,シヌ
+まで    助詞,副助詞,*,*,*,*,まで,マデ,マデ
+の      助詞,連体化,*,*,*,*,の,ノ,ノ
+暇つぶし        名詞,一般,*,*,*,*,暇つぶし,ヒマツブシ,ヒマツブシ
+だ      助動詞,*,*,*,特殊・ダ,基本形,だ,ダ,ダ
+よ      助詞,終助詞,*,*,*,*,よ,ヨ,ヨ
+。      記号,句点,*,*,*,*,。,。,。
+
+# Ex. custom node format
+#
+# -F         ... short-form of --node-format
+# %F,[6,7,0] ... extract these elements from ChaSen feature as CSV
+#                - morpheme root-form (6th index)
+#                - reading (7th index)
+#                - part-of-speech (0th index)
+# %h         ... part-of-speech ID (IPADIC)
+#
+with MeCab(&#39;-F%F,[6,8,0],%h&#39;) as nm:
+    for n in nm.parse(text, as_nodes=True):
+...     # ignore the end-of-sentence nodes
+...     if not n.is_eos():
+...         # output custom-formatted node feature
+...         print(n.feature)
+...
+卓球,タッキュウ,名詞,36
+なんて,ナンテ,助詞,21
+死ぬ,シヌ,動詞,31
+まで,マデ,助詞,21
+の,ノ,助詞,24
+暇つぶし,ヒマツブシ,名詞,38
+だ,ダ,助動詞,25
+よ,ヨ,助詞,17
+。,。,記号,7
+</pre></div>
+</div>
+<dl class="attribute">
+<dt id="natto.MeCabNode.BOS_NODE">
+<code class="descname">BOS_NODE</code><em class="property"> = 2</em><a class="headerlink" href="#natto.MeCabNode.BOS_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCabNode.EON_NODE">
+<code class="descname">EON_NODE</code><em class="property"> = 4</em><a class="headerlink" href="#natto.MeCabNode.EON_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCabNode.EOS_NODE">
+<code class="descname">EOS_NODE</code><em class="property"> = 3</em><a class="headerlink" href="#natto.MeCabNode.EOS_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCabNode.NOR_NODE">
+<code class="descname">NOR_NODE</code><em class="property"> = 0</em><a class="headerlink" href="#natto.MeCabNode.NOR_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="attribute">
+<dt id="natto.MeCabNode.UNK_NODE">
+<code class="descname">UNK_NODE</code><em class="property"> = 1</em><a class="headerlink" href="#natto.MeCabNode.UNK_NODE" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCabNode.is_bos">
+<code class="descname">is_bos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode.is_bos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a beginning-of-sentence node?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if beginning-of-sentence node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCabNode.is_eon">
+<code class="descname">is_eon</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode.is_eon" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an end of an N-best node list?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if end of an N-best node list, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCabNode.is_eos">
+<code class="descname">is_eos</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode.is_eos" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an end-of-sentence node?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if end-of-sentence node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCabNode.is_nor">
+<code class="descname">is_nor</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode.is_nor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this a normal node, defined in a dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if normal node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.MeCabNode.is_unk">
+<code class="descname">is_unk</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#natto.MeCabNode.is_unk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Is this an unknown node, not defined in any dictionary?</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">True if unknown node, False otherwise.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="natto.MeCabError">
+<em class="property">exception </em><code class="descclassname">natto.</code><code class="descname">MeCabError</code><a class="headerlink" href="#natto.MeCabError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">Exception</span></code></p>
+<p>MeCabError is a general error class for the natto-py package.</p>
+</dd></dl>
+
+<dl class="class">
+<dt id="natto.OptionParse">
+<em class="property">class </em><code class="descclassname">natto.</code><code class="descname">OptionParse</code><span class="sig-paren">(</span><em>envch</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.OptionParse" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Helper class for transforming arguments into input for mecab_new2.</p>
+<dl class="method">
+<dt id="natto.OptionParse.build_options_str">
+<code class="descname">build_options_str</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.OptionParse.build_options_str" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a string concatenation of the MeCab options.</p>
+<dl class="docutils">
+<dt>Args:</dt>
+<dd><dl class="first last docutils">
+<dt>options: dictionary of options to use when instantiating the MeCab</dt>
+<dd>instance.</dd>
+</dl>
+</dd>
+<dt>Returns:</dt>
+<dd>A string concatenation of the options used when instantiating the
+MeCab instance, in long-form.</dd>
+</dl>
+</dd></dl>
+
+<dl class="method">
+<dt id="natto.OptionParse.parse_mecab_options">
+<code class="descname">parse_mecab_options</code><span class="sig-paren">(</span><em>options</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.OptionParse.parse_mecab_options" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the MeCab options, returning them in a dictionary.</p>
+<p>Lattice-level option has been deprecated; please use marginal or nbest
+instead.</p>
+<dl class="docutils">
+<dt>:options string or dictionary of options to use when instantiating</dt>
+<dd>the MeCab instance. May be in short- or long-form, or in a
+Python dictionary.</dd>
+<dt>Returns:</dt>
+<dd>A dictionary of the specified MeCab options, where the keys are
+snake-cased names of the long-form of the option names.</dd>
+<dt>Raises:</dt>
+<dd>MeCabError: An invalid value for N-best was passed in.</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="function">
+<dt id="natto.string_support">
+<code class="descclassname">natto.</code><code class="descname">string_support</code><span class="sig-paren">(</span><em>py3enc</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.string_support" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create byte-to-string and string-to-byte conversion functions for
+internal use.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>py3enc</strong> (<em>str</em>) &#8211; Encoding used by Python 3 environment.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="natto.splitter_support">
+<code class="descclassname">natto.</code><code class="descname">splitter_support</code><span class="sig-paren">(</span><em>py2enc</em><span class="sig-paren">)</span><a class="headerlink" href="#natto.splitter_support" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create tokenizer for use in boundary constraint parsing.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>py2enc</strong> (<em>str</em>) &#8211; Encoding used by Python 2 environment.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">natto package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-natto.api">natto.api module</a></li>
+<li><a class="reference internal" href="#module-natto.binding">natto.binding module</a></li>
+<li><a class="reference internal" href="#module-natto.dictionary">natto.dictionary module</a></li>
+<li><a class="reference internal" href="#module-natto.environment">natto.environment module</a></li>
+<li><a class="reference internal" href="#module-natto.mecab">natto.mecab module</a></li>
+<li><a class="reference internal" href="#module-natto.node">natto.node module</a></li>
+<li><a class="reference internal" href="#module-natto.option_parse">natto.option_parse module</a></li>
+<li><a class="reference internal" href="#module-natto.support">natto.support module</a></li>
+<li><a class="reference internal" href="#module-natto.version">natto.version module</a></li>
+<li><a class="reference internal" href="#module-natto">Module contents</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/source/natto.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Brooke M. Fujita.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="../_sources/source/natto.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
