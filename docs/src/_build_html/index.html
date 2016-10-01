@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>natto-py &mdash; natto-py 0.8.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.8.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="natto-py 0.8.0 documentation" href="#" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
+  </head>
+  <body role="document">  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="natto-py">
+<h1>natto-py<a class="headerlink" href="#natto-py" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="what-is-natto-py">
+<h2>What is natto-py?<a class="headerlink" href="#what-is-natto-py" title="Permalink to this headline">¶</a></h2>
+<p>A package leveraging FFI (foreign function interface), <code class="docutils literal"><span class="pre">natto-py</span></code> combines
+the <a class="reference external" href="http://www.python.org/">Python</a> programming language with <a class="reference external" href="http://taku910.github.io/mecab/">MeCab</a>, the part-of-speech and
+morphological analyzer for the Japanese language. No compiler is necessary, as
+it is <strong>not</strong> a C extension. <code class="docutils literal"><span class="pre">natto-py</span></code> will run on Mac OS, Windows and
+*nix.</p>
+<p>You can learn more about <a class="reference external" href="https://github.com/buruzaemon/natto-py">natto-py at GitHub</a>.</p>
+<p><a class="reference external" href="_"><img alt="license" src="https://img.shields.io/badge/license-BSD-blue.svg" /></a> <a class="reference external" href="https://travis-ci.org/buruzaemon/natto-py"><img alt="travis" src="https://travis-ci.org/buruzaemon/natto-py.svg?branch=master" /></a> <a class="reference external" href="https://pypi.python.org/pypi/natto-py"><img alt="version" src="https://badge.fury.io/py/natto-py.svg" /></a> <a class="reference external" href="https://pypi.python.org/pypi/natto-py"><img alt="pypi" src="https://img.shields.io/pypi/dm/natto-py.svg" /></a></p>
+</div>
+<div class="section" id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal"><span class="pre">natto-py</span></code> requires the following:</p>
+<ul class="simple">
+<li>An existing installation of <a class="reference external" href="http://taku910.github.io/mecab/#download">MeCab 0.996</a></li>
+<li>A system dictionary, like <a class="reference external" href="http://taku910.github.io/mecab/#download">mecab-ipadic</a> or <a class="reference external" href="http://taku910.github.io/mecab/#download">mecab-jumandic</a></li>
+<li><a class="reference external" href="https://bitbucket.org/cffi/cffi">cffi 0.8.6</a> or greater</li>
+</ul>
+<p>The following Python versions are supported:</p>
+<ul class="simple">
+<li><a class="reference external" href="https://docs.python.org/dev/whatsnew/2.7.html">Python 2.7</a></li>
+<li><a class="reference external" href="https://docs.python.org/dev/whatsnew/3.2.html">Python 3.2</a></li>
+<li><a class="reference external" href="https://docs.python.org/dev/whatsnew/3.3.html">Python 3.3</a></li>
+<li><a class="reference external" href="https://docs.python.org/dev/whatsnew/3.4.html">Python 3.4</a></li>
+<li><a class="reference external" href="https://docs.python.org/dev/whatsnew/3.5.html">Python 3.5</a></li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Install <code class="docutils literal"><span class="pre">natto-py</span></code> as you would any other Python package:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ pip install natto-py
+</pre></div>
+</div>
+<p>This will automatically install the <code class="docutils literal"><span class="pre">cffi</span></code> package, which <code class="docutils literal"><span class="pre">natto-py</span></code> uses
+to bind to the <code class="docutils literal"><span class="pre">mecab</span></code> library.</p>
+</div>
+<div class="section" id="automatic-configuration">
+<h2>Automatic Configuration<a class="headerlink" href="#automatic-configuration" title="Permalink to this headline">¶</a></h2>
+<p>As long as the <code class="docutils literal"><span class="pre">mecab</span></code> (and <code class="docutils literal"><span class="pre">mecab-config</span></code> for *nix and Mac OS)
+executables are on your <code class="docutils literal"><span class="pre">PATH</span></code>, <code class="docutils literal"><span class="pre">natto-py</span></code> does not require any explicit
+configuration.</p>
+<ul class="simple">
+<li>On *nix and Mac OS, it queries <code class="docutils literal"><span class="pre">mecab-config</span></code> to discover the path to the <code class="docutils literal"><span class="pre">libmecab.so</span></code> or <code class="docutils literal"><span class="pre">libmecab.dylib</span></code>, respectively.</li>
+<li>On Windows, it queries the Windows Registry to locate the MeCab installation folder.</li>
+<li>In order to convert character encodings to/from Unicode, <code class="docutils literal"><span class="pre">natto-py</span></code> will examine the charset of the <code class="docutils literal"><span class="pre">mecab</span></code> system dictionary.</li>
+</ul>
+</div>
+<div class="section" id="explicit-configuration-via-mecab-path-and-mecab-charset">
+<h2>Explicit configuration via MECAB_PATH and MECAB_CHARSET<a class="headerlink" href="#explicit-configuration-via-mecab-path-and-mecab-charset" title="Permalink to this headline">¶</a></h2>
+<p>If <code class="docutils literal"><span class="pre">natto-py</span></code> for some reason cannot locate the <code class="docutils literal"><span class="pre">mecab</span></code> library,
+or if it cannot determine the correct charset used internally by
+<code class="docutils literal"><span class="pre">mecab</span></code>, then you will need to set the <code class="docutils literal"><span class="pre">MECAB_PATH</span></code> and <code class="docutils literal"><span class="pre">MECAB_CHARSET</span></code>
+environment variables.</p>
+<ul class="simple">
+<li>Set the <code class="docutils literal"><span class="pre">MECAB_PATH</span></code> environment variable to the exact name/path to your <code class="docutils literal"><span class="pre">mecab</span></code> library.</li>
+<li>Set the <code class="docutils literal"><span class="pre">MECAB_CHARSET</span></code> environment variable to the <code class="docutils literal"><span class="pre">charset</span></code> character encoding used by your system dictionary.</li>
+</ul>
+<p>e.g., for Mac OS:</p>
+<div class="highlight-python"><div class="highlight"><pre>export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
+export MECAB_CHARSET=utf8
+</pre></div>
+</div>
+<p>e.g., for bash on UNIX/Linux:</p>
+<div class="highlight-python"><div class="highlight"><pre>export MECAB_PATH=/usr/local/lib/libmecab.so
+export MECAB_CHARSET=euc-jp
+</pre></div>
+</div>
+<p>e.g., on Windows:</p>
+<div class="highlight-python"><div class="highlight"><pre>set MECAB_PATH=C:\Program Files\MeCab\bin\libmecab.dll
+set MECAB_CHARSET=shift-jis
+</pre></div>
+</div>
+<p>e.g., from within a Python program:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MECAB_PATH&#39;</span><span class="p">]</span><span class="o">=</span><span class="s">&#39;/usr/local/lib/libmecab.so&#39;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s">&#39;MECAB_CHARSET&#39;</span><span class="p">]</span><span class="o">=</span><span class="s">&#39;utf-16&#39;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Here&#8217;s a very quick guide to using <code class="docutils literal"><span class="pre">natto-py</span></code>.</p>
+<p>Instantiate a reference to the <code class="docutils literal"><span class="pre">mecab</span></code> library, and display some details:</p>
+<div class="highlight-python"><div class="highlight"><pre>from natto import MeCab
+
+nm = MeCab()
+print(nm)
+
+# displays details about the MeCab instance
+&lt;natto.mecab.MeCab
+ model=&lt;cdata &#39;mecab_model_t *&#39; 0x801c16300&gt;,
+ tagger=&lt;cdata &#39;mecab_t *&#39; 0x801c17470&gt;,
+ lattice=&lt;cdata &#39;mecab_lattice_t *&#39; 0x801c196c0&gt;,
+ libpath=&quot;/usr/local/lib/libmecab.so&quot;,
+ options={},
+ dicts=[&lt;natto.dictionary.DictionaryInfo
+         dictionary=&#39;mecab_dictionary_info_t *&#39; 0x801c19540&gt;,
+         filepath=&quot;/usr/local/lib/mecab/dic/ipadic/sys.dic&quot;,
+         charset=utf8,
+         type=0],
+ version=0.996&gt;
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Display details about the <code class="docutils literal"><span class="pre">mecab</span></code> system dictionary used:</p>
+<div class="highlight-python"><div class="highlight"><pre>sysdic = nm.dicts[0]
+print(sysdic)
+
+# displays the MeCab system dictionary info
+&lt;natto.dictionary.DictionaryInfo
+ dictionary=&#39;mecab_dictionary_info_t *&#39; 0x801c19540&gt;,
+ filepath=&quot;/usr/local/lib/mecab/dic/ipadic/sys.dic&quot;,
+ charset=utf8,
+ type=0&gt;
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Parse Japanese text and send the MeCab result as a single string to
+<code class="docutils literal"><span class="pre">stdout</span></code>:</p>
+<div class="highlight-python"><div class="highlight"><pre>print(nm.parse(&#39;ピンチの時には必ずヒーローが現れる。&#39;))
+
+# MeCab result as a single string
+ピンチ    名詞,一般,*,*,*,*,ピンチ,ピンチ,ピンチ
+の      助詞,連体化,*,*,*,*,の,ノ,ノ
+時      名詞,非自立,副詞可能,*,*,*,時,トキ,トキ
+に      助詞,格助詞,一般,*,*,*,に,ニ,ニ
+は      助詞,係助詞,*,*,*,*,は,ハ,ワ
+必ず    副詞,助詞類接続,*,*,*,*,必ず,カナラズ,カナラズ
+ヒーロー  名詞,一般,*,*,*,*,ヒーロー,ヒーロー,ヒーロー
+が      助詞,格助詞,一般,*,*,*,が,ガ,ガ
+現れる  動詞,自立,*,*,一段,基本形,現れる,アラワレル,アラワレル
+。      記号,句点,*,*,*,*,。,。,。
+EOS
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>Next, try parsing the text with MeCab node parsing. A generator yielding the
+MeCabNode instances lets you efficiently iterate over the output without first
+materializing each and every resulting MeCabNode instance. The MeCabNode
+instances yielded allow access to more detailed information about each
+morpheme.</p>
+<p>Here we use a <a class="reference external" href="https://www.python.org/dev/peps/pep-0343/">Python with-statement</a> to automatically clean up after we
+finish node parsing with the MeCab tagger. This is the recommended approach
+for using <code class="docutils literal"><span class="pre">natto-py</span></code> in a production environment:</p>
+<div class="highlight-python"><div class="highlight"><pre># Use a Python with-statement to ensure mecab_destroy is invoked
+#
+with MeCab() as nm:
+    for n in nm.parse(&#39;ピンチの時には必ずヒーローが現れる。&#39;, as_nodes=True):
+...     # ignore any end-of-sentence nodes
+...     if not n.is_eos():
+...         print(&#39;{}\t{}&#39;.format(n.surface, n.cost))
+...
+ピンチ    3348
+の        3722
+時        5176
+に        5083
+は        5305
+必ず    7525
+ヒーロー   11363
+が       10508
+現れる   10841
+。        7127
+</pre></div>
+</div>
+<hr class="docutils" />
+<p>MeCab output formatting is extremely flexible and is highly recommended for
+any serious natural language processing task. Rather than parsing the MeCab
+output as a single, large string, use MeCab&#8217;s <code class="docutils literal"><span class="pre">--node-format</span></code> option
+(short form <code class="docutils literal"><span class="pre">-F</span></code>) to customize the node&#8217;s <code class="docutils literal"><span class="pre">feature</span></code> attribute.</p>
+<ul class="simple">
+<li>morpheme surface</li>
+<li>part-of-speech</li>
+<li>part-of-speech ID</li>
+<li>pronunciation</li>
+</ul>
+<p>This example formats the node <code class="docutils literal"><span class="pre">feature</span></code> to capture the items above as a
+comma-separated value:</p>
+<div class="highlight-python"><div class="highlight"><pre># MeCab options used:
+#
+# -F    ... short-form of --node-format
+# %m    ... morpheme surface
+# %f[0] ... part-of-speech
+# %h    ... part-of-speech id (ipadic)
+# %f[8] ... pronunciation
+#
+with MeCab(&#39;-F%m,%f[0],%h,%f[8]&#39;) as nm:
+    for n in nm.parse(&#39;ピンチの時には必ずヒーローが現れる。&#39;, as_nodes=True):
+...     # only normal nodes, ignore any end-of-sentence and unknown nodes
+...     if n.is_nor():
+...         print(n.feature)
+...
+ピンチ,名詞,38,ピンチ
+の,助詞,24,ノ
+時,名詞,66,トキ
+に,助詞,13,ニ
+は,助詞,16,ワ
+必ず,副詞,35,カナラズ
+ヒーロー,名詞,38,ヒーロー
+が,助詞,13,ガ
+現れる,動詞,31,アラワレル
+。,記号,7,。
+</pre></div>
+</div>
+<hr class="docutils" />
+<p><a class="reference external" href="http://taku910.github.io/mecab/partial.html">Partial parsing</a> (制約付き解析), allows you to pass hints to MeCab on
+how to tokenize morphemes when parsing. Most useful are boundary constraint
+parsing and feature constraint parsing.</p>
+<p>With boundary constraint parsing, you can specify either a compiled <code class="docutils literal"><span class="pre">re</span></code>
+regular expression object or a string to tell MeCab where the boundaries of
+a morpheme should be. Use the <code class="docutils literal"><span class="pre">boundary_constraints</span></code> keyword. For hints on
+tokenization, please see <a class="reference external" href="https://docs.python.org/3/library/re.html">Regular expression operations</a> and <a class="reference external" href="https://docs.python.org/3/library/re.html#re.finditer">re.finditer</a>
+in particular.</p>
+<p>This example uses the <code class="docutils literal"><span class="pre">-F</span></code> node-format option to customize the resulting
+<code class="docutils literal"><span class="pre">MeCabNode</span></code> feature attribute to extract:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">%m</span></code> - morpheme surface</li>
+<li><code class="docutils literal"><span class="pre">%f[0]</span></code> - node part-of-speech</li>
+<li><code class="docutils literal"><span class="pre">%s</span></code> - node <code class="docutils literal"><span class="pre">stat</span></code> status value, 1 is <code class="docutils literal"><span class="pre">unknown</span></code></li>
+</ul>
+<p>Note that any such morphemes captured will have node <code class="docutils literal"><span class="pre">stat</span></code> status of 1 (unknown):</p>
+<div class="highlight-python"><div class="highlight"><pre>import re
+
+with MeCab(&#39;-F%m,\s%f[0],\s%s&#39;) as nm:
+
+    text = &#39;俺は努力したよっ？ お前の10倍、いや100倍1000倍したよっ！&#39;
+
+    # capture 10倍, 100倍 and 1000倍 as single parts-of-speech
+    pattern = re.compile(&#39;10+倍&#39;)
+
+    for n in nm.parse(text, boundary_constraints=pattern, as_nodes=True):
+...     print(n.feature)
+...
+俺, 名詞, 0
+は, 助詞, 0
+努力, 名詞, 0
+し, 動詞, 0
+たよっ, 動詞, 0
+？, 記号, 0
+お前, 名詞, 0
+の, 助詞, 0
+10倍, 名詞, 1
+、, 記号, 0
+いや, 接続詞, 0
+100倍, 名詞, 1
+1000倍, 名詞, 1
+し, 動詞, 0
+たよっ, 動詞, 0
+！, 記号, 0
+EOS
+</pre></div>
+</div>
+<p>With feature constraint parsing, you can provide instructions to MeCab
+on what feature to use for a matching morpheme. Use the
+<code class="docutils literal"><span class="pre">feature_constraints</span></code> keyword to pass in a <code class="docutils literal"><span class="pre">tuple</span></code> containing elements
+that themselves are <code class="docutils literal"><span class="pre">tuple</span></code> instances with a specific morpheme (str)
+and a corresponding feature (str), in order of constraint precedence:</p>
+<div class="highlight-python"><div class="highlight"><pre>with MeCab(&#39;-F%m,\s%f[0],\s%s&#39;) as nm:
+
+    text = &#39;心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！&#39;
+
+    # capture ヒーロー見参 as 感動詞 part-of-speech
+    features = ((&#39;ヒーロー見参&#39;, &#39;感動詞&#39;),)
+
+    for n in nm.parse(text, feature_constraints=features, as_nodes=True):
+...     print(n.feature)
+...
+心, 名詞, 0
+の, 助詞, 0
+中, 名詞, 0
+で, 助詞, 0
+3, 名詞, 1
+回, 名詞, 0
+唱え, 動詞, 0
+、, 記号, 0
+ヒーロー見参, 感動詞, 1
+！, 記号, 0
+ヒーロー見参, 感動詞, 1
+！, 記号, 0
+ヒーロー見参, 感動詞, 1
+！, 記号, 0
+EOS
+</pre></div>
+</div>
+<hr class="docutils" />
+<div class="toctree-wrapper compound">
+<ul class="simple">
+</ul>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span>Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="#">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">natto-py</a><ul>
+<li><a class="reference internal" href="#what-is-natto-py">What is natto-py?</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
+<li><a class="reference internal" href="#installation">Installation</a></li>
+<li><a class="reference internal" href="#automatic-configuration">Automatic Configuration</a></li>
+<li><a class="reference internal" href="#explicit-configuration-via-mecab-path-and-mecab-charset">Explicit configuration via MECAB_PATH and MECAB_CHARSET</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#indices-and-tables">Indices and tables</a></li>
+</ul>
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/index.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2016, Brooke M. Fujita.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.6</a>
+      
+      |
+      <a href="_sources/index.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
