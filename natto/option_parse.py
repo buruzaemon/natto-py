@@ -2,6 +2,8 @@
 '''Helper class for parsing MeCab options.'''
 import argparse
 import logging
+import shlex
+
 from .support import string_support
 
 logger = logging.getLogger('natto.option_parse')
@@ -76,7 +78,7 @@ class OptionParse(object):
         if type(options) is dict:
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if name in options:
-                    if options[name]:
+                    if options[name] or options[name] is '':
                         val = options[name]
                         if isinstance(val, bytes):
                             val = self.__bytes2str(options[name])
@@ -148,12 +150,12 @@ class OptionParse(object):
                            help='set cost factor (default 700)',
                            action='store', dest='cost_factor', type=int)
 
-            opts = p.parse_args(options.split())
+            opts = p.parse_args(shlex.split(options))
 
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if hasattr(opts, name):
                     v = getattr(opts, name)
-                    if v:
+                    if v or v is '':
                         dopts[name] = v
 
         # final checks
