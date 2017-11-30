@@ -77,7 +77,7 @@ e.g., for bash on UNIX/Linux:
 
 e.g., on Windows:
 
-.. code-block:: bash
+.. code-block:: bat
 
     set MECAB_PATH=C:\Program Files\MeCab\bin\libmecab.dll
     set MECAB_CHARSET=shift-jis
