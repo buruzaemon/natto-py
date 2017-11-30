@@ -14,7 +14,7 @@ You can learn more about `natto-py at GitHub`_.
 |license| |travis| |version| |readthedocs|
 
 Requirements
--------------
+------------
 ``natto-py`` requires the following:
 
 - An existing installation of `MeCab 0.996`_
@@ -32,7 +32,9 @@ The following Python versions are supported:
 
 Installation
 ------------
-Install ``natto-py`` as you would any other Python package::
+Install ``natto-py`` as you would any other Python package:
+
+.. code-block:: bash
 
     $ pip install natto-py
 
@@ -43,7 +45,7 @@ Automatic Configuration
 -----------------------
 As long as the ``mecab`` (and ``mecab-config`` for \*nix and Mac OS)
 executables are on your ``PATH``, ``natto-py`` does not require any explicit
-configuration. 
+configuration.
 
 - On \*nix and Mac OS, it queries ``mecab-config`` to discover the path to the ``libmecab.so`` or ``libmecab.dylib``, respectively.
 - On Windows, it queries the Windows Registry to locate the MeCab installation folder.
@@ -54,27 +56,35 @@ Explicit configuration via MECAB_PATH and MECAB_CHARSET
 If ``natto-py`` for some reason cannot locate the ``mecab`` library,
 or if it cannot determine the correct charset used internally by
 ``mecab``, then you will need to set the ``MECAB_PATH`` and ``MECAB_CHARSET``
-environment variables. 
+environment variables.
 
 - Set the ``MECAB_PATH`` environment variable to the exact name/path to your ``mecab`` library.
 - Set the ``MECAB_CHARSET`` environment variable to the ``charset`` character encoding used by your system dictionary.
 
-e.g., for Mac OS::
+e.g., for Mac OS:
+
+.. code-block:: bash
 
     export MECAB_PATH=/usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
     export MECAB_CHARSET=utf8
 
-e.g., for bash on UNIX/Linux::
+e.g., for bash on UNIX/Linux:
+
+.. code-block:: bash
 
     export MECAB_PATH=/usr/local/lib/libmecab.so
     export MECAB_CHARSET=euc-jp
 
-e.g., on Windows::
+e.g., on Windows:
+
+.. code-block:: bash
 
     set MECAB_PATH=C:\Program Files\MeCab\bin\libmecab.dll
     set MECAB_CHARSET=shift-jis
 
-e.g., from within a Python program::
+e.g., from within a Python program:
+
+.. code-block:: python
 
     import os
 
@@ -85,7 +95,9 @@ Usage
 -----
 Here's a very quick guide to using ``natto-py``.
 
-Instantiate a reference to the ``mecab`` library, and display some details::
+Instantiate a reference to the ``mecab`` library, and display some details:
+
+.. code-block:: python
 
     from natto import MeCab
 
@@ -108,7 +120,9 @@ Instantiate a reference to the ``mecab`` library, and display some details::
 
 ----
 
-Display details about the ``mecab`` system dictionary used::
+Display details about the ``mecab`` system dictionary used:
+
+.. code-block:: python
 
     sysdic = nm.dicts[0]
     print(sysdic)
@@ -123,7 +137,9 @@ Display details about the ``mecab`` system dictionary used::
 ----
 
 Parse Japanese text and send the MeCab result as a single string to
-``stdout``::
+``stdout``:
+
+.. code-block:: python
 
     print(nm.parse('ピンチの時には必ずヒーローが現れる。'))
 
@@ -144,13 +160,15 @@ Parse Japanese text and send the MeCab result as a single string to
 
 Next, try parsing the text with MeCab node parsing. A generator yielding the
 MeCabNode instances lets you efficiently iterate over the output without first
-materializing each and every resulting MeCabNode instance. The MeCabNode 
+materializing each and every resulting MeCabNode instance. The MeCabNode
 instances yielded allow access to more detailed information about each
 morpheme.
 
-Here we use a `Python with-statement`_ to automatically clean up after we 
+Here we use a `Python with-statement`_ to automatically clean up after we
 finish node parsing with the MeCab tagger. This is the recommended approach
-for using ``natto-py`` in a production environment::
+for using ``natto-py`` in a production environment:
+
+.. code-block:: python
 
     # Use a Python with-statement to ensure mecab_destroy is invoked
     #
@@ -184,8 +202,10 @@ output as a single, large string, use MeCab's ``--node-format`` option
 - pronunciation
 
 This example formats the node ``feature`` to capture the items above as a
-comma-separated value::
-  
+comma-separated value:
+
+.. code-block:: python
+
     # MeCab options used:
     #
     # -F    ... short-form of --node-format
@@ -231,8 +251,10 @@ This example uses the ``-F`` node-format option to customize the resulting
 - ``%f[0]`` - node part-of-speech
 - ``%s`` - node ``stat`` status value, 1 is ``unknown``
 
-Note that any such morphemes captured will have node ``stat`` status of 1 (unknown)::
- 
+Note that any such morphemes captured will have node ``stat`` status of 1 (unknown):
+
+.. code-block:: python
+
     import re
 
     with MeCab('-F%m,\s%f[0],\s%s') as nm:
@@ -267,7 +289,9 @@ With feature constraint parsing, you can provide instructions to MeCab
 on what feature to use for a matching morpheme. Use the 
 ``feature_constraints`` keyword to pass in a ``tuple`` containing elements
 that themselves are ``tuple`` instances with a specific morpheme (str) 
-and a corresponding feature (str), in order of constraint precedence::
+and a corresponding feature (str), in order of constraint precedence:
+
+.. code-block:: python
 
     with MeCab('-F%m,\s%f[0],\s%s') as nm:
 
