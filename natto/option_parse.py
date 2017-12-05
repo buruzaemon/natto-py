@@ -9,7 +9,8 @@ logger = logging.getLogger('natto.option_parse')
 class OptionParse(object):
     '''Helper class for transforming arguments into input for mecab_new2.'''
 
-    _SUPPORTED_OPTS = {'-d' : 'dicdir',
+    _SUPPORTED_OPTS = {'-r' : 'rcfile',
+                       '-d' : 'dicdir',
                        '-u' : 'userdic',
                        '-l' : 'lattice_level',
                        '-O' : 'output_format_type',
@@ -83,6 +84,9 @@ class OptionParse(object):
                         dopts[name] = val
         else:
             p = MeCabArgumentParser()
+            p.add_argument('-r', '--rcfile',
+                           help='use FILE as a resource file',
+                           action='store', dest='rcfile')
             p.add_argument('-d', '--dicdir',
                            help='set DIR as a system dicdir',
                            action='store', dest='dicdir')

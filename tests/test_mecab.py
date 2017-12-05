@@ -28,6 +28,8 @@ class TestMecab(unittest.TestCase, Test23Support):
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
 
+        self.testrc = os.path.join(cwd, 'tests', 'testrc')
+
         with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
@@ -40,6 +42,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         self.text = None
         self.yaml = None
         self.env = None
+        self.testrc = None
 
     def _mecab_parse(self, options):
         cmd = ['mecab']
@@ -271,7 +274,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 for i in range(len(lines)):
                     self.assertTrue(lines[i].startswith(expected[i]))
 
-   # ------------------------------------------------------------------------
+    # ------------------------------------------------------------------------
     def test_parse_tonodes_boundary(self):
         '''Test boundary constraint parsing as nodes (output format does NOT apply).'''
         with mecab.MeCab() as nm:
@@ -350,7 +353,7 @@ class TestMecab(unittest.TestCase, Test23Support):
     # ------------------------------------------------------------------------
     def test_parse_tostr_feature(self):
         '''Test feature constraint parsing to string (output format does NOT apply).'''
-        with mecab.MeCab("-F%m,%f[0],%s\\n") as nm:
+        with mecab.MeCab(r'-F%m,%f[0],%s\n') as nm:
             yml = self.yaml.get('text11')
             txt = self._u2str(yml.get('text'))
             feat = (tuple(self._u2str(yml.get('feature')).split(',')) ,)
@@ -361,9 +364,25 @@ class TestMecab(unittest.TestCase, Test23Support):
             for i in range(len(actual)):
                 self.assertEqual(actual[i], expected[i])
 
+    # ------------------------------------------------------------------------
+    def test_parse_override_node_format(self):
+        '''Test node-format override when default is defined in rcfile'''
+        with mecab.MeCab(r'-r {} -O "" -F%m!\n'.format(self.testrc)) as nm:
+            expected = nm.parse(self.text, as_nodes=True)
+            expected = [e.feature for e in expected if e.stat == 0]
+
+            cmd = ['mecab', '-r', self.testrc, '-O', '', r'-F%m!\n']
+            p = Popen(cmd, stdin=PIPE, stdout=PIPE)
+            mout = p.communicate(self.text.encode('utf-8'))
+            actual = mout[0].decode('utf-8').strip()
+            actual = [e for e in actual.split(os.linesep) if e != 'EOS']
+
+            for i,a in enumerate(actual):
+                self.assertEqual(expected[i], a)
+
 
 '''
-Copyright (c) 2016, Brooke M. Fujita.
+Copyright (c) 2017, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
