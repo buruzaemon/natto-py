@@ -369,6 +369,8 @@ class TestMecab(unittest.TestCase, Test23Support):
     def test_parse_override_node_format(self):
         '''Test node-format override when default is defined in rcfile'''
         b2s, s2b = support.string_support(self.env.charset)
+        print('self.testrc? {}'.format(self.testrc))
+        print('abspath self.testrc? {}'.format(os.path.abspath(self.testrc)))
         with mecab.MeCab('-r {} -O "" -F%m!\\n'.format(self.testrc)) as nm:
             expected = nm.parse(self.text, as_nodes=True)
             expected = [e.feature for e in expected if e.stat == 0]
