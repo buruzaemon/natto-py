@@ -9,6 +9,7 @@ import unittest
 import natto.api as api
 import natto.environment as env
 import natto.mecab as mecab
+import natto.support as support
 from subprocess import Popen, PIPE
 from tests import Test23Support
 
@@ -28,7 +29,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
 
-        self.testrc = os.path.join(cwd, 'tests', 'testrc')
+        self.testrc = os.path.join(cwd, 'tests', 'testmecab.rc')
 
         with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
@@ -367,14 +368,16 @@ class TestMecab(unittest.TestCase, Test23Support):
     # ------------------------------------------------------------------------
     def test_parse_override_node_format(self):
         '''Test node-format override when default is defined in rcfile'''
+        b2s, s2b = support.string_support(self.env.charset)
         with mecab.MeCab(r'-r {} -O "" -F%m!\n'.format(self.testrc)) as nm:
             expected = nm.parse(self.text, as_nodes=True)
             expected = [e.feature for e in expected if e.stat == 0]
 
             cmd = ['mecab', '-r', self.testrc, '-O', '', r'-F%m!\n']
             p = Popen(cmd, stdin=PIPE, stdout=PIPE)
-            mout = p.communicate(self.text.encode('utf-8'))
-            actual = mout[0].decode('utf-8').strip()
+            mout = p.communicate(s2b(self.text))
+            actual = b2s(mout[0]).strip()
+            #actual = mout[0].decode('utf-8').strip()
             actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
             for i,a in enumerate(actual):
