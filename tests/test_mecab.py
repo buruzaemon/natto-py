@@ -369,7 +369,7 @@ class TestMecab(unittest.TestCase, Test23Support):
     def test_parse_override_node_format(self):
         '''Test node-format override when default is defined in rcfile'''
         b2s, s2b = support.string_support(self.env.charset)
-        with mecab.MeCab(r'-r {} -O "" -F%m!\n'.format(self.testrc)) as nm:
+        with mecab.MeCab('-r {} -O "" -F%m!\\n'.format(self.testrc)) as nm:
             expected = nm.parse(self.text, as_nodes=True)
             expected = [e.feature for e in expected if e.stat == 0]
 
@@ -377,7 +377,6 @@ class TestMecab(unittest.TestCase, Test23Support):
             p = Popen(cmd, stdin=PIPE, stdout=PIPE)
             mout = p.communicate(s2b(self.text))
             actual = b2s(mout[0]).strip()
-            #actual = mout[0].decode('utf-8').strip()
             actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
             for i,a in enumerate(actual):

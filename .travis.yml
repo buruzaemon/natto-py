@@ -35,5 +35,7 @@ python:
 
 # command to run tests
 script:
-  - ls -la `mecab-config --dicdir`
+  - "pwd"
+  - "ls -la"
+  - "ls -la tests"
   - "python setup.py test"
