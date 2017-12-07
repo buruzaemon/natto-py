@@ -1,9 +1,11 @@
 *.pyc
 *.lnk
 *.bat
+testmecabrc
 /build/
 /docs/
 /dist/
 /.py*env/
+/*.eggs/
 /*.egg-info/
 /notebooks/.ipynb_checkpoints/

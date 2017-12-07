@@ -1,0 +1,12 @@
+;
+; Bogus configuration file of MeCab
+; for test purposes
+;
+dicdir = $ipadic
+
+output-format-type = test
+
+node-format-test = %m...test\n
+unk-format-test = ?...test\n 
+eos-format-test = eos\n
+bos-format-test = bos\n

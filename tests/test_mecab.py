@@ -10,6 +10,8 @@ import natto.api as api
 import natto.environment as env
 import natto.mecab as mecab
 import natto.support as support
+from os import path
+from string import Template
 from subprocess import Popen, PIPE
 from tests import Test23Support
 
@@ -29,13 +31,28 @@ class TestMecab(unittest.TestCase, Test23Support):
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
         self.env = env.MeCabEnv()
 
-        self.testrc = os.path.join(cwd, 'tests', 'testmecab.rc')
+        self.b2s, self.s2b = support.string_support(self.env.charset)
+
+        self.testrc = os.path.join(cwd, 'tests', 'testmecabrc')
 
         with codecs.open(self.textfile, 'r') as f:
             self.text = f.readlines()[0].strip()
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f)
+
+        cmd = ['mecab', '-P']
+        mout = Popen(cmd, stdout=PIPE).communicate()
+        res = self.b2s(mout[0])
+        m = re.search('(?<=dicdir:\s).*', res)
+        ipadic = path.abspath(m.group(0).strip())
+        with open(path.join(os.getcwd(), 'tests', 'mecabrc.tmp'), 'r') as fin:
+            tmpl = Template(fin.read())
+
+            tmpl = tmpl.substitute({'ipadic': ipadic})
+
+            with open(self.testrc, 'w') as fout:
+                fout.write(tmpl)
 
 
     def tearDown(self):
@@ -368,17 +385,14 @@ class TestMecab(unittest.TestCase, Test23Support):
     # ------------------------------------------------------------------------
     def test_parse_override_node_format(self):
         '''Test node-format override when default is defined in rcfile'''
-        b2s, s2b = support.string_support(self.env.charset)
-        print('self.testrc? {}'.format(self.testrc))
-        print('abspath self.testrc? {}'.format(os.path.abspath(self.testrc)))
-        with mecab.MeCab('-r {} -O "" -F%m!\\n'.format(self.testrc)) as nm:
+        with mecab.MeCab(r'-r {} -O "" -F%m!\n'.format(self.testrc)) as nm:
             expected = nm.parse(self.text, as_nodes=True)
             expected = [e.feature for e in expected if e.stat == 0]
 
             cmd = ['mecab', '-r', self.testrc, '-O', '', r'-F%m!\n']
             p = Popen(cmd, stdin=PIPE, stdout=PIPE)
-            mout = p.communicate(s2b(self.text))
-            actual = b2s(mout[0]).strip()
+            mout = p.communicate(self.s2b(self.text))
+            actual = self.b2s(mout[0]).strip()
             actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
             for i,a in enumerate(actual):
