@@ -64,15 +64,17 @@ class TestMecab(unittest.TestCase, Test23Support):
 
     def _mecab_parse(self, options):
         cmd = ['mecab']
-        if sys.platform == 'win32':
+
+        if type(options) is str:
             if len(options) > 0:
                 cmd.append(options)
-            cmd.append(self.textfile)
+        elif type(options) is list:
+            cmd.extend(options)
+        cmd.append(self.textfile)
+
+        if sys.platform == 'win32':
             mout = Popen(cmd, stdout=PIPE, shell=True).communicate()
         else:
-            if len(options) > 0:
-                cmd.append(options)
-            cmd.append(self.textfile)
             mout = Popen(cmd, stdout=PIPE).communicate()
 
         res = mout[0].strip()
@@ -389,15 +391,13 @@ class TestMecab(unittest.TestCase, Test23Support):
             expected = nm.parse(self.text, as_nodes=True)
             expected = [e.feature for e in expected if e.stat == 0]
 
-            cmd = ['mecab', '-r', self.testrc, '-O', '', r'-F%m!\n']
-            p = Popen(cmd, stdin=PIPE, stdout=PIPE)
-            mout = p.communicate(self.s2b(self.text))
-            actual = self.b2s(mout[0]).strip()
-            actual = [e for e in actual.split(os.linesep) if e != 'EOS']
+            argf = ['-r', self.testrc, '-O', '', '-F%m!\\n']
+            actual = self._2bytes(self._mecab_parse(argf))
+            actual = [e for e in actual.split() if not e.startswith('EOS')]
 
-            for i,a in enumerate(actual):
-                self.assertEqual(expected[i], a)
-
+            for i,e in enumerate(actual):
+                self.assertEqual(e, expected[i])
+     
 
 '''
 Copyright (c) 2017, Brooke M. Fujita.
