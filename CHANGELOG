@@ -2,6 +2,10 @@ CHANGELOG
 ---------
 
 - 2018/01/ 0.9.0 release.
+    - Issue 92: Where's the natto-py documentation?
+    - Issue 96: Index out of range error message not being captured by natto-py
+    - Issue 99: Node-formatting ignored when using Unidic unless -O is set to empty string
+    - Issue 101: Enable -r/--rcfile MeCab option
 
 - 2016/01/31 0.8.0 release.
     - Issue 72: Revamp IPython notebooks for use with Jupyter
