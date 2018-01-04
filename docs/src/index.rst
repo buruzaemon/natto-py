@@ -23,7 +23,7 @@ Requirements
 ``natto-py`` requires the following:
 
 - An existing installation of `MeCab 0.996`_
-- A system dictionary, like `mecab-ipadic`_ or `mecab-jumandic`_
+- A system dictionary, like `IPA`_, `Juman`_ or `Unidic`_
 - `cffi 0.8.6`_ or greater
 
 The following Python versions are supported:
@@ -33,6 +33,7 @@ The following Python versions are supported:
 - `Python 3.3`_
 - `Python 3.4`_
 - `Python 3.5`_
+- `Python 3.6`_
 
 Installation
 ------------
@@ -311,8 +312,9 @@ and a corresponding feature (str), in order of constraint precedence::
     :target: _
 .. _Python: http://www.python.org/
 .. _MeCab: http://taku910.github.io/mecab/
-.. _mecab-ipadic: http://taku910.github.io/mecab/#download
-.. _mecab-jumandic: http://taku910.github.io/mecab/#download
+.. _IPA: http://taku910.github.io/mecab/#download
+.. _Juman: http://taku910.github.io/mecab/#download
+.. _Unidic: http://taku910.github.io/mecab/#download
 .. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
 .. _MeCab 0.996: http://taku910.github.io/mecab/#download
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
@@ -321,6 +323,7 @@ and a corresponding feature (str), in order of constraint precedence::
 .. _Python 3.3: https://docs.python.org/dev/whatsnew/3.3.html
 .. _Python 3.4: https://docs.python.org/dev/whatsnew/3.4.html 
 .. _Python 3.5: https://docs.python.org/dev/whatsnew/3.5.html 
+.. _Python 3.6: https://docs.python.org/dev/whatsnew/3.6.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
