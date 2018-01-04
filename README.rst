@@ -1,4 +1,4 @@
-natto-py
+tto-py
 ========
 
 What is natto-py?
