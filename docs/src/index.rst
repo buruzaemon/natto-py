@@ -16,7 +16,7 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 
 You can learn more about `natto-py at GitHub`_.
 
-|license| |travis| |version| |pypi|
+|license| |travis| |version|
 
 Requirements
 -------------
@@ -306,8 +306,6 @@ and a corresponding feature (str), in order of constraint precedence::
     :target: https://pypi.python.org/pypi/natto-py
 .. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
-.. |pypi| image:: https://img.shields.io/pypi/dm/natto-py.svg
-    :target: https://pypi.python.org/pypi/natto-py
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: _
 .. _Python: http://www.python.org/
