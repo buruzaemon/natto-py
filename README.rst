@@ -393,5 +393,5 @@ the ``LICENSE`` file for further details.
 .. _Sphinx: http://sphinx-doc.org/
 .. _twine: https://github.com/pypa/twine
 .. _unittest: http://pythontesting.net/framework/unittest/unittest-introduction/
-.. _PyYAML: http://pyyaml.org/wiki/PyYAMLDocumentation
+.. _PyYAML: https://github.com/yaml/pyyaml 
 .. |copy| unicode:: 0xA9 .. copyright sign
