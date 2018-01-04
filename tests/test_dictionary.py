@@ -29,7 +29,7 @@ class TestDictionary(unittest.TestCase, Test23Support):
             self.assertEqual(sysdic.version, 102)
 
 '''
-Copyright (c) 2016, Brooke M. Fujita.
+Copyright (c) 2018, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

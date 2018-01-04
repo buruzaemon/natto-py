@@ -352,7 +352,7 @@ class TestOptionParse(unittest.TestCase, Test23Support):
         self.assertIsNone(re.search('--unknown', expected))
 
 '''
-Copyright (c) 2016, Brooke M. Fujita.
+Copyright (c) 2018, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

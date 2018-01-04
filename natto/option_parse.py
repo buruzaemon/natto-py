@@ -196,7 +196,7 @@ class OptionParse(object):
         return self.__str2bytes(' '.join(opts))
 
 '''
-Copyright (c) 2016, Brooke M. Fujita.
+Copyright (c) 2018, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

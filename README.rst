@@ -353,7 +353,7 @@ Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
-Copyright |copy| 2016, Brooke M. Fujita. All rights reserved. Please see
+Copyright |copy| 2018, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg

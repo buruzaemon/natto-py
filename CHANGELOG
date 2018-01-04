@@ -1,6 +1,8 @@
 CHANGELOG
 ---------
 
+- 2018/01/ 0.9.0 release.
+
 - 2016/01/31 0.8.0 release.
     - Issue 72: Revamp IPython notebooks for use with Jupyter
     - Issue 73: Better examples for 制約付き解析

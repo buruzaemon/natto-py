@@ -400,7 +400,7 @@ class TestMecab(unittest.TestCase, Test23Support):
      
 
 '''
-Copyright (c) 2017, Brooke M. Fujita.
+Copyright (c) 2018, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
