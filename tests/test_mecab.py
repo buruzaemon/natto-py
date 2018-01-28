@@ -201,6 +201,19 @@ class TestMecab(unittest.TestCase, Test23Support):
                     self.assertEqual(expected[i].surface, s)
                     self.assertEqual(expected[i].feature, f)
 
+    def test_parse_tonode_outputformat_errors(self):
+        '''Test node parsing with output formatting errors:
+           1. unknown node has no pronunciation value 
+           2. format missing leading [
+           3. format missing ending ]
+        '''
+        s = '私はブルザエモンです。'
+        formats = ['-F%f[8]', '-F%f1]', '-F%f[1']
+        for argf in formats:
+            with mecab.MeCab(argf) as nm:
+                with self.assertRaises(api.MeCabError):
+                    list(nm.parse('私はブルザエモンです。', as_nodes=True))
+
    # ------------------------------------------------------------------------
     def test_parse_tostr_partial(self):
         '''Test -p / --partial parsing to string.'''

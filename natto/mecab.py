@@ -97,6 +97,7 @@ class MeCab(object):
     _ERROR_MISSING_NL = 'Partial-parsing requires new-line char at end of text'
     _ERROR_BOUNDARY = 'boundary_constraints must be re or str'
     _ERROR_FEATURE = 'feature_constraints must be tuple'
+    _ERROR_NODEFORMAT = 'Could not format node with surface {}: {}'
 
     _REPR_FMT = ('<{}.{} model={}, tagger={}, lattice={},'
                  ' libpath="{}", options={}, dicts={}, version={}>')
@@ -397,7 +398,16 @@ class MeCab(object):
                                'node_format' in self.options:
                                 sp = self.__mecab.mecab_format_node(
                                     self.tagger, nptr)
-                                rawf = self.__ffi.string(sp)
+                                if sp != self.__ffi.NULL:
+                                    rawf = self.__ffi.string(sp)
+                                else:
+                                    err = self.__mecab.mecab_strerror(
+                                            self.tagger)
+                                    err = self.__bytes2str(
+                                            self.__ffi.string(err))
+                                    msg = self._ERROR_NODEFORMAT.format(
+                                            surf, err)
+                                    raise MeCabError(msg)
                             else:
                                 rawf = self.__ffi.string(nptr.feature)
                             feat = self.__bytes2str(rawf).strip()
@@ -407,6 +417,8 @@ class MeCab(object):
                         nptr = getattr(nptr, 'next')
         except GeneratorExit:
             logger.debug('close invoked on generator')
+        except MeCabError:
+            raise
         except:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
             logger.error(self.__bytes2str(self.__ffi.string(err)))
