@@ -217,11 +217,11 @@ comma-separated value:
     # %f[0] ... part-of-speech
     # %h    ... part-of-speech id (ipadic)
     # %f[8] ... pronunciation
+    # 
+    # -U    ... short-form of --unk-format
+    #           output ?,?,?,? for morphemes not in dictionary
     #
-    opts = {'node_format': r'%m,%f[0],%h,%f[8]\n',
-            'unk_format': r'?,?,?,?\n'}
-
-    with MeCab(opts) as nm:
+    with MeCab(r'-F%m,%f[0],%h,%f[8]\n -U?,?,?,?\n') as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     # only normal nodes, ignore any end-of-sentence and unknown nodes
     ...     if n.is_nor():
@@ -264,7 +264,7 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
 
     import re
 
-    with MeCab(r'-F%m,\s%f[0],\s%s\n -U?,\s?,\s?\n') as nm:
+    with MeCab(r'-F%m,\s%f[0],\s%s\n') as nm:
 
         text = '俺は努力したよっ？ お前の10倍、いや100倍1000倍したよっ！'
         
@@ -300,7 +300,7 @@ and a corresponding feature (str), in order of constraint precedence:
 
 .. code-block:: python
 
-    with MeCab(r'-F%m,\s%f[0],\s%s\n -U?,\s?,\s?\n') as nm:
+    with MeCab(r'-F%m,\s%f[0],\s%s\n') as nm:
 
         text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
         features = (('ヒーロー見参', '感動詞'),)
