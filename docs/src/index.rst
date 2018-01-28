@@ -190,7 +190,7 @@ output as a single, large string, use MeCab's ``--node-format`` option
 
 It is good practice when using ``--node-format`` to also specify node 
 formatting in the case where the morpheme cannot be found in the dictionary,
-by using ``--unk-format`` (short form ``-U``.
+by using ``--unk-format`` (short form ``-U``).
 
 This example formats the node ``feature`` to capture the items above as a
 comma-separated value::
