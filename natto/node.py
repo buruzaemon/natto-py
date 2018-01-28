@@ -66,7 +66,11 @@ class MeCabNode(object):
         #                - part-of-speech (0th index)
         # %h         ... part-of-speech ID (IPADIC)
         #
-        with MeCab('-F%F,[6,8,0],%h') as nm:
+        # -U         ... short-form of --unk-format
+        #                specify empty CSV ,,, when morpheme cannot be found
+        #                in dictionary
+        #
+        with MeCab(r'-F%F,[6,8,0],%h\n -U,,,\n') as nm:
             for n in nm.parse(text, as_nodes=True):
         ...     # ignore the end-of-sentence nodes
         ...     if not n.is_eos():

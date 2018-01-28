@@ -188,6 +188,10 @@ output as a single, large string, use MeCab's ``--node-format`` option
 - part-of-speech ID
 - pronunciation
 
+It is good practice when using ``--node-format`` to also specify node 
+formatting in the case where the morpheme cannot be found in the dictionary,
+by using ``--unk-format`` (short form ``-U``.
+
 This example formats the node ``feature`` to capture the items above as a
 comma-separated value::
 
@@ -199,7 +203,10 @@ comma-separated value::
     # %h    ... part-of-speech id (ipadic)
     # %f[8] ... pronunciation
     #
-    with MeCab('-F%m,%f[0],%h,%f[8]') as nm:
+    # -U    ... short-form of --unk-format
+    #           output ?,?,?,? for morphemes not in dictionary
+    #
+    with MeCab(r'-F%m,%f[0],%h,%f[8]\n -U?,?,?,?\n') as nm:
         for n in nm.parse('ピンチの時には必ずヒーローが現れる。', as_nodes=True):
     ...     # only normal nodes, ignore any end-of-sentence and unknown nodes
     ...     if n.is_nor():
