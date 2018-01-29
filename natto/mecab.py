@@ -24,8 +24,10 @@ class MeCab(object):
     Configure logging before instantiating MeCab to see debug messages::
     
         import logging
-        logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
-                            level=logging.DEBUG)
+
+        fmt='%(asctime)s : %(levelname)s : %(message)s'
+
+        logging.basicConfig(format=fmt, level=logging.DEBUG)
 
     Example usage::
 
