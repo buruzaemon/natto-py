@@ -246,7 +246,7 @@ Note that any such morphemes captured will have node ``stat`` status of 1 (unkno
 
     import re
 
-    with MeCab('-F%m,\s%f[0],\s%s') as nm:
+    with MeCab(r'-F%m,\s%f[0],\s%s\n') as nm:
 
         text = '俺は努力したよっ？ お前の10倍、いや100倍1000倍したよっ！'
 
@@ -281,7 +281,7 @@ on what feature to use for a matching morpheme. Use the
 that themselves are ``tuple`` instances with a specific morpheme (str) 
 and a corresponding feature (str), in order of constraint precedence::
 
-    with MeCab('-F%m,\s%f[0],\s%s') as nm:
+    with MeCab(r'-F%m,\s%f[0],\s%s\n') as nm:
 
         text = '心の中で3回唱え、 ヒーロー見参！ヒーロー見参！ヒーロー見参！'
 

@@ -21,7 +21,7 @@ class MeCab(object):
     surface and related features, or for iterating over MeCabNode instances
     which contain detailed information about the morphemes encompassed.
 
-    Configure logging before instantiating MeCab to see debug messages:
+    Configure logging before instantiating MeCab to see debug messages::
     
         import logging
         logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s',
