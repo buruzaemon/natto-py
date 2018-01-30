@@ -35,7 +35,4 @@ python:
 
 # command to run tests
 script:
-  - "pwd"
-  - "ls -la"
-  - "ls -la tests"
   - "python setup.py test"
