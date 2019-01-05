@@ -343,7 +343,7 @@ class MeCab(object):
                 text = ''.join([t[0] for t in tokens])
 
                 btext = self.__str2bytes(text)
-                #self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
+                self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
 
                 bpos = 0
                 self.__mecab.mecab_lattice_set_boundary_constraint(
@@ -362,8 +362,6 @@ class MeCab(object):
                         bpos += 1
                     self.__mecab.mecab_lattice_set_boundary_constraint(
                         self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
-
-                self.__mecab.mecab_lattice_set_sentence(self.lattice, btext)
             elif self._KW_FEATURE in kwargs:
                 features = kwargs.get(self._KW_FEATURE, ())
                 fd = {morph: self.__str2bytes(feat) for morph, feat in features}
@@ -396,8 +394,7 @@ class MeCab(object):
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.__ffi.string(
                                 nptr.surface[0:nptr.length])
-                            #surf = self.__bytes2str(raws).strip()
-                            surf = self.__bytes2str(raws)
+                            surf = self.__bytes2str(raws).strip()
 
                             if 'output_format_type' in self.options or \
                                'node_format' in self.options:
@@ -415,8 +412,7 @@ class MeCab(object):
                                     raise MeCabError(msg)
                             else:
                                 rawf = self.__ffi.string(nptr.feature)
-                            #feat = self.__bytes2str(rawf).strip()
-                            feat = self.__bytes2str(rawf)
+                            feat = self.__bytes2str(rawf).strip()
 
                             mnode = MeCabNode(nptr, surf, feat)
                             yield mnode
