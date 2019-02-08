@@ -12,7 +12,7 @@ class TestBinding(unittest.TestCase):
         self.assertIsNotNone(ffi)
 
 '''
-Copyright (c) 2018, Brooke M. Fujita.
+Copyright (c) 2019, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
