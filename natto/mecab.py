@@ -315,7 +315,7 @@ class MeCab(object):
 
         if res != self.__ffi.NULL:
             raw = self.__ffi.string(res)
-            return self.__bytes2str(raw).strip()
+            return self.__bytes2str(raw).rstrip('\n').strip(' ')
         else:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
             logger.error(self.__bytes2str(self.__ffi.string(err)))
@@ -394,7 +394,7 @@ class MeCab(object):
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.__ffi.string(
                                 nptr.surface[0:nptr.length])
-                            surf = self.__bytes2str(raws).strip()
+                            surf = self.__bytes2str(raws).rstrip('\n').strip(' ')
 
                             if 'output_format_type' in self.options or \
                                'node_format' in self.options:
@@ -412,7 +412,7 @@ class MeCab(object):
                                     raise MeCabError(msg)
                             else:
                                 rawf = self.__ffi.string(nptr.feature)
-                            feat = self.__bytes2str(rawf).strip()
+                            feat = self.__bytes2str(rawf).rstrip('\n').strip(' ')
 
                             mnode = MeCabNode(nptr, surf, feat)
                             yield mnode
