@@ -36,7 +36,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         self.testrc = os.path.join(cwd, 'tests', 'testmecabrc')
 
         with codecs.open(self.textfile, 'r') as f:
-            self.text = f.readlines()[0].strip()
+            self.text = f.readlines()[0].rstrip('\n').strip(' ')
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f)
@@ -45,7 +45,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         mout = Popen(cmd, stdout=PIPE).communicate()
         res = self.b2s(mout[0])
         m = re.search('(?<=dicdir:\s).*', res)
-        ipadic = path.abspath(m.group(0).strip())
+        ipadic = path.abspath(m.group(0).rstrip('\n').strip())
         with open(path.join(os.getcwd(), 'tests', 'mecabrc.tmp'), 'r') as fin:
             tmpl = Template(fin.read())
 
@@ -77,7 +77,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         else:
             mout = Popen(cmd, stdout=PIPE).communicate()
 
-        res = mout[0].strip()
+        res = mout[0].rstrip('\n'.encode()).strip(' '.encode())
         return res
 
     def _23support_prep(self, morphs):
@@ -160,7 +160,7 @@ class TestMecab(unittest.TestCase, Test23Support):
     def test_parse_tostr_default(self):
         '''Test simple default parsing.'''
         with mecab.MeCab() as nm:
-            expected = nm.parse(self.text).strip()
+            expected = nm.parse(self.text).rstrip('\n').strip(' ')
             expected = expected.replace('\n', os.linesep)                 # ???
 
             actual = self._2bytes(self._mecab_parse(''))
@@ -197,7 +197,7 @@ class TestMecab(unittest.TestCase, Test23Support):
                 actual = [e for e in actual.split(os.linesep) if e != 'EOS']
 
                 for i in range(len(actual)):
-                    s, f = actual[i].split()
+                    s, f = actual[i].split('\t')
                     self.assertEqual(expected[i].surface, s)
                     self.assertEqual(expected[i].feature, f)
 
@@ -406,7 +406,7 @@ class TestMecab(unittest.TestCase, Test23Support):
 
             argf = ['-r', self.testrc, '-O', '', '-F%m!\\n']
             actual = self._2bytes(self._mecab_parse(argf))
-            actual = [e for e in actual.split() if not e.startswith('EOS')]
+            actual = [e for e in actual.split('\n') if not e.startswith('EOS')]
 
             for i,e in enumerate(actual):
                 self.assertEqual(e, expected[i])
