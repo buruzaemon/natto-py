@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 '''Version and version info for the natto-py package.'''
 
-__version__ = '0.9.0'
-__version_info__ = (0, 9, 0)
+__version__ = '0.9.1'
+__version_info__ = (0, 9, 1)
 
 
 '''
