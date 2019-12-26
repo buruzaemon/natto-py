@@ -132,6 +132,7 @@ text9:
         - ヒーロー見参
         - ！
         - EOS
+
 text10:
     text: "では\nブルザエモン\tその他\nは何者だ？\n"
     expected:

@@ -9,6 +9,7 @@ import unittest
 import natto.environment as env
 import natto.support as support
 from tests import Test23Support
+from yaml import FullLoader
 
 class TestSupport(unittest.TestCase, Test23Support):
     '''Tests the behavior of the natto.mecab.Support module. '''
@@ -24,7 +25,7 @@ class TestSupport(unittest.TestCase, Test23Support):
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
-            self.yaml = yaml.load(f)
+            self.yaml = yaml.load(f, Loader=FullLoader)
 
     def tearDown(self):
         self.yaml = None
