@@ -24,7 +24,7 @@ setup(
     description=('A Tasty Python Binding with MeCab'
                  '(FFI-based, no SWIG or compiler necessary)'),
     long_description=LONG_DESC,
-    long_description_content_type='text/markdown',
+    long_description_content_type='text/x-rst',
 
     url='https://github.com/buruzaemon/natto-py',
 
