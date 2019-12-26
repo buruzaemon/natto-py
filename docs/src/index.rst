@@ -35,6 +35,7 @@ The following Python versions are supported:
 - `Python 3.5`_
 - `Python 3.6`_
 - `Python 3.7`_
+- `Python 3.8`_
 
 Installation
 ------------
@@ -332,6 +333,7 @@ and a corresponding feature (str), in order of constraint precedence::
 .. _Python 3.5: https://docs.python.org/3.5/whatsnew/3.5.html
 .. _Python 3.6: https://docs.python.org/3.6/whatsnew/3.6.html 
 .. _Python 3.7: https://docs.python.org/3.7/whatsnew/3.7.html
+.. _Python 3.8: https://docs.python.org/3.8/whatsnew/3.8.html
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _project Wiki: https://github.com/buruzaemon/natto-py/wiki 
