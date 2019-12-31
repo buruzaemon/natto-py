@@ -92,7 +92,7 @@ def splitter_support(py2enc):
                         acc.pop(i)
                         acc[i:i] = tmp
         return acc
-                        
+
     return _fn_tokenize_pattern, _fn_tokenize_features
 
 '''

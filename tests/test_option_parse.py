@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
 '''Tests for natto.option_parse.'''
 import re
-import sys
 import unittest
 import natto.environment as env
 from natto.option_parse import OptionParse
-from StringIO import StringIO
 from tests import Test23Support
 
 class TestOptionParse(unittest.TestCase, Test23Support):

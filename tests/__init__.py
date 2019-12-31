@@ -54,7 +54,7 @@ try:
         line = line.decode(os.getenv(MeCab.MECAB_CHARSET))
     if not line.startswith(exp):
         raise EnvironmentError('Please check your mecab installation')
-except StandardError as err:
+except Exception as err:
     raise EnvironmentError(err)
 
 '''
