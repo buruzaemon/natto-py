@@ -23,7 +23,7 @@ class MeCab(object):
     which contain detailed information about the morphemes encompassed.
 
     Configure logging before instantiating MeCab to see debug messages::
-    
+
         import logging
 
         fmt='%(asctime)s : %(levelname)s : %(message)s'

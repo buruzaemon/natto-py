@@ -77,7 +77,7 @@ class OptionParse(object):
         if type(options) is dict:
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if name in options:
-                    if options[name] or options[name] is '':
+                    if options[name] or options[name] == '':
                         val = options[name]
                         if isinstance(val, bytes):
                             val = self.__bytes2str(options[name])
@@ -157,7 +157,7 @@ class OptionParse(object):
             for name in iter(list(self._SUPPORTED_OPTS.values())):
                 if hasattr(opts, name):
                     v = getattr(opts, name)
-                    if v or v is '':
+                    if v or v == '':
                         dopts[name] = v
 
         # final checks
