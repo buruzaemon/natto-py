@@ -267,19 +267,6 @@ class TestMecab(unittest.TestCase, Test23Support):
             for i in range(len(lines)):
                 self.assertTrue(lines[i].startswith(expected[i]))
 
-            # text includes trailing whitespace char in token
-#            yml9 = self.yaml.get('text9')
-#            txt9 = self._u2str(yml9.get('text'))
-#            pat9 = self._u2str(yml9.get('pattern'))
-#            expected = [self._u2str(e) for e in yml9.get('expected')]
-#            print("??? '{}'".format(type(pat9)))
-#
-#            actual = nm.parse(txt9, boundary_constraints=pat9)
-#            lines = actual.split(os.linesep)
-#
-#            for i in range(len(lines)):
-#                self.assertTrue(lines[i].startswith(expected[i]))
-
         with mecab.MeCab('-N2') as nm:
             # 2-Best
             yml = self.yaml.get('text4')
@@ -334,19 +321,6 @@ class TestMecab(unittest.TestCase, Test23Support):
                 if not node.is_eos():
                     self.assertEqual(node.surface, expected[i])
 
-#            # text includes trailing whitespace char in token
-#            yml9 = self.yaml.get('text9')
-#            txt9 = self._u2str(yml9.get('text'))
-#            pat9 = self._u2str(yml9.get('pattern'))
-#            expected = [self._u2str(e) for e in yml9.get('expected')]
-#
-#            print(type(pat9))
-#
-#            gen = nm.parse(txt9, boundary_constraints=pat2, as_nodes=True)
-#            for i, node in enumerate(gen):
-#                if not node.is_eos():
-#                    self.assertEqual(node.surface, expected[i])
-
         with mecab.MeCab(r'-F%m\s%s') as nm:
             # with output formatting
             yml1 = self.yaml.get('text5')
@@ -387,19 +361,19 @@ class TestMecab(unittest.TestCase, Test23Support):
                         self.assertEqual(node.surface, expected[i])
 
     # ------------------------------------------------------------------------
-#    def test_parse_tostr_feature(self):
-#        '''Test feature constraint parsing to string (output format does NOT apply).'''
-#        with mecab.MeCab(r'-F%m,%f[0],%s\n') as nm:
-#            yml = self.yaml.get('text11')
-#            txt = self._u2str(yml.get('text'))
-#            feat = (tuple(self._u2str(yml.get('feature')).split(',')) ,)
-#            expected = [self._u2str(e) for e in yml.get('expected')]
-#
-#            actual = nm.parse(txt, feature_constraints=feat).split('\n')
-#
-#            for i in range(len(actual)):
-#                self.assertEqual(actual[i], expected[i])
-#
+    def test_parse_tostr_feature(self):
+        '''Test feature constraint parsing to string (output format does NOT apply).'''
+        with mecab.MeCab(r'-F%m,%f[0],%s\n') as nm:
+            yml = self.yaml.get('text11')
+            txt = self._u2str(yml.get('text'))
+            feat = (tuple(self._u2str(yml.get('feature')).split(',')) ,)
+            expected = [self._u2str(e) for e in yml.get('expected')]
+
+            actual = nm.parse(txt, feature_constraints=feat).split('\n')
+
+            for i in range(len(actual)):
+                self.assertEqual(actual[i], expected[i])
+
     # ------------------------------------------------------------------------
     def test_parse_override_node_format(self):
         '''Test node-format override when default is defined in rcfile'''
