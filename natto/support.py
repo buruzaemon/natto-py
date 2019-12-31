@@ -96,7 +96,7 @@ def splitter_support(py2enc):
     return _fn_tokenize_pattern, _fn_tokenize_features
 
 '''
-Copyright (c) 2019, Brooke M. Fujita.
+Copyright (c) 2020, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

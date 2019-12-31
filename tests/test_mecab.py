@@ -383,7 +383,6 @@ class TestMecab(unittest.TestCase, Test23Support):
 
             argf = ['-r', self.testrc, '-O', '', '-F%m!\\n']
             actual = self._2bytes(self._mecab_parse(argf))
-            #actual = [e for e in actual.split('\n') if not e.startswith('EOS')]
             actual = [e for e in actual.split(os.linesep) if not e.startswith('EOS')]
 
             for i,e in enumerate(actual):
@@ -391,7 +390,7 @@ class TestMecab(unittest.TestCase, Test23Support):
     
 
 '''
-Copyright (c) 2019, Brooke M. Fujita.
+Copyright (c) 2020, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

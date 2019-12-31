@@ -11,16 +11,16 @@ from .test_support import TestSupport
 def test_suite():
     '''Returns suite of tests for natto-py'''
     suite = unittest.TestSuite()
-#    suite.addTest(TestBinding)
-#    suite.addTest(TestDictionary)
-#    suite.addTest(TestMeCabEnv)
+    suite.addTest(TestBinding)
+    suite.addTest(TestDictionary)
+    suite.addTest(TestMeCabEnv)
     suite.addTest(TestMecab)
-#    suite.addTest(TestOptionParse)
-#    suite.addTest(TestSupport)
+    suite.addTest(TestOptionParse)
+    suite.addTest(TestSupport)
     return suite
 
 '''
-Copyright (c) 2019, Brooke M. Fujita.
+Copyright (c) 2020, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

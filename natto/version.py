@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 '''Version and version info for the natto-py package.'''
 
-__version__ = '0.9.1'
-__version_info__ = (0, 9, 1)
+__version__ = '0.9.2'
+__version_info__ = (0, 9, 2)
 
 
 '''
-Copyright (c) 2019, Brooke M. Fujita.
+Copyright (c) 2020, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
