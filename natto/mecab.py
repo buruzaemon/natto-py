@@ -118,6 +118,8 @@ class MeCab(object):
 
     _REGEXTYPE = type(re.compile(''))
 
+    _STRIP_WHITESPACE = ' {}'.format(os.linesep)
+
     MECAB_LATTICE_ONE_BEST = 1
     MECAB_LATTICE_NBEST = 2
     MECAB_LATTICE_PARTIAL = 4
@@ -316,7 +318,7 @@ class MeCab(object):
 
         if res != self.__ffi.NULL:
             raw = self.__ffi.string(res)
-            return self.__bytes2str(raw).strip(os.linesep)
+            return self.__bytes2str(raw).strip(self._STRIP_WHITESPACE)
         else:
             err = self.__mecab.mecab_lattice_strerror(self.lattice)
             logger.error(self.__bytes2str(self.__ffi.string(err)))
@@ -395,7 +397,7 @@ class MeCab(object):
                         if nptr.stat != MeCabNode.BOS_NODE:
                             raws = self.__ffi.string(
                                 nptr.surface[0:nptr.length])
-                            surf = self.__bytes2str(raws).strip(os.linesep)
+                            surf = self.__bytes2str(raws).strip(self._STRIP_WHITESPACE)
 
                             if 'output_format_type' in self.options or \
                                'node_format' in self.options:
@@ -413,7 +415,7 @@ class MeCab(object):
                                     raise MeCabError(msg)
                             else:
                                 rawf = self.__ffi.string(nptr.feature)
-                            feat = self.__bytes2str(rawf).strip(os.linesep)
+                            feat = self.__bytes2str(rawf).strip(self._STRIP_WHITESPACE)
 
                             mnode = MeCabNode(nptr, surf, feat)
                             yield mnode
