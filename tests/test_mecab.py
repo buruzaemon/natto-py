@@ -37,7 +37,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         self.testrc = os.path.join(cwd, 'tests', 'testmecabrc')
 
         with codecs.open(self.textfile, 'r') as f:
-            self.text = f.readlines()[0].strip(os.linesep)
+            self.text = f.readlines()[0].strip(' {}'.format(os.linesep))
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
             self.yaml = yaml.load(f, Loader=FullLoader)
@@ -46,7 +46,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         mout = Popen(cmd, stdout=PIPE).communicate()
         res = self.b2s(mout[0])
         m = re.search('(?<=dicdir:\s).*', res)
-        ipadic = path.abspath(m.group(0).strip(os.linesep))
+        ipadic = path.abspath(m.group(0).strip(' {}'.format(os.linesep)))
         with open(path.join(os.getcwd(), 'tests', 'mecabrc.tmp'), 'r') as fin:
             tmpl = Template(fin.read())
 
@@ -78,7 +78,7 @@ class TestMecab(unittest.TestCase, Test23Support):
         else:
             mout = Popen(cmd, stdout=PIPE).communicate()
 
-        res = mout[0].strip(os.linesep.encode())
+        res = mout[0].strip(' {}'.format(os.linesep).encode())
         return res
 
     def _23support_prep(self, morphs):
@@ -161,7 +161,7 @@ class TestMecab(unittest.TestCase, Test23Support):
     def test_parse_tostr_default(self):
         '''Test simple default parsing.'''
         with mecab.MeCab() as nm:
-            expected = nm.parse(self.text).strip(os.linesep)
+            expected = nm.parse(self.text).strip(' {}'.format(os.linesep))
             expected = expected.replace('\n', os.linesep)                 # ???
 
             actual = self._2bytes(self._mecab_parse(''))
