@@ -6,8 +6,8 @@ from os import path
 from setuptools import setup
 
 extra = {}
-if sys.version_info >= (3,):
-    extra['use_2to3'] = True
+#if sys.version_info >= (3,):
+#    extra['use_2to3'] = True
 
 info = path.join(path.abspath(os.getcwd()), 'natto', 'version.py')
 exec(open(info).read())
