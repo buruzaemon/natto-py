@@ -22,13 +22,12 @@ install:
   - pushd unidic-mecab-2.1.2_src && ./configure && make && sudo make install && popd
   - sudo ldconfig
   - "pip install cffi"
-  - "pip install PyYAML>=4.2b1"
+  - "pip install PyYAML>=5.4"
   - export MECAB_PATH=/usr/local/lib/libmecab.so
   - export MECAB_CHARSET=utf8
 
 language: python
 python:
-  - "3.4"
   - "3.5"
   - "3.6"
   - "3.7"

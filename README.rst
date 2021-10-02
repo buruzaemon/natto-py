@@ -370,8 +370,8 @@ the ``LICENSE`` file for further details.
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
-.. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
-    :target: https://travis-ci.org/buruzaemon/natto-py
+.. |travis| image:: https://app.travis-ci.com/buruzaemon/natto-py.svg?branch=master
+    :target: _
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: _
 .. |readthedocs| image:: https://readthedocs.org/projects/natto-py/badge/?version=master
