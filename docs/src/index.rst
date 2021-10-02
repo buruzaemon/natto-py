@@ -316,10 +316,10 @@ and a corresponding feature (str), in order of constraint precedence::
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.python.org/pypi/natto-py
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
-.. |travis| image:: https://travis-ci.org/buruzaemon/natto-py.svg?branch=master
+.. |travis| image:: https://travis-ci.com/buruzaemon/natto-py.svg?branch=master
     :target: https://travis-ci.org/buruzaemon/natto-py
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
-    :target: _
+    :target: https://raw.githubusercontent.com/buruzaemon/natto-py/master/LICENSE 
 .. _Python: http://www.python.org/
 .. _MeCab: http://taku910.github.io/mecab/
 .. _Python 2 after sunset: https://www.python.org/doc/sunset-python-2/
