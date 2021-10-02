@@ -3,7 +3,7 @@ CHANGELOG
 
 - 2021/10/03 1.0.0 release.
     - Issue 119: Failed to install natto-py when setuptools 58.0 or later is used
-    - Support for Python 2 has ended; please use 0.9.2 if you use Python2.
+    - Support for Python 2 has ended; please use 0.9.2 if you are using Python 2.
 
 - 2020/01/01 0.9.2 release.
     - Issue 114: Unexpected whitespace inserted in Wakati mode 

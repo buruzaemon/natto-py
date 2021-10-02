@@ -29,7 +29,7 @@ Requirements
 - A system dictionary, like `IPA`_, `Juman`_ or `Unidic`_
 - `cffi 0.8.6`_ or greater
 
-The following Python versions are supported:
+The following Python 3 versions are supported:
 
 - `Python 3.5`_
 - `Python 3.6`_
