@@ -317,7 +317,7 @@ and a corresponding feature (str), in order of constraint precedence::
     :target: https://pypi.python.org/pypi/natto-py
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
 .. |travis| image:: https://travis-ci.com/buruzaemon/natto-py.svg?branch=master
-    :target: https://travis-ci.org/buruzaemon/natto-py
+    :target: https://app.travis-ci.com/github/buruzaemon/natto-py 
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: https://raw.githubusercontent.com/buruzaemon/natto-py/master/LICENSE 
 .. _Python: http://www.python.org/

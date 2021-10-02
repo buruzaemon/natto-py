@@ -371,9 +371,9 @@ the ``LICENSE`` file for further details.
     :target: https://pypi.python.org/pypi/natto-py
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
 .. |travis| image:: https://app.travis-ci.com/buruzaemon/natto-py.svg?branch=master
-    :target: _
+    :target: https://app.travis-ci.com/github/buruzaemon/natto-py 
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
-    :target: _
+    :target: https://raw.githubusercontent.com/buruzaemon/natto-py/master/LICENSE 
 .. |readthedocs| image:: https://readthedocs.org/projects/natto-py/badge/?version=master
     :target: http://natto-py.readthedocs.org/en/master/?badge=master
     :alt: Documentation Status
