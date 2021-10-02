@@ -3,9 +3,9 @@
 import re
 import unittest
 import natto.mecab as mecab
-from tests import Test23Support
+from tests import TestStringSupport
 
-class TestDictionary(unittest.TestCase, Test23Support):
+class TestDictionary(unittest.TestCase, TestStringSupport):
     '''Tests the behavior of the natto.dictionary.DictionaryInfo class.
 
     Assumes that the mecab-ipadic 2.7.0-20070801 dictionary is installed.
@@ -29,7 +29,7 @@ class TestDictionary(unittest.TestCase, Test23Support):
             self.assertEqual(sysdic.version, 102)
 
 '''
-Copyright (c) 2020, Brooke M. Fujita.
+Copyright (c) 2021, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

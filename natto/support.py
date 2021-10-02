@@ -1,83 +1,41 @@
 # -*- coding: utf-8 -*-
-'''Internal-use functions for string- and byte-conversion for supporting Python
-2 and 3.'''
+'''Internal-use functions for Mecab-Python string- and byte-conversion.'''
 import re
-import sys
 
 REGEXTYPE = type(re.compile(''))
 
-def string_support(py3enc):
+def string_support(enc):
     '''Create byte-to-string and string-to-byte conversion functions for
     internal use.
 
-    :param py3enc: Encoding used by Python 3 environment.
-    :type py3enc: str
+    :param enc: Character encoding
+    :type enc: str
     '''
-    if sys.version < '3':
-        def bytes2str(b):
-            '''Identity, returns the argument string (bytes).'''
-            return b
-        def str2bytes(s):
-            '''Identity, returns the argument string (bytes).'''
-            return s
-    else:
-        def bytes2str(b):
-            '''Transforms bytes into string (Unicode).'''
-            return b.decode(py3enc)
-        def str2bytes(u):
-            '''Transforms Unicode into string (bytes).'''
-            return u.encode(py3enc)
+
+    def bytes2str(b):
+        '''Transforms bytes into string (Unicode).'''
+        return b.decode(enc)
+    def str2bytes(u):
+        '''Transforms Unicode into string (bytes).'''
+        return u.encode(enc)
+
     return (bytes2str, str2bytes)
 
-def splitter_support(py2enc):
-    '''Create tokenizer for use in boundary constraint parsing.
-
-    :param py2enc: Encoding used by Python 2 environment.
-    :type py2enc: str
-    '''
-    if sys.version < '3':
-        def _fn_sentence(pattern, sentence):
-            if REGEXTYPE == type(pattern):
-                if pattern.flags & re.UNICODE:
-                    return sentence.decode(py2enc)
-                else:
-                    return sentence
-            else:
-                return sentence
-        def _fn_token2str(pattern):
-            if REGEXTYPE == type(pattern):
-                if pattern.flags & re.UNICODE:
-                    def _fn(token):
-                        return token.encode(py2enc)
-                else:
-                    def _fn(token):
-                        return token
-            else:
-                def _fn(token):
-                    return token
-            return _fn
-    else:
-        def _fn_sentence(pattern, sentence):
-            return sentence
-        def _fn_token2str(pattern):
-            def _fn(token):
-                return token
-            return _fn
+def splitter_support():
+    '''Create tokenizer for use in boundary constraint parsing.'''
 
     def _fn_tokenize_pattern(text, pattern):
         pos = 0
-        sentence = _fn_sentence(pattern, text)
-        postprocess = _fn_token2str(pattern)
-        for m in re.finditer(pattern, sentence):
+        for m in re.finditer(pattern, text):
             if pos < m.start():
-                token = postprocess(sentence[pos:m.start()])
+                token = text[pos:m.start()]
                 yield (token.strip(), False)
                 pos = m.start()
-            token = postprocess(sentence[pos:m.end()])
+            token = text[pos:m.end()]
             yield (token.strip(), True)
             pos = m.end()
-        if pos < len(sentence):
-            token = postprocess(sentence[pos:])
+        if pos < len(text):
+            token = text[pos:]
             yield (token.strip(), False)
 
     def _fn_tokenize_features(text, features):
@@ -96,7 +54,7 @@ def splitter_support(py2enc):
     return _fn_tokenize_pattern, _fn_tokenize_features
 
 '''
-Copyright (c) 2020, Brooke M. Fujita.
+Copyright (c) 2021, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

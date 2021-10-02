@@ -13,10 +13,10 @@ import natto.support as support
 from os import path
 from string import Template
 from subprocess import Popen, PIPE
-from tests import Test23Support
-from yaml import FullLoader
+from tests import TestStringSupport
+from yaml import CLoader as Loader
 
-class TestMecab(unittest.TestCase, Test23Support):
+class TestMecab(unittest.TestCase, TestStringSupport):
     '''Tests the behavior of the natto.mecab.MeCab class.
 
     Assumes that the MECAB_PATH and MECAB_CHARSET environment variables have
@@ -40,7 +40,7 @@ class TestMecab(unittest.TestCase, Test23Support):
             self.text = f.readlines()[0].strip(' {}'.format(os.linesep))
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
-            self.yaml = yaml.load(f, Loader=FullLoader)
+            self.yaml = yaml.load(f, Loader=Loader)
 
         cmd = ['mecab', '-P']
         mout = Popen(cmd, stdout=PIPE).communicate()

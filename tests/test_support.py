@@ -8,10 +8,10 @@ import yaml
 import unittest
 import natto.environment as env
 import natto.support as support
-from tests import Test23Support
-from yaml import FullLoader
+from tests import TestStringSupport
+from yaml import CLoader as Loader
 
-class TestSupport(unittest.TestCase, Test23Support):
+class TestSupport(unittest.TestCase, TestStringSupport):
     '''Tests the behavior of the natto.mecab.Support module. '''
 
     def setUp(self):
@@ -19,13 +19,13 @@ class TestSupport(unittest.TestCase, Test23Support):
         enc = self.env.charset
 
         self.bytes2str, self.str2bytes = support.string_support(enc)
-        self.split_pattern, self.split_features = support.splitter_support(enc)
+        self.split_pattern, self.split_features = support.splitter_support()
 
         cwd = os.getcwd()
         yamlfile = os.path.join(cwd, 'tests', 'test_utf8.yml')
 
         with codecs.open(yamlfile, 'r', encoding='utf-8') as f:
-            self.yaml = yaml.load(f, Loader=FullLoader)
+            self.yaml = yaml.load(f, Loader=Loader)
 
     def tearDown(self):
         self.yaml = None
@@ -37,85 +37,68 @@ class TestSupport(unittest.TestCase, Test23Support):
     # ------------------------------------------------------------------------
 
     def test_bytes2str(self):
-        '''Test behavior of string support for MeCab output.
-           Python 2: identity function
-           Python 3: bytes.decode(enc) to Unicode
+        '''Test behavior of string support for MeCab output:
+           bytes.decode(enc) to Unicode
         '''
         yml = self.yaml.get('text1')
         txt = self._mecab_input(yml.get('text'))
         self.assertEqual(self._mecab_output(txt), self.bytes2str(txt))
 
     def test_str2bytes(self):
-        '''Test behavior of string support for MeCab input.
-           Python 2: identity function
-           Python 3: str.encode(enc) to bytes
+        '''Test behavior of string support for MeCab input:
+           str.encode(enc) to bytes
         '''
         yml = self.yaml.get('text1')
         txt = self._u2str(yml.get('text'))
         self.assertEqual(self._mecab_input(txt), self.str2bytes(txt))
 
     def test_splitter_str(self):
-        '''Test behavior of splitter support for MeCab boundary constraint parsing.
-
-           Python 2: when using a str, only 1 hit
-           Python 3: when using a str, all 2 hits
+        '''Test behavior of splitter support for MeCab boundary constraint
+           parsing.
         '''
-        ver = sys.version_info.major
-        key = "py{}".format(ver)
-
         yml = self.yaml.get('text7')
         text = self._u2str(yml.get('text'))
         pat1 = self._u2str(yml.get('pattern'))
 
-        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
-        matches = [e for e in yml.get(key).get('matches')]
-        expected = zip(tokens, matches)
+        tokens = [self._u2str(e) for e in yml.get('tokens')]
+        matches = [e for e in yml.get('matches')]
+        expected = list(zip(tokens, matches))
         actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 
     def test_splitter_re(self):
-        '''Test behavior of splitter support for MeCab boundary constraint parsing.
-
-           Python 2: when using a compiled re w/out re.U, only 1 hit
-           Python 3: when using a compiled re w/out re.U, all 2 hits
+        '''Test behavior of splitter support for MeCab boundary constraint
+           parsing.
         '''
-        ver = sys.version_info.major
-        key = "py{}".format(ver)
-
         yml = self.yaml.get('text7')
         text = self._u2str(yml.get('text'))
         pat1 = re.compile(yml.get('pattern'))
 
-        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
-        matches = [e for e in yml.get(key).get('matches')]
-        expected = zip(tokens, matches)
+        tokens = [self._u2str(e) for e in yml.get('tokens')]
+        matches = [e for e in yml.get('matches')]
+        expected = list(zip(tokens, matches))
         actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 
     def test_splitter_reU(self):
-        '''Test behavior of splitter support for MeCab boundary constraint parsing.
-
-           Python 2: when using a compiled re w/ re.U, all 2 hits
-           Python 3: when using a compiled re w/ re.U, all 2 hits
+        '''Test behavior of splitter support for MeCab boundary constraint
+           parsing.
         '''
-        ver = sys.version_info.major
-        key = "py{}".format(ver)
-
         yml = self.yaml.get('text8')
         text = self._u2str(yml.get('text'))
         pat1 = re.compile(yml.get('pattern'), re.U)
 
-        tokens = [self._u2str(e) for e in yml.get(key).get('tokens')]
-        matches = [e for e in yml.get(key).get('matches')]
-        expected = zip(tokens, matches)
+        tokens = [self._u2str(e) for e in yml.get('tokens')]
+        matches = [e for e in yml.get('matches')]
+        expected = list(zip(tokens, matches))
         actual = list(self.split_pattern(text, pat1))
 
         self.assertEqual(expected, actual)
 
 '''
-Copyright (c) 2020, Brooke M. Fujita.
+Copyright (c) 2021, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

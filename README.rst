@@ -11,6 +11,9 @@ it is **not** a C extension. ``natto-py`` will run on Mac OS, Windows and
 
 You can learn more about `natto-py at GitHub`_.
 
+If you are still using `Python 2 after sunset`_, please stick with version
+``natto-py==0.9.2``.
+
 |version| |pyversions| |license| |travis| |readthedocs|
 
 Requirements
@@ -23,14 +26,13 @@ Requirements
 
 The following Python versions are supported:
 
-- `Python 2.7`_
-- `Python 3.2`_
-- `Python 3.3`_
-- `Python 3.4`_
 - `Python 3.5`_
 - `Python 3.6`_
 - `Python 3.7`_
 - `Python 3.8`_
+- `Python 3.9`_
+
+For Python 2, please use version ``0.9.2``.
 
 Installation
 ------------
@@ -362,7 +364,7 @@ Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
-Copyright |copy| 2020, Brooke M. Fujita. All rights reserved. Please see
+Copyright |copy| 2021, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
@@ -377,20 +379,18 @@ the ``LICENSE`` file for further details.
     :alt: Documentation Status
 .. _Python: http://www.python.org/
 .. _MeCab: http://taku910.github.io/mecab/
+.. _Python 2 after sunset: https://www.python.org/doc/sunset-python-2/
 .. _IPA: http://taku910.github.io/mecab/#download
 .. _Juman: http://taku910.github.io/mecab/#download
 .. _Unidic: http://taku910.github.io/mecab/#download
 .. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
 .. _MeCab 0.996: http://taku910.github.io/mecab/#download
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
-.. _Python 2.7: https://docs.python.org/2.7/whatsnew/2.7.html 
-.. _Python 3.2: https://docs.python.org/3.2/whatsnew/3.2.html
-.. _Python 3.3: https://docs.python.org/3.3/whatsnew/3.3.html 
-.. _Python 3.4: https://docs.python.org/3.4/whatsnew/3.4.html 
 .. _Python 3.5: https://docs.python.org/3.5/whatsnew/3.5.html 
 .. _Python 3.6: https://docs.python.org/3.6/whatsnew/3.6.html 
 .. _Python 3.7: https://docs.python.org/3.7/whatsnew/3.7.html 
 .. _Python 3.8: https://docs.python.org/3.8/whatsnew/3.8.html 
+.. _Python 3.9: https://docs.python.org/3.8/whatsnew/3.9.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _Partial parsing: http://taku910.github.io/mecab/partial.html

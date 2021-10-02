@@ -5,9 +5,6 @@ import sys
 from os import path
 from setuptools import setup
 
-extra = {}
-#if sys.version_info >= (3,):
-#    extra['use_2to3'] = True
 
 info = path.join(path.abspath(os.getcwd()), 'natto', 'version.py')
 exec(open(info).read())
@@ -38,7 +35,7 @@ setup(
         #   3 - Alpha
         #   4 - Beta
         #   5 - Production/Stable
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
 
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
@@ -53,16 +50,12 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: Microsoft :: Windows',
 
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.2',
-        'Programming Language :: Python :: 3.3',
-        'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
     ],
 
     keywords=' '.join(['MeCab',
@@ -84,5 +77,4 @@ setup(
 
     test_suite="tests.test_suite",
 
-    **extra
 )

@@ -4,9 +4,9 @@ import re
 import unittest
 import natto.environment as env
 from natto.option_parse import OptionParse
-from tests import Test23Support
+from tests import TestStringSupport
 
-class TestOptionParse(unittest.TestCase, Test23Support):
+class TestOptionParse(unittest.TestCase, TestStringSupport):
     '''Tests the behavior of the natto.mecab.OptionParse class.
 
     Assumes that the MECAB_PATH and MECAB_CHARSET environment variables have

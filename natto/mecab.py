@@ -156,7 +156,7 @@ class MeCab(object):
             self.__bytes2str, self.__str2bytes = string_support(env.charset)
 
             # Python 2/3 sentence splitter/tokenizer support
-            self.__split_pattern, self.__split_features = splitter_support(env.charset)
+            self.__split_pattern, self.__split_features = splitter_support()
 
             # Set up dictionary of MeCab options to use
             op = OptionParse(env.charset)
@@ -491,7 +491,7 @@ class MeCab(object):
             return self.__parse_tostr(text, **kwargs)
 
 '''
-Copyright (c) 2020, Brooke M. Fujita.
+Copyright (c) 2021, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

@@ -3,36 +3,24 @@ import sys
 from natto.mecab import MeCab
 from subprocess import Popen, PIPE
 
-__all__ = ['Test23Support']
+__all__ = ['TestStringSupport']
 
-class Test23Support(object):
+class TestStringSupport(object):
     def _u2str(self, text):
-        if sys.version < '3':
-            return text.encode(self.env.charset)
-        else:
-            return text
+        return text
 
     def _b2u(self, text):
         return text.decode(self.env.charset)
 
     def _2unicode(self, text):
-        if sys.version < '3':
-            return text.decode(self.env.charset)
-        else:
-            return text
+        return text
 
     #def _2str(self, text):
     def _mecab_input(self, text):
-        if sys.version < '3':
-            return text
-        else:
-            return text.encode(self.env.charset)
+        return text.encode(self.env.charset)
 
     def _2bytes(self, text):
-        if sys.version < '3':
-            return text
-        else:
-            return text.decode(self.env.charset)
+        return text.decode(self.env.charset)
 
     def _mecab_output(self, text):
         return self._2bytes(text)
@@ -58,7 +46,7 @@ except Exception as err:
     raise EnvironmentError(err)
 
 '''
-Copyright (c) 2020, Brooke M. Fujita.
+Copyright (c) 2021, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
