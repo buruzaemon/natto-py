@@ -368,7 +368,7 @@ Copyright |copy| 2021, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
-    :target: https://pypi.python.org/pypi/natto-py
+    :target: https://pypi.org/project/natto-py/ 
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
 .. |travis| image:: https://app.travis-ci.com/buruzaemon/natto-py.svg?branch=master
     :target: https://app.travis-ci.com/github/buruzaemon/natto-py 
