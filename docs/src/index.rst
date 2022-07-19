@@ -36,6 +36,7 @@ The following Python 3 versions are supported:
 - `Python 3.7`_
 - `Python 3.8`_
 - `Python 3.9`_
+- `Python 3.10`_
 
 For Python 2, please use version ``0.9.2``.
 

@@ -68,7 +68,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'natto-py'
-copyright = u'2021, Brooke M. Fujita'
+copyright = u'2022, Brooke M. Fujita'
 author = u'Brooke M. Fujita'
 
 # The version info for the project you're documenting, acts as replacement for

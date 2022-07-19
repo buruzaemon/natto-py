@@ -6,7 +6,7 @@ class MeCabError(Exception):
 
 
 '''
-Copyright (c) 2021, Brooke M. Fujita.
+Copyright (c) 2022, Brooke M. Fujita.
 All rights reserved.
 
 Redistribution and use in source and binary forms, with or without

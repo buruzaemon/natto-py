@@ -31,6 +31,7 @@ The following Python 3 versions are supported:
 - `Python 3.7`_
 - `Python 3.8`_
 - `Python 3.9`_
+- `Python 3.10`_
 
 For Python 2, please use version ``0.9.2``.
 
@@ -364,7 +365,7 @@ Please see the ``CHANGELOG`` for the release history.
 
 Copyright
 ---------
-Copyright |copy| 2021, Brooke M. Fujita. All rights reserved. Please see
+Copyright |copy| 2022, Brooke M. Fujita. All rights reserved. Please see
 the ``LICENSE`` file for further details.
 
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
@@ -390,7 +391,8 @@ the ``LICENSE`` file for further details.
 .. _Python 3.6: https://docs.python.org/3.6/whatsnew/3.6.html 
 .. _Python 3.7: https://docs.python.org/3.7/whatsnew/3.7.html 
 .. _Python 3.8: https://docs.python.org/3.8/whatsnew/3.8.html 
-.. _Python 3.9: https://docs.python.org/3.8/whatsnew/3.9.html 
+.. _Python 3.9: https://docs.python.org/3.9/whatsnew/3.9.html 
+.. _Python 3.10: https://docs.python.org/3/whatsnew/3.10.html 
 .. _NLTK3's lead: https://github.com/nltk/nltk/wiki/Porting-your-code-to-NLTK-3.0
 .. _Python with-statement: https://www.python.org/dev/peps/pep-0343/
 .. _Partial parsing: http://taku910.github.io/mecab/partial.html
