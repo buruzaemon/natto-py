@@ -6,17 +6,17 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - '3.5.x'
-          - '3.6.x'
-          - '3.7.x'
-          - '3.8.x'
-          - '3.9.x'
           - '3.10.x'
     steps:
       - uses: actions/checkout@v3
+      - name: 
+        run: |
+          wget --no-check-certificate https://github.com/buruzaemon/natto-py/raw/master/etc/mecab-0.996.tar.gz && tar zxf mecab-0.996.tar.g jjjk             
+          pushd mecab-0.996 && ./configure --enable-utf8-only && make && sudo make install && popd
+          sudo ldconfig
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }} 
           architecture: x64
-      - run: python -V
+      - run: which mecab 
