@@ -1,11 +1,11 @@
 name: learn-github-actions
 on: [push]
 jobs:
-  check-bats-version:
+  test-py-version:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ '3.7.x', '3.8.x', '3.9.x', '3.10.x' ]
+        python-version: [ '3.7', '3.8', '3.9', '3.10' ]
     steps:
       - uses: actions/checkout@v3
       - name: Setup Python
