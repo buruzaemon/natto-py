@@ -37,7 +37,7 @@ jobs:
       - name: pip stuff
         run: |
             pip install cffi
-            pip install PyYAML>5.4
+            pip install PyYAML>=5.4
       - name: Test
         run: python setup.py test
         env:
