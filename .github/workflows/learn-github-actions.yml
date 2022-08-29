@@ -52,11 +52,11 @@ jobs:
       - name: Test
         run: python setup.py test
         if: startsWith(matrix.os, 'ubuntu')
-          env:
-            MECAB_PATH: /usr/local/lib/libmecab.so
-            MECAB_CHARSET: utf8          
+        env:
+          MECAB_PATH: /usr/local/lib/libmecab.so
+          MECAB_CHARSET: utf8          
         if: startsWith(matrix.os, 'macos')
-          env:
-            MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
-            MECAB_CHARSET: utf8          
+        env:
+          MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
+          MECAB_CHARSET: utf8          
         
