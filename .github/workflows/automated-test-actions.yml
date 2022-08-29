@@ -1,4 +1,4 @@
-name: Run all tests automatically on push to repo
+name: automated-test-actions
 on: [push]
 jobs:
   test-py-version:
