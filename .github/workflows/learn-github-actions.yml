@@ -12,6 +12,7 @@ jobs:
           - '3.5.x'
     steps:
       - uses: actions/checkout@v3
+
       - name: Install MeCab, etc. on Ubuntu
         if: startsWith(matrix.os, 'ubuntu')
         run: |
@@ -28,9 +29,7 @@ jobs:
           pushd unidic-mecab-2.1.2_src && ./configure && make && sudo make install && popd
           sudo ldconfig
           sudo apt-get update && sudo apt-get install -y libyaml-dev
-        env:
-          MECAB_PATH: /usr/local/lib/libmecab.so                
-
+          
       - name: Install MeCab, etc. on MacOS
         if: startsWith(matrix.os, 'macos')
         run: |
@@ -38,18 +37,26 @@ jobs:
           brew install mecab-ipadic
           brew install mecab-jumandic
           brew install mecab-unidic
+
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }} 
           architecture: x64
+
       - name: pip stuff
         run: |
             pip install PyYAML>=5.4
             pip install cffi
+
       - name: Test
         run: python setup.py test
-        env:
-          MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
-          MECAB_CHARSET: utf8          
+        if: startsWith(matrix.os, 'ubuntu')
+          env:
+            MECAB_PATH: /usr/local/lib/libmecab.so
+            MECAB_CHARSET: utf8          
+        if: startsWith(matrix.os, 'macos')
+          env:
+            MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
+            MECAB_CHARSET: utf8          
         
