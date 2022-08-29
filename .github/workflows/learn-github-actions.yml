@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@v3
       - name: 
         run: |
-          wget --no-check-certificate https://github.com/buruzaemon/natto-py/raw/master/etc/mecab-0.996.tar.gz && tar zxf mecab-0.996.tar.g jjjk             
+          wget --no-check-certificate https://github.com/buruzaemon/natto-py/raw/master/etc/mecab-0.996.tar.gz && tar zxf mecab-0.996.tar.gz
           pushd mecab-0.996 && ./configure --enable-utf8-only && make && sudo make install && popd
           sudo ldconfig
       - name: Setup Python
