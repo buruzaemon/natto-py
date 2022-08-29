@@ -38,8 +38,6 @@ jobs:
           brew install mecab-ipadic
           brew install mecab-jumandic
           brew install mecab-unidic
-        env:
-          MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
       - name: Setup Python
         uses: actions/setup-python@v4
         with:
@@ -52,5 +50,6 @@ jobs:
       - name: Test
         run: python setup.py test
         env:
+          MECAB_PATH: /usr/local/Cellar/mecab/0.996/lib/libmecab.dylib
           MECAB_CHARSET: utf8          
         
