@@ -369,7 +369,7 @@ the ``LICENSE`` file for further details.
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.org/project/natto-py/ 
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
-.. |github-actions| image:: https://github.com/buruzaemon/natto-py/actions/workflows/automated-test-actions/badge.svg
+.. |github-actions| image:: https://github.com/buruzaemon/natto-py/actions/workflows/automated-test-actions.yml/badge.svg
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: https://raw.githubusercontent.com/buruzaemon/natto-py/master/LICENSE 
 .. |readthedocs| image:: https://readthedocs.org/projects/natto-py/badge/?version=master
