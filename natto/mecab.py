@@ -11,7 +11,6 @@ from .node import MeCabNode
 from .option_parse import OptionParse
 from .support import string_support, splitter_support
 
-logging.basicConfig()
 logger = logging.getLogger('natto.mecab')
 
 class MeCab(object):
