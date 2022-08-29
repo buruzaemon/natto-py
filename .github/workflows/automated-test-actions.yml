@@ -1,4 +1,4 @@
-name: learn-github-actions
+name: Run all tests automatically on push to repo
 on: [push]
 jobs:
   test-py-version:
@@ -10,7 +10,10 @@ jobs:
           - ubuntu-latest
           - macos-latest
         python-version:
-          - '3.5.x'
+          - '3.7.x'
+          - '3.8.x'
+          - '3.9.x'
+          - '3.10.x'
     steps:
       - uses: actions/checkout@v3
 

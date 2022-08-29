@@ -14,7 +14,7 @@ You can learn more about `natto-py at GitHub`_.
 If you are still using `Python 2 after sunset`_, please stick with version
 ``natto-py==0.9.2``.
 
-|version| |pyversions| |license| |travis| |readthedocs|
+|version| |pyversions| |license| |github-actions| |readthedocs|
 
 Requirements
 ------------
@@ -26,8 +26,6 @@ Requirements
 
 The following Python 3 versions are supported:
 
-- `Python 3.5`_
-- `Python 3.6`_
 - `Python 3.7`_
 - `Python 3.8`_
 - `Python 3.9`_
@@ -371,8 +369,7 @@ the ``LICENSE`` file for further details.
 .. |version| image:: https://badge.fury.io/py/natto-py.svg
     :target: https://pypi.org/project/natto-py/ 
 .. |pyversions| image:: https://img.shields.io/pypi/pyversions/natto-py.svg?style=flat
-.. |travis| image:: https://app.travis-ci.com/buruzaemon/natto-py.svg?branch=master
-    :target: https://app.travis-ci.com/github/buruzaemon/natto-py 
+.. |github-actions| image:: https://github.com/buruzaemon/natto-py/actions/workflows/automated-test-actions/badge.svg
 .. |license| image:: https://img.shields.io/badge/license-BSD-blue.svg
     :target: https://raw.githubusercontent.com/buruzaemon/natto-py/master/LICENSE 
 .. |readthedocs| image:: https://readthedocs.org/projects/natto-py/badge/?version=master
@@ -387,8 +384,6 @@ the ``LICENSE`` file for further details.
 .. _natto-py at GitHub: https://github.com/buruzaemon/natto-py
 .. _MeCab 0.996: http://taku910.github.io/mecab/#download
 .. _cffi 0.8.6: https://bitbucket.org/cffi/cffi
-.. _Python 3.5: https://docs.python.org/3.5/whatsnew/3.5.html 
-.. _Python 3.6: https://docs.python.org/3.6/whatsnew/3.6.html 
 .. _Python 3.7: https://docs.python.org/3.7/whatsnew/3.7.html 
 .. _Python 3.8: https://docs.python.org/3.8/whatsnew/3.8.html 
 .. _Python 3.9: https://docs.python.org/3.9/whatsnew/3.9.html 
