@@ -36,6 +36,7 @@ jobs:
           architecture: x64
       - name: pip stuff
         run: |
+            sudo apt-get update && sudo apt-get install -y libyaml-dev
             pip install PyYAML>=5.4
             pip install cffi
       - name: Test
