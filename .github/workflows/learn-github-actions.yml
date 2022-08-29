@@ -34,5 +34,5 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }} 
           architecture: x64
-      - run: mecab -P
+      - run: which mecab
 
