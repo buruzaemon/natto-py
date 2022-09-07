@@ -12,6 +12,8 @@ from .option_parse import OptionParse
 from .support import string_support, splitter_support
 
 logger = logging.getLogger('natto.mecab')
+if not logger.handlers:
+    logger.addHandler(logging.NullHandler())
 
 class MeCab(object):
     '''The main interface to the MeCab library, wrapping the MeCab Tagger.
