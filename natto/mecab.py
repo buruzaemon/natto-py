@@ -354,6 +354,8 @@ class MeCab(object):
                     self.lattice, bpos, self.MECAB_TOKEN_BOUNDARY)
 
                 for (token, match) in tokens:
+                    if token == '':
+                        continue
                     bpos += 1
                     if match:
                         mark = self.MECAB_INSIDE_TOKEN
